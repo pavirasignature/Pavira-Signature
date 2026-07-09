@@ -357,47 +357,6 @@ export default function PremiumLandingPage() {
         </div>
       </section>
 
-      {/* CUSTOMER REVIEWS (Glass Cards) */}
-      <section className="py-32 relative z-10 bg-[#051F17]">
-        <div className="container mx-auto px-6 max-w-7xl">
-          <div className="text-center mb-20">
-            <h2 className="text-3xl md:text-5xl font-serif mb-4 text-white">Voices of Prestige</h2>
-            <p className="text-[#D4AF37] tracking-widest uppercase text-xs font-bold">Client Testimonials</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              { text: "An absolute masterpiece. The gold detailing catches the morning light beautifully in our foyer. It sets a tone of immense elegance for our entire home.", author: "Eleanor V.", location: "New York" },
-              { text: "I've purchased art from galleries worldwide, but the craftsmanship of this mandala is unparalleled. You can feel the energy and precision in every layer.", author: "Marcus T.", location: "London" },
-              { text: "Breathtaking. It transformed our stark modern dining room into a warm, sophisticated sanctuary. Worth every penny for this level of bespoke artistry.", author: "Sophia R.", location: "Dubai" }
-            ].map((review, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: i * 0.2 }}
-                className="bg-[#123126]/40 backdrop-blur-xl border border-[#D4AF37]/20 p-10 rounded-2xl relative"
-              >
-                <div className="text-[#D4AF37] text-6xl font-serif absolute -top-6 left-8 opacity-40">&quot;</div>
-                <p className="text-gray-300 font-light leading-relaxed mb-8 relative z-10 text-sm">
-                  {review.text}
-                </p>
-                <div className="flex items-center gap-4 border-t border-[#D4AF37]/10 pt-6">
-                  <div className="w-10 h-10 rounded-full bg-[#0B3B2E] border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37] font-serif font-bold text-sm">
-                    {review.author.charAt(0)}
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-white text-sm">{review.author}</h4>
-                    <p className="text-[10px] text-gray-500 uppercase tracking-wider">{review.location}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
     </div>
     </PublicLayout>
   );
