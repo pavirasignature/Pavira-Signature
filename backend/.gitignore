@@ -1,0 +1,27 @@
+# Backend-specific gitignore
+
+# Environment Variables (DO NOT COMMIT)
+.env
+.env.local
+.env.production
+.env.*.local
+.env.production.local
+
+# Node modules
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Uploads (generated files)
+uploads/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

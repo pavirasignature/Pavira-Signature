@@ -1,0 +1,15 @@
+{
+  "css.lint.unknownAtRules": "ignore",
+  "search.useGlobalIgnoreFiles": true,
+  "search.useParentIgnoreFiles": true,
+  "chat.tools.terminal.autoApprove": {
+    "/^cd \"d:\\\\My Projects\\\\Pavira Signature\\\\backend\" ; node server\\.js 2>&1$/": {
+      "approve": true,
+      "matchCommandLine": true
+    },
+    "/^cd \"d:\\\\My Projects\\\\Pavira Signature\\\\backend\" ; node server\\.js$/": {
+      "approve": true,
+      "matchCommandLine": true
+    }
+  }
+}

@@ -1,0 +1,8 @@
+node_modules
+
+# Environment variables - NEVER COMMIT secrets
+.env
+.env.local
+.env.*.local
+
+.vercel

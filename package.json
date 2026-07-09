@@ -1,0 +1,39 @@
+{
+  "name": "pavira-signature",
+  "version": "1.0.0",
+  "description": "Premium E-Commerce Platform for Home Decor Products",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "overrides": {
+    "cloudinary": "^2.10.0",
+    "glob": "^10.3.10",
+    "rimraf": "^5.0.5"
+  },
+  "scripts": {
+    "clean": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$ErrorActionPreference = 'SilentlyContinue'; $p5 = (Get-NetTCPConnection -LocalPort 5000).OwningProcess; if ($p5) { Stop-Process -Id $p5 -Force }; $p3 = (Get-NetTCPConnection -LocalPort 3000).OwningProcess; if ($p3) { Stop-Process -Id $p3 -Force }; exit 0\"",
+    "install-all": "npm install",
+    "dev": "npm run clean && npx --yes concurrently \"npm run backend\" \"npm run frontend\"",
+    "build": "npm run build --workspaces",
+    "start": "npm run start --workspaces",
+    "backend": "npm run dev -w backend",
+    "frontend": "npm run dev -w frontend",
+    "seed": "npm run seed -w backend",
+    "test": "npm test --workspaces",
+    "lint": "npm run lint --workspaces"
+  },
+  "keywords": [
+    "ecommerce",
+    "luxury",
+    "home-decor",
+    "pavira"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}
