@@ -52,6 +52,8 @@ app.set(proxyConfig, 1);
 // CORS configuration
 const allowedOrigins = [
   "http://localhost:3000",
+  "https://www.pavirasignature.in",
+  "https://pavirasignature.in",
   process.env.FRONTEND_URL,
   process.env.PRODUCTION_FRONTEND_URL,
   process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
