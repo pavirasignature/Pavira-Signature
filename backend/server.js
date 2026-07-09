@@ -16,12 +16,16 @@ process.on("unhandledRejection", (err) => {
   console.error("Unhandled Rejection! Shutting down gracefully...", err);
 });
 
-// Load environment variables - Handle both direct execution and npm workspace execution
-const envPath = path.resolve(__dirname, ".env");
-if (fs.existsSync(envPath)) {
-  dotenv.config({ path: envPath });
-} else {
-  dotenv.config();
+// Load environment variables - Handle both direct execution and Vercel serverless
+try {
+  const envPath = path.resolve(__dirname, ".env");
+  if (fs.existsSync(envPath)) {
+    dotenv.config({ path: envPath });
+  } else {
+    dotenv.config();
+  }
+} catch (_) {
+  // Expected on Vercel — fs/path may be stubbed out by webpack
 }
 
 // Import routes

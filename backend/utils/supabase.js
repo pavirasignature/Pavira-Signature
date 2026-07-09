@@ -1,39 +1,47 @@
 const { createClient } = require("@supabase/supabase-js");
-const dotenv = require("dotenv");
-const path = require("path");
-const fs = require("fs");
 
-// Load environment variables - Handle both direct execution and npm workspace execution
-const envPath = path.resolve(__dirname, "../.env");
-if (fs.existsSync(envPath)) {
-  dotenv.config({ path: envPath });
-} else {
-  dotenv.config();
+// Load environment variables from .env file when running locally.
+// On Vercel, fs/path are stubbed out by webpack, so dotenv will fail — that's expected.
+// Vercel provides env vars at runtime via process.env instead.
+try {
+  const dotenv = require("dotenv");
+  const path = require("path");
+  const fs = require("fs");
+  const envPath = path.resolve(__dirname, "../.env");
+  if (fs && fs.existsSync && fs.existsSync(envPath)) {
+    dotenv.config({ path: envPath });
+  } else {
+    dotenv.config();
+  }
+} catch (_) {
+  // Expected on Vercel — dotenv/fs/path are unavailable in the webpack bundle
 }
 
-// Resolve Supabase credentials with fallbacks for Vercel serverless deployment
-// On Vercel, the backend runs inside Next.js serverless functions where the local .env
-// file doesn't exist. In that case, fall back to the NEXT_PUBLIC_ prefixed variables
-// that are configured in the Vercel dashboard.
+// Resolve Supabase credentials.
+// Use bracket notation (process.env['VAR']) to prevent Next.js webpack DefinePlugin
+// from inlining NEXT_PUBLIC_* values as undefined at build time.
+// This ensures the values are read at RUNTIME from Vercel's environment.
 const supabaseUrl =
   process.env.SUPABASE_URL ||
-  process.env.NEXT_PUBLIC_SUPABASE_URL;
+  process.env["NEXT_PUBLIC_SUPABASE_URL"];
 
 const supabaseKey =
   process.env.SUPABASE_KEY ||
   process.env.SUPABASE_SERVICE_ROLE_KEY ||
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  process.env["NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"] ||
+  process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"];
 
 // Validate required environment variables
 if (!supabaseUrl || !supabaseKey) {
+  const availableKeys = Object.keys(process.env)
+    .filter(k => k.includes("SUPABASE") || k.includes("supabase"))
+    .join(", ");
   console.error(
     "❌ FATAL ERROR: Supabase environment variables are required!",
   );
+  console.error("Available Supabase-related env vars:", availableKeys || "NONE");
   console.error(
-    "Checked: SUPABASE_URL / NEXT_PUBLIC_SUPABASE_URL and SUPABASE_KEY / SUPABASE_SERVICE_ROLE_KEY / NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
-  );
-  console.error(
-    "Please configure these variables in your .env file or Vercel dashboard.",
+    "Please add SUPABASE_URL + SUPABASE_KEY (or NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) to your Vercel dashboard or .env file.",
   );
   if (process.env.NODE_ENV === "production") {
     throw new Error(
