@@ -19,12 +19,8 @@ const PremiumMandala = () => {
           <stop offset="80%" stopColor="#997A15" />
           <stop offset="100%" stopColor="#5C4808" />
         </radialGradient>
-        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="15" result="blur" />
-          <feComposite in="SourceGraphic" in2="blur" operator="over" />
-        </filter>
       </defs>
-      <g filter="url(#glow)" fill="none" stroke="url(#goldGradient)" strokeWidth="2">
+      <g fill="none" stroke="url(#goldGradient)" strokeWidth="2">
         {/* Outer Petals */}
         {[...Array(12)].map((_, i) => (
           <path
@@ -141,7 +137,7 @@ export default function PremiumLandingPage() {
   const [particles, setParticles] = useState<Array<{x: number, y: number, size: number, speed: number, delay: number}>>([]);
   useEffect(() => {
     if (window.innerWidth < 768) return;
-    const newParticles = Array.from({ length: 25 }).map(() => ({
+    const newParticles = Array.from({ length: 10 }).map(() => ({
       x: Math.random() * 100,
       y: Math.random() * 100,
       size: Math.random() * 4 + 1,
@@ -181,6 +177,7 @@ export default function PremiumLandingPage() {
                 height: p.size,
                 left: `${p.x}%`,
                 opacity: 0.15 + (p.size / 10),
+                willChange: "transform"
               }}
               animate={{
                 y: ["110vh", "-10vh"],
@@ -211,7 +208,7 @@ export default function PremiumLandingPage() {
         >
           <motion.div 
             className="w-[80vw] h-[80vw] md:w-[60vw] md:h-[60vw] max-w-[800px] max-h-[800px] absolute" 
-            style={{ transform: "translateZ(-100px)" }}
+            style={{ transform: "translateZ(-100px)", willChange: "transform" }}
             animate={{ rotate: 360 }}
             transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
           >
@@ -221,7 +218,7 @@ export default function PremiumLandingPage() {
           {!isMobile && (
             <motion.div 
               className="w-[85vw] h-[85vw] md:w-[65vw] md:h-[65vw] max-w-[900px] max-h-[900px] absolute opacity-30" 
-              style={{ transform: "translateZ(-200px) scale(1.2)" }}
+              style={{ transform: "translateZ(-200px) scale(1.2)", willChange: "transform" }}
               animate={{ rotate: -360 }}
               transition={{ duration: 160, repeat: Infinity, ease: "linear" }}
             >
