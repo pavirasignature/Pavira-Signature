@@ -22,7 +22,7 @@
     "frontend": "npm run dev -w frontend",
     "seed": "npm run seed -w backend",
     "test": "npm test --workspaces",
-    "lint": "npm run lint --workspaces"
+    "lint": "npm run lint -w frontend"
   },
   "keywords": [
     "ecommerce",
