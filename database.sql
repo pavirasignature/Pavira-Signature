@@ -110,7 +110,17 @@ CREATE TABLE IF NOT EXISTS wishlists (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 7. Create Atomic Stock Decrement RPC
+-- 7. Create Redirects Table
+CREATE TABLE IF NOT EXISTS redirects (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    "oldPath" VARCHAR(500) NOT NULL UNIQUE,
+    "newPath" VARCHAR(500) NOT NULL,
+    "isActive" BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 8. Create Atomic Stock Decrement RPC
 -- Safely decrements product stock to prevent race conditions during checkout
 CREATE OR REPLACE FUNCTION decrement_product_stock(p_id UUID, qty INTEGER)
 RETURNS VOID AS $$
