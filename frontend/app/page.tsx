@@ -1,27 +1,12 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import PublicLayout from "@/components/layout/PublicLayout";
 import { productService } from "@/lib/services";
 import ProductCard from "@/components/ProductCard";
-
-// Mouse position hook for interactive spotlight and magnetic effects
-function useMousePosition() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  
-  useEffect(() => {
-    const updateMousePosition = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener("mousemove", updateMousePosition);
-    return () => window.removeEventListener("mousemove", updateMousePosition);
-  }, []);
-  
-  return mousePosition;
-}
 
 // Complex SVG Mandala Component
 const PremiumMandala = () => {
@@ -82,12 +67,21 @@ const PremiumMandala = () => {
 };
 
 export default function PremiumLandingPage() {
-  const mousePosition = useMousePosition();
   const { scrollYProgress } = useScroll();
 
   const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+
+  // Motion values for smooth spotlight tracking (bypasses React render loop)
+  const spotlightX = useMotionValue(0);
+  const spotlightY = useMotionValue(0);
+  const spotlightSpringX = useSpring(spotlightX, { stiffness: 60, damping: 25 });
+  const spotlightSpringY = useSpring(spotlightY, { stiffness: 60, damping: 25 });
+
+  // Motion values for smooth 3D tilt tracking (bypasses React render loop)
+  const tiltX = useSpring(0, { stiffness: 60, damping: 25 });
+  const tiltY = useSpring(0, { stiffness: 60, damping: 25 });
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -102,31 +96,46 @@ export default function PremiumLandingPage() {
     };
     fetchFeatured();
   }, []);
-  
+
+  // Update mouse coordinates directly into Framer Motion values
+  useEffect(() => {
+    if (window.innerWidth < 768) {
+      setIsMobile(true);
+      return;
+    }
+    setIsMobile(false);
+
+    const handleMouseMove = (e: MouseEvent) => {
+      spotlightX.set(e.clientX);
+      spotlightY.set(e.clientY);
+
+      const xVal = (e.clientX / window.innerWidth - 0.5) * 20;
+      const yVal = (e.clientY / window.innerHeight - 0.5) * -20;
+      tiltX.set(yVal);
+      tiltY.set(xVal);
+    };
+
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [spotlightX, spotlightY, tiltX, tiltY]);
+
   // Parallax calculations
   const heroY = useTransform(scrollYProgress, [0, 0.5], [0, 200]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-  const mandalaRotate = useTransform(scrollYProgress, [0, 1], [0, 360]);
-  
-  // Spring physics for smooth cursor following
-  const mouseX = useSpring(mousePosition.x, { stiffness: 50, damping: 20 });
-  const mouseY = useSpring(mousePosition.y, { stiffness: 50, damping: 20 });
-  
-  // Subtle 3D tilt based on mouse position (normalized from -1 to 1)
-  const [windowSize, setWindowSize] = useState({ w: 1000, h: 1000 });
-  useEffect(() => {
-    setWindowSize({ w: window.innerWidth, h: window.innerHeight });
-    setIsMobile(window.innerWidth < 768);
-    const handleResize = () => {
-      setWindowSize({ w: window.innerWidth, h: window.innerHeight });
-      setIsMobile(window.innerWidth < 768);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-  
-  const tiltX = isMobile ? 0 : (mousePosition.y / windowSize.h - 0.5) * -20;
-  const tiltY = isMobile ? 0 : (mousePosition.x / windowSize.w - 0.5) * 20;
+
+  // Transform coordinates to radial gradient spotlight string
+  const spotlightBg = useTransform(
+    [spotlightSpringX, spotlightSpringY],
+    ([x, y]) => `radial-gradient(800px circle at ${x}px ${y}px, rgba(212, 175, 55, 0.12), transparent 80%)`
+  );
 
   // Generate floating particles (Desktop only)
   const [particles, setParticles] = useState<Array<{x: number, y: number, size: number, speed: number, delay: number}>>([]);
@@ -150,8 +159,8 @@ export default function PremiumLandingPage() {
       {!isMobile && (
         <motion.div
           className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-300 mix-blend-screen"
-          animate={{
-            background: `radial-gradient(800px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(212, 175, 55, 0.12), transparent 80%)`,
+          style={{
+            background: spotlightBg
           }}
         />
       )}
