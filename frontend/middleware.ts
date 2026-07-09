@@ -75,9 +75,14 @@ export async function middleware(request: NextRequest) {
       clearTimeout(timeoutId);
 
       if (res.ok) {
-        const data = await res.json();
-        if (data.success && data.data) {
-          redirectsCache = data.data;
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await res.json();
+          if (data.success && data.data) {
+            redirectsCache = data.data;
+          }
+        } else {
+          console.error("Middleware fetch returned non-JSON response:", await res.text());
         }
       }
     } catch (error) {
