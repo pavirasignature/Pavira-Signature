@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   title: "Pavira Signature by Punit Creation - Premium Home Decor",
   description:
     "Transform Your Home Into Luxury with our signature collections.",
+  verification: {
+    google: "Cc5pqPKCfmxHR8g6tTHYHk2n9cocDNGew32erZ5kgRY",
+  },
 };
 
 export default function RootLayout({
