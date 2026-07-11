@@ -48,7 +48,7 @@ exports.createOrder = async (req, res) => {
       }
 
       if (product.stock === 0) {
-        return sendError(res, 400, "please check our website after few time till then pls stay connect to us");
+        return sendError(res, 400, "please check our website after few time till then pls stay connected to us");
       }
 
       if (product.stock < item.quantity) {
