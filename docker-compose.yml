@@ -17,10 +17,9 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: pavira_backend
     restart: always
-    ports:
-      - "5000:5000"
+    deploy:
+      replicas: 2
     environment:
       - PORT=5000
       - NODE_ENV=production
@@ -34,6 +33,20 @@ services:
       - FRONTEND_URL=http://localhost:3000
     depends_on:
       - mongodb
+    networks:
+      - pavira_network
+
+  # Nginx Load Balancer / Reverse Proxy Service
+  nginx:
+    image: nginx:alpine
+    container_name: pavira_load_balancer
+    restart: always
+    ports:
+      - "5000:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
     networks:
       - pavira_network
 
