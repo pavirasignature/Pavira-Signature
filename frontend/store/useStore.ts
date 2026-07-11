@@ -125,6 +125,7 @@ export const useStore = create<StoreState>()(
                 price: product.price,
                 image: image || "",
                 quantity,
+                stock: product.stock !== undefined ? product.stock : 0,
               },
             ],
           });
@@ -245,6 +246,7 @@ export const useStore = create<StoreState>()(
                 item.image ||
                 "",
               quantity: item.quantity,
+              stock: item.product.stock !== undefined ? item.product.stock : 0,
             }));
             set({ cart: backendCart });
           }

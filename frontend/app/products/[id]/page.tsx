@@ -43,10 +43,12 @@ export default function ProductDetailPage() {
     try {
       setLoading(true);
       const response = await productAPI.getOne(productId);
-      if (response.data?.success) {
-        setProduct(response.data.data);
+      const prod = response.data?.success ? response.data.data : response.data;
+      setProduct(prod);
+      if (prod && prod.stock === 0) {
+        setQuantity(0);
       } else {
-        setProduct(response.data);
+        setQuantity(1);
       }
     } catch (error) {
       console.error("Error fetching product:", error);
@@ -97,6 +99,10 @@ export default function ProductDetailPage() {
       return;
     }
     if (!product) return;
+    if (product.stock === 0) {
+      toast.error("please check our website after few time till then pls stay connect to us");
+      return;
+    }
     addToCart(product, quantity);
     toast.success("Added to cart");
   };
@@ -311,7 +317,8 @@ export default function ProductDetailPage() {
                 <div className="flex items-center gap-6 px-5 py-3 border border-[#D4AF37]/30 rounded-xl">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="text-[#D4AF37] text-xl font-medium hover:text-[#F5F0E6] transition-colors"
+                    disabled={product.stock === 0 || quantity <= 1}
+                    className={`text-[#D4AF37] text-xl font-medium hover:text-[#F5F0E6] transition-colors disabled:opacity-30 disabled:cursor-not-allowed`}
                   >
                     −
                   </button>
@@ -322,7 +329,8 @@ export default function ProductDetailPage() {
                     onClick={() =>
                       setQuantity(Math.min(product.stock || 10, quantity + 1))
                     }
-                    className="text-[#D4AF37] text-xl font-medium hover:text-[#F5F0E6] transition-colors"
+                    disabled={product.stock === 0 || quantity >= (product.stock || 0)}
+                    className={`text-[#D4AF37] text-xl font-medium hover:text-[#F5F0E6] transition-colors disabled:opacity-30 disabled:cursor-not-allowed`}
                   >
                     +
                   </button>
@@ -332,17 +340,23 @@ export default function ProductDetailPage() {
               {/* Action Buttons */}
               <div className="flex flex-col md:flex-row gap-4">
                 <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={product.stock === 0 ? {} : { scale: 1.02 }}
+                  whileTap={product.stock === 0 ? {} : { scale: 0.98 }}
+                  disabled={product.stock === 0}
                   onClick={handleAddToCart}
-                  className="w-full md:flex-1 py-4 bg-[#D4AF37] text-[#07271F] font-semibold text-lg rounded-xl hover:bg-[#E6C78B] transition-colors shadow-[0_0_15px_rgba(212,175,55,0.2)]"
+                  className={`w-full md:flex-1 py-4 font-semibold text-lg rounded-xl transition-colors shadow-none ${
+                    product.stock === 0
+                      ? "bg-gray-700 text-gray-500 cursor-not-allowed border border-gray-600/40"
+                      : "bg-[#D4AF37] text-[#07271F] hover:bg-[#E6C78B] shadow-[0_0_15px_rgba(212,175,55,0.2)]"
+                  }`}
                 >
-                  Add to Cart
+                  {product.stock === 0 ? "Unavailable" : "Add to Cart"}
                 </motion.button>
 
                 <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={product.stock === 0 ? {} : { scale: 1.02 }}
+                  whileTap={product.stock === 0 ? {} : { scale: 0.98 }}
+                  disabled={product.stock === 0}
                   onClick={() => {
                     if (!token) {
                       toast.error("Please sign in to buy items");
@@ -350,21 +364,38 @@ export default function ProductDetailPage() {
                       return;
                     }
                     if (!product) return;
+                    if (product.stock === 0) {
+                      toast.error("please check our website after few time till then pls stay connect to us");
+                      return;
+                    }
                     addToCart(product, quantity);
                     router.push("/checkout");
                   }}
-                  className="w-full md:flex-1 py-4 bg-[#D4AF37] text-[#07271F] font-semibold text-lg rounded-xl hover:bg-[#E6C78B] transition-colors shadow-[0_0_15px_rgba(212,175,55,0.2)]"
+                  className={`w-full md:flex-1 py-4 font-semibold text-lg rounded-xl transition-colors shadow-none ${
+                    product.stock === 0
+                      ? "bg-gray-700 text-gray-500 cursor-not-allowed border border-gray-600/40"
+                      : "bg-[#D4AF37] text-[#07271F] hover:bg-[#E6C78B] shadow-[0_0_15px_rgba(212,175,55,0.2)]"
+                  }`}
                 >
-                  Buy Now
+                  {product.stock === 0 ? "Out of Stock" : "Buy Now"}
                 </motion.button>
               </div>
             </div>
 
             {/* Stock Info */}
-            <p className="text-gray-400">
-              <span className="text-green-400 font-semibold">In Stock</span> (
-              {product.stock} available)
-            </p>
+            {product.stock === 0 ? (
+              <div className="mt-4 p-4 rounded-xl border border-red-500/20 bg-red-950/20 text-red-200">
+                <p className="font-semibold text-base mb-1">Currently Out of Stock</p>
+                <p className="text-sm font-light text-gray-300">
+                  please check our website after few time till then pls stay connect to us
+                </p>
+              </div>
+            ) : (
+              <p className="text-gray-400">
+                <span className="text-green-400 font-semibold">In Stock</span> (
+                {product.stock} available)
+              </p>
+            )}
           </motion.div>
         </div>
 

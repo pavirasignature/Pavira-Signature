@@ -57,7 +57,13 @@ export default function CartPage() {
     }
   };
 
+  const hasOutOfStockItems = cart.some((item) => item.stock === 0);
+
   const handleCheckout = () => {
+    if (hasOutOfStockItems) {
+      toast.error("please check our website after few time till then pls stay connect to us");
+      return;
+    }
     router.push("/checkout");
   };
 
@@ -123,34 +129,40 @@ export default function CartPage() {
                         ₹{item.price.toLocaleString()}
                       </p>
 
-                      {/* Quantity */}
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={() =>
-                            handleUpdateQuantity(
-                              item.product,
-                              item.quantity - 1,
-                            )
-                          }
-                          disabled={syncing}
-                          className="w-8 h-8 bg-[#111E16] rounded flex items-center justify-center hover:bg-[#D4AF37]/20 hover:text-[#D4AF37] transition-colors border border-[#D4AF37]/20 disabled:opacity-50 text-[#F5F0E6]"
-                        >
-                          <Minus size={16} />
-                        </button>
-                        <span className="w-8 text-center text-[#F5F0E6]">{item.quantity}</span>
-                        <button
-                          onClick={() =>
-                            handleUpdateQuantity(
-                              item.product,
-                              item.quantity + 1,
-                            )
-                          }
-                          disabled={syncing}
-                          className="w-8 h-8 bg-[#111E16] rounded flex items-center justify-center hover:bg-[#D4AF37]/20 hover:text-[#D4AF37] transition-colors border border-[#D4AF37]/20 disabled:opacity-50 text-[#F5F0E6]"
-                        >
-                          <Plus size={16} />
-                        </button>
-                      </div>
+                      {item.stock === 0 ? (
+                        <div className="text-red-400 text-xs font-light bg-red-950/20 border border-red-500/10 p-3 rounded-lg max-w-md">
+                          please check our website after few time till then pls stay connect to us
+                        </div>
+                      ) : (
+                        /* Quantity */
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() =>
+                              handleUpdateQuantity(
+                                item.product,
+                                item.quantity - 1,
+                              )
+                            }
+                            disabled={syncing}
+                            className="w-8 h-8 bg-[#111E16] rounded flex items-center justify-center hover:bg-[#D4AF37]/20 hover:text-[#D4AF37] transition-colors border border-[#D4AF37]/20 disabled:opacity-50 text-[#F5F0E6]"
+                          >
+                            <Minus size={16} />
+                          </button>
+                          <span className="w-8 text-center text-[#F5F0E6]">{item.quantity}</span>
+                          <button
+                            onClick={() =>
+                              handleUpdateQuantity(
+                                item.product,
+                                item.quantity + 1,
+                              )
+                            }
+                            disabled={syncing || item.quantity >= (item.stock || 9999)}
+                            className="w-8 h-8 bg-[#111E16] rounded flex items-center justify-center hover:bg-[#D4AF37]/20 hover:text-[#D4AF37] transition-colors border border-[#D4AF37]/20 disabled:opacity-50 text-[#F5F0E6]"
+                          >
+                            <Plus size={16} />
+                          </button>
+                        </div>
+                      )}
                     </div>
 
                     {/* Remove Button */}
@@ -195,7 +207,7 @@ export default function CartPage() {
 
                 <button
                   onClick={handleCheckout}
-                  disabled={loading || syncing}
+                  disabled={loading || syncing || hasOutOfStockItems}
                   className="w-full bg-[#D4AF37] text-[#07271F] py-4 rounded-xl font-semibold hover:bg-[#E6C78B] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-[0_0_15px_rgba(212,175,55,0.2)]"
                 >
                   {loading ? (
@@ -207,6 +219,12 @@ export default function CartPage() {
                     </>
                   )}
                 </button>
+
+                {hasOutOfStockItems && (
+                  <p className="text-red-400 text-xs text-center mt-4 font-light">
+                    please check our website after few time till then pls stay connect to us
+                  </p>
+                )}
 
                 <p className="text-xs text-[#F5F0E6]/40 text-center mt-4">
                   Free shipping on orders above ₹999

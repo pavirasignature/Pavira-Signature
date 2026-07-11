@@ -47,6 +47,10 @@ exports.createOrder = async (req, res) => {
         return sendError(res, 404, `Product not found: ${item.product}`);
       }
 
+      if (product.stock === 0) {
+        return sendError(res, 400, "please check our website after few time till then pls stay connect to us");
+      }
+
       if (product.stock < item.quantity) {
         return sendError(res, 400, `Insufficient stock for ${product.name}`);
       }
@@ -606,6 +610,13 @@ exports.addToCart = async (req, res, next) => {
       ? existingItem.quantity + quantity
       : quantity;
 
+    if (product.stock === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "please check our website after few time till then pls stay connect to us",
+      });
+    }
+
     if (product.stock < totalQuantity) {
       return res.status(400).json({
         success: false,
@@ -722,6 +733,13 @@ exports.updateCartItem = async (req, res, next) => {
       return res.status(404).json({
         success: false,
         message: "Product not found",
+      });
+    }
+
+    if (product.stock === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "please check our website after few time till then pls stay connect to us",
       });
     }
 

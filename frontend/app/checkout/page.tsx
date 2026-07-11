@@ -43,6 +43,7 @@ export default function CheckoutPage() {
   const shippingPrice = itemsPrice >= 999 ? 0 : 99;
   const taxPrice = 0; // GST removed
   const totalPrice = itemsPrice + shippingPrice + taxPrice - couponDiscount;
+  const hasOutOfStockItems = cart.some((item) => item.stock === 0);
 
   const [mounted, setMounted] = useState(false);
 
@@ -161,6 +162,12 @@ export default function CheckoutPage() {
     }
     if (!shippingAddress.postalCode.trim()) {
       toast.error("Please enter your Postal Code");
+      return;
+    }
+
+    const hasOutOfStockItems = cart.some((item) => item.stock === 0);
+    if (hasOutOfStockItems) {
+      toast.error("please check our website after few time till then pls stay connect to us");
       return;
     }
 
@@ -542,6 +549,11 @@ export default function CheckoutPage() {
                         <p className="text-xs text-gray-400">
                           Qty: {item.quantity}
                         </p>
+                        {item.stock === 0 && (
+                          <p className="text-[10px] text-red-400 font-light mt-0.5">
+                            Out of stock - please check back later
+                          </p>
+                        )}
                       </div>
                       <span className="text-[#D4AF37] font-semibold">
                         ₹{(item.price * item.quantity).toLocaleString()}
@@ -603,6 +615,12 @@ export default function CheckoutPage() {
                 </div>
 
                 {/* Place Order Button */}
+                {hasOutOfStockItems && (
+                  <div className="mb-4 p-3 bg-red-950/20 border border-red-500/20 text-red-200 text-sm font-light rounded-lg text-center">
+                    please check our website after few time till then pls stay connect to us
+                  </div>
+                )}
+
                 {isOrderPlaced ? (
                   <div className="w-full bg-[#111E16] border border-[#D4AF37] text-[#D4AF37] py-4 rounded-lg font-semibold flex items-center justify-center text-center px-4 shadow-[0_0_15px_rgba(212,175,55,0.15)]">
                     Thanks For Ordering Wait until Owner accepts your order
@@ -610,7 +628,7 @@ export default function CheckoutPage() {
                 ) : (
                   <button
                     onClick={handlePlaceOrder}
-                    disabled={loading}
+                    disabled={loading || hasOutOfStockItems}
                     className="w-full bg-[#D4AF37] text-black py-4 rounded-lg font-semibold hover:bg-[#D4AF37]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                   >
                     {loading ? (
