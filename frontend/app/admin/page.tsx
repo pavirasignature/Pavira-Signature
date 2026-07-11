@@ -952,7 +952,7 @@ export default function AdminDashboard() {
                           Low Stock Alerts
                         </h3>
 
-                        <div className="flex-grow overflow-y-auto max-h-[220px] space-y-3 pr-1">
+                        <div className="flex-grow overflow-y-auto max-h-[220px] space-y-3 pr-1 admin-scrollbar">
                           {lowStock.length > 0 ? (
                             lowStock.map((prod) => (
                               <div
