@@ -13,9 +13,63 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "Pavira Signature by Punit Creation - Premium Home Decor",
-  description:
-    "Transform Your Home Into Luxury with our signature collections.",
+  title: {
+    default: "Pavira Signature | Premium Home Decor by Punit Creation",
+    template: "%s | Pavira Signature",
+  },
+  description: "Transform your home into a luxury space with Pavira Signature's premium home decor collections, hand-crafted clocks, metal wall art, panels, and scented candles.",
+  keywords: [
+    "Pavira Signature",
+    "Punit Creation",
+    "Premium Home Decor",
+    "Luxury Home Decor",
+    "Metal Wall Art",
+    "Decorative Clocks",
+    "Wall Panels",
+    "Scented Candles",
+    "Luxury Living",
+    "Handmade Decor India"
+  ],
+  authors: [{ name: "Punit Creation" }],
+  creator: "Punit Creation",
+  publisher: "Punit Creation",
+  metadataBase: new URL("https://pavirasignature.in"),
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: "https://pavirasignature.in",
+    title: "Pavira Signature | Premium Home Decor by Punit Creation",
+    description: "Transform your home into a luxury space with Pavira Signature's premium home decor collections, hand-crafted clocks, metal wall art, panels, and scented candles.",
+    siteName: "Pavira Signature",
+    images: [
+      {
+        url: "/logo.png",
+        width: 512,
+        height: 512,
+        alt: "Pavira Signature - Premium Home Decor Logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Pavira Signature | Premium Home Decor by Punit Creation",
+    description: "Transform your home into a luxury space with Pavira Signature's premium home decor collections.",
+    images: ["/logo.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   verification: {
     google: "Cc5pqPKCfmxHR8g6tTHYHk2n9cocDNGew32erZ5kgRY",
   },
