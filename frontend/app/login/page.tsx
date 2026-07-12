@@ -4,8 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { signIn } from "next-auth/react";
 import { authAPI } from "@/lib/api";
-import { Eye, EyeOff, Mail, Lock, ArrowLeft } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, ArrowLeft, ArrowRight } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import toast from "react-hot-toast";
 import { PremiumMandala } from "@/components/PremiumVisuals";
@@ -55,6 +56,22 @@ export default function LoginPage() {
       }
     } catch (err: any) {
       const errMsg = err.response?.data?.message || "Login failed";
+      setError(errMsg);
+      toast.error(errMsg);
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      await signIn("google", {
+        callbackUrl: typeof window !== "undefined" ? `${window.location.origin}/` : "/",
+      });
+    } catch (err) {
+      const errMsg = err instanceof Error ? err.message : "Google sign-in failed";
       setError(errMsg);
       toast.error(errMsg);
       setLoading(false);
@@ -201,6 +218,17 @@ export default function LoginPage() {
                     Forgot password?
                   </Link>
                 </div>
+
+                {/* Google Sign-In */}
+                <button
+                  type="button"
+                  onClick={handleGoogleSignIn}
+                  disabled={loading}
+                  className="w-full mt-4 inline-flex items-center justify-center gap-3 px-6 py-3.5 bg-white text-[#111E16] font-semibold uppercase tracking-widest text-sm rounded-xl border border-[#D4AF37]/35 hover:bg-[#F7F3E9] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_10px_rgba(0,0,0,0.08)]"
+                >
+                  <ArrowRight size={18} />
+                  Continue with Google
+                </button>
 
                 {/* Submit Button */}
                 <motion.button
