@@ -81,9 +81,3 @@ const handler = NextAuth({
 });
 
 export default handler;
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
