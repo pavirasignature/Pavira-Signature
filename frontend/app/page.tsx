@@ -207,7 +207,7 @@ export default function PremiumLandingPage() {
           }}
         >
           <motion.div 
-            className="w-[85vw] h-[85vw] sm:w-[80vw] sm:h-[80vw] md:w-[70vw] md:h-[70vw] lg:w-[60vw] lg:h-[60vw] max-w-[900px] max-h-[900px] absolute" 
+            className="w-[90vw] h-[90vw] sm:w-[85vw] sm:h-[85vw] md:w-[70vw] md:h-[70vw] lg:w-[60vw] lg:h-[60vw] max-w-[900px] max-h-[900px] absolute" 
             style={{ transform: "translateZ(-100px)", willChange: "transform" }}
             animate={{ rotate: 360 }}
             transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
@@ -216,7 +216,7 @@ export default function PremiumLandingPage() {
           </motion.div>
           {/* Render secondary mandala on all screen sizes */}
           <motion.div 
-            className="w-[95vw] h-[95vw] sm:w-[90vw] sm:h-[90vw] md:w-[80vw] md:h-[80vw] lg:w-[75vw] lg:h-[75vw] max-w-[1000px] max-h-[1000px] absolute opacity-25" 
+            className="w-[98vw] h-[98vw] sm:w-[93vw] sm:h-[93vw] md:w-[80vw] md:h-[80vw] lg:w-[75vw] lg:h-[75vw] max-w-[1000px] max-h-[1000px] absolute opacity-25" 
             style={{ transform: "translateZ(-200px) scale(1.2)", willChange: "transform" }}
             animate={{ rotate: -360 }}
             transition={{ duration: 160, repeat: Infinity, ease: "linear" }}
@@ -241,12 +241,13 @@ export default function PremiumLandingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1.5, delay: 1.2 }}
-            className="pointer-events-auto"
+            className="pointer-events-auto flex flex-col items-center gap-3"
           >
+            <div className="w-12 h-[1px] bg-[#D4AF37]/50 group-hover:bg-[#D4AF37] group-hover:w-20 transition-all duration-500"></div>
             <Link href="#collections" className="inline-flex items-center gap-4 group cursor-pointer">
               <span className="text-sm tracking-widest uppercase font-semibold text-gray-300 group-hover:text-white transition-colors">Explore Collection</span>
-              <div className="w-12 h-[1px] bg-[#D4AF37]/50 group-hover:bg-[#D4AF37] group-hover:w-20 transition-all duration-500"></div>
             </Link>
+            <div className="w-12 h-[1px] bg-[#D4AF37]/50 group-hover:bg-[#D4AF37] group-hover:w-20 transition-all duration-500"></div>
           </motion.div>
         </motion.div>
       </section>
