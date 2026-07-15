@@ -207,17 +207,17 @@ export default function PremiumLandingPage() {
           }}
         >
           <motion.div 
-            className="w-[80vw] h-[80vw] md:w-[60vw] md:h-[60vw] max-w-[800px] max-h-[800px] absolute" 
+            className="w-[75vw] h-[75vw] sm:w-[70vw] sm:h-[70vw] md:w-[60vw] md:h-[60vw] lg:w-[55vw] lg:h-[55vw] max-w-[800px] max-h-[800px] absolute" 
             style={{ transform: "translateZ(-100px)", willChange: "transform" }}
             animate={{ rotate: 360 }}
             transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
           >
             <PremiumMandala />
           </motion.div>
-          {/* Render secondary mandala only on desktop/tablets */}
+          {/* Render secondary mandala on tablets and larger */}
           {!isMobile && (
             <motion.div 
-              className="w-[85vw] h-[85vw] md:w-[65vw] md:h-[65vw] max-w-[900px] max-h-[900px] absolute opacity-30" 
+              className="w-[85vw] h-[85vw] sm:w-[80vw] sm:h-[80vw] md:w-[70vw] md:h-[70vw] lg:w-[65vw] lg:h-[65vw] max-w-[900px] max-h-[900px] absolute opacity-30" 
               style={{ transform: "translateZ(-200px) scale(1.2)", willChange: "transform" }}
               animate={{ rotate: -360 }}
               transition={{ duration: 160, repeat: Infinity, ease: "linear" }}
