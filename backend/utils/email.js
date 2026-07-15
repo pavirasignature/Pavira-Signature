@@ -6,10 +6,10 @@
 const nodemailer = require("nodemailer");
 
 const EMAIL_SERVICE = process.env.EMAIL_SERVICE || "Gmail";
-const EMAIL_USER = process.env.EMAIL_USER || "pavirasignature@gmail.com";
+const EMAIL_USER = process.env.EMAIL_USER || "care@pavirasignature.in";
 const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD || "hatb ijfn wete fhww";
 const EMAIL_FROM =
-  process.env.EMAIL_FROM || "Pavira Signature <pavirasignature@gmail.com>";
+  process.env.EMAIL_FROM || "Pavira Signature <care@pavirasignature.in>";
 
 const transporter = nodemailer.createTransport({
   service: EMAIL_SERVICE,
