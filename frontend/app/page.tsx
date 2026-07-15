@@ -241,13 +241,13 @@ export default function PremiumLandingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1.5, delay: 1.2 }}
-            className="pointer-events-auto flex flex-col items-center gap-3"
+            className="pointer-events-auto"
           >
-            <div className="w-12 h-[1px] bg-[#D4AF37]/50 group-hover:bg-[#D4AF37] group-hover:w-20 transition-all duration-500"></div>
             <Link href="#collections" className="inline-flex items-center gap-4 group cursor-pointer">
+              <div className="w-12 h-[1px] bg-[#D4AF37]/50 group-hover:bg-[#D4AF37] group-hover:w-20 transition-all duration-500"></div>
               <span className="text-sm tracking-widest uppercase font-semibold text-gray-300 group-hover:text-white transition-colors">Explore Collection</span>
+              <div className="w-12 h-[1px] bg-[#D4AF37]/50 group-hover:bg-[#D4AF37] group-hover:w-20 transition-all duration-500"></div>
             </Link>
-            <div className="w-12 h-[1px] bg-[#D4AF37]/50 group-hover:bg-[#D4AF37] group-hover:w-20 transition-all duration-500"></div>
           </motion.div>
         </motion.div>
       </section>
