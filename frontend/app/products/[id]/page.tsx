@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { productAPI, wishlistAPI } from "@/lib/api";
 import { Heart, ShoppingCart, Star, ChevronDown } from "lucide-react";
@@ -416,8 +417,11 @@ export default function ProductDetailPage() {
             {
               id: "shipping",
               title: "Shipping & Returns",
-              content:
-                "Free shipping nationwide • 14 days return policy • Secure packaging",
+              content: (
+                <>
+                  Free shipping nationwide • At Pavira Signature we have very customer friendly return/refund/replacement policies. You can find detailed policies <Link href="/refund-policy" className="text-[#D4AF37] underline hover:text-[#E6C78B]">here</Link>. • Secure packaging
+                </>
+              ),
             },
           ].map((section) => (
             <motion.div
