@@ -196,7 +196,7 @@ export default function PremiumLandingPage() {
 
 
       {/* HERO SECTION */}
-      <section className="relative min-h-screen flex items-center justify-center pt-20 z-10 overflow-hidden perspective-[1000px]">
+      <section className="relative min-h-[70vh] md:min-h-screen flex items-center justify-center pt-20 z-10 overflow-hidden perspective-[1000px]">
         <motion.div 
           className="absolute inset-0 flex items-center justify-center opacity-80 mix-blend-screen"
           style={{ 
@@ -224,7 +224,7 @@ export default function PremiumLandingPage() {
             <PremiumMandala />
           </motion.div>
         </motion.div>
-
+ 
         <motion.div 
           style={{ opacity: heroOpacity, y: heroY }}
           className="relative z-10 text-center px-4 max-w-4xl mx-auto flex flex-col items-center pointer-events-none"
@@ -251,16 +251,16 @@ export default function PremiumLandingPage() {
           </motion.div>
         </motion.div>
       </section>
-
+ 
       {/* BRAND VALUES / CRAFTSMANSHIP */}
-      <section id="philosophy" className="py-32 relative z-10">
+      <section id="philosophy" className="py-16 md:py-32 relative z-10">
         <div className="container mx-auto px-6 max-w-7xl">
           <motion.div 
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 1.2 }}
-            className="text-center mb-24"
+            className="text-center mb-12 md:mb-24"
           >
             <h2 className="text-3xl md:text-5xl font-serif mb-6 text-[#D4AF37]">The Art of Stillness</h2>
             <p className="max-w-2xl mx-auto text-gray-300 font-light leading-relaxed text-lg">
