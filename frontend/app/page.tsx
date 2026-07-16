@@ -233,7 +233,7 @@ export default function PremiumLandingPage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 2, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-[1.1] mb-16 tracking-tight drop-shadow-2xl text-white"
+            className="text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-[1.1] mb-24 md:mb-16 tracking-tight drop-shadow-2xl text-white"
           >
             The Art of <br/> <span className="italic font-light text-[#D4AF37]">Luxury</span>
           </motion.h1>
@@ -253,7 +253,7 @@ export default function PremiumLandingPage() {
       </section>
  
       {/* BRAND VALUES / CRAFTSMANSHIP */}
-      <section id="philosophy" className="py-16 md:py-32 relative z-10">
+      <section id="philosophy" className="pt-24 pb-16 md:py-32 relative z-10">
         <div className="container mx-auto px-6 max-w-7xl">
           <motion.div 
             initial={{ opacity: 0, y: 50 }}
