@@ -196,7 +196,7 @@ export default function PremiumLandingPage() {
 
 
       {/* HERO SECTION */}
-      <section className="relative min-h-[70vh] md:min-h-screen flex items-center justify-center pt-20 z-10 overflow-hidden perspective-[1000px]">
+      <section className="relative min-h-[85vh] md:min-h-screen flex items-center justify-center pt-20 z-10 overflow-hidden perspective-[1000px]">
         <motion.div 
           className="absolute inset-0 flex items-center justify-center opacity-80 mix-blend-screen"
           style={{ 
