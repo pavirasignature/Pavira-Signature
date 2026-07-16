@@ -209,8 +209,8 @@ export default function PremiumLandingPage() {
           <motion.div 
             className="w-[90vw] h-[90vw] sm:w-[85vw] sm:h-[85vw] md:w-[70vw] md:h-[70vw] lg:w-[60vw] lg:h-[60vw] max-w-[900px] max-h-[900px] absolute" 
             style={{ transform: "translateZ(-100px)", willChange: "transform" }}
-            animate={{ rotate: 360 }}
-            transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
+            animate={isMobile ? {} : { rotate: 360 }}
+            transition={isMobile ? {} : { duration: 120, repeat: Infinity, ease: "linear" }}
           >
             <PremiumMandala />
           </motion.div>
@@ -337,7 +337,7 @@ export default function PremiumLandingPage() {
              whileInView={{ opacity: 1, scale: 1 }}
              viewport={{ once: true }}
              transition={{ duration: 1.5 }}
-             className="w-40 h-40 mb-10 opacity-80"
+             className="hidden md:block w-40 h-40 mb-10 opacity-80"
           >
             <PremiumMandala />
           </motion.div>

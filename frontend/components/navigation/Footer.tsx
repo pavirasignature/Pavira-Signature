@@ -30,7 +30,7 @@ export default function Footer() {
   return (
     <footer className="relative bg-[#07271F] overflow-hidden pt-24 pb-12 border-t border-[#D4AF37]/20">
       {/* Background Effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80vw] h-[80vw] md:w-[40vw] md:h-[40vw] opacity-[0.03] pointer-events-none mix-blend-screen -translate-y-1/2">
+      <div className="hidden md:block absolute top-0 left-1/2 -translate-x-1/2 w-[40vw] h-[40vw] opacity-[0.03] pointer-events-none mix-blend-screen -translate-y-1/2">
         <PremiumMandala />
       </div>
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent" />
