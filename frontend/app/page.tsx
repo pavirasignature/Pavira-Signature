@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
-import { motion, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { motion, useSpring, useMotionValue } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import PublicLayout from "@/components/layout/PublicLayout";
@@ -63,8 +63,6 @@ const PremiumMandala = () => {
 };
 
 export default function PremiumLandingPage() {
-  const { scrollYProgress } = useScroll();
-
   const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
@@ -123,21 +121,14 @@ export default function PremiumLandingPage() {
     };
   }, [spotlightX, spotlightY, tiltX, tiltY]);
 
-  // Parallax calculations
-  const heroY = useTransform(scrollYProgress, [0, 0.5], [0, 200]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-
   // Transform coordinates to radial gradient spotlight string
-  const spotlightBg = useTransform(
-    [spotlightSpringX, spotlightSpringY],
-    ([x, y]) => `radial-gradient(800px circle at ${x}px ${y}px, rgba(212, 175, 55, 0.12), transparent 80%)`
-  );
+  const spotlightBg = `radial-gradient(800px circle at ${spotlightSpringX.get()}px ${spotlightSpringY.get()}px, rgba(212, 175, 55, 0.12), transparent 80%)`;
 
   // Generate floating particles (Desktop only)
   const [particles, setParticles] = useState<Array<{x: number, y: number, size: number, speed: number, delay: number}>>([]);
   useEffect(() => {
     if (window.innerWidth < 768) return;
-    const newParticles = Array.from({ length: 10 }).map(() => ({
+    const newParticles = Array.from({ length: 6 }).map(() => ({
       x: Math.random() * 100,
       y: Math.random() * 100,
       size: Math.random() * 4 + 1,
@@ -202,31 +193,25 @@ export default function PremiumLandingPage() {
           style={{ 
             rotateX: tiltX, 
             rotateY: tiltY,
-            y: heroY,
             transformStyle: "preserve-3d"
           }}
         >
-          <motion.div 
+          <div 
             className="w-[90vw] h-[90vw] sm:w-[85vw] sm:h-[85vw] md:w-[70vw] md:h-[70vw] lg:w-[60vw] lg:h-[60vw] max-w-[900px] max-h-[900px] absolute" 
             style={{ transform: "translateZ(-100px)", willChange: "transform" }}
-            animate={isMobile ? {} : { rotate: 360 }}
-            transition={isMobile ? {} : { duration: 120, repeat: Infinity, ease: "linear" }}
           >
             <PremiumMandala />
-          </motion.div>
+          </div>
           {/* Render secondary mandala on all screen sizes */}
-          <motion.div 
+          <div 
             className="w-[98vw] h-[98vw] sm:w-[93vw] sm:h-[93vw] md:w-[80vw] md:h-[80vw] lg:w-[75vw] lg:h-[75vw] max-w-[1000px] max-h-[1000px] absolute opacity-25" 
             style={{ transform: "translateZ(-200px) scale(1.2)", willChange: "transform" }}
-            animate={{ rotate: -360 }}
-            transition={{ duration: 160, repeat: Infinity, ease: "linear" }}
           >
             <PremiumMandala />
-          </motion.div>
+          </div>
         </motion.div>
  
         <motion.div 
-          style={{ opacity: heroOpacity, y: heroY }}
           className="relative z-10 text-center px-4 max-w-4xl mx-auto flex flex-col items-center pointer-events-none"
         >
           <motion.h1 

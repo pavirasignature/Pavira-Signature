@@ -1,9 +1,8 @@
 "use client";
 
-import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { ChevronDown, Sparkles, Feather, Leaf, Clock, ArrowRight, Palette, Layers, Home } from "lucide-react";
 import PublicLayout from "@/components/layout/PublicLayout";
 import { PremiumMandala } from "@/components/PremiumVisuals";
@@ -66,57 +65,32 @@ const lifestyleImages = [
 
 // --- Subcomponents ---
 
-const ParallaxImage = ({ src, speed = 1, className = "" }: { src: string, speed?: number, className?: string }) => {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"]
-  });
-  const y = useTransform(scrollYProgress, [0, 1], ["-20%", "20%"]);
-
+const ParallaxImage = ({ src, className = "" }: { src: string, className?: string }) => {
   return (
-    <div ref={ref} className={`relative overflow-hidden ${className}`}>
-      <motion.div style={{ y }} className="absolute inset-[-20%] w-[140%] h-[140%]">
+    <div className={`relative overflow-hidden ${className}`}>
+      <div className="absolute inset-[-20%] w-[140%] h-[140%]">
         <Image src={src} alt="Lifestyle Gallery" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
-      </motion.div>
+      </div>
     </div>
   );
 };
 
 export default function AboutPage() {
-  const heroRef = useRef(null);
-  const { scrollYProgress: heroProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"]
-  });
-  const heroOpacity = useTransform(heroProgress, [0, 0.8], [1, 0]);
-  const heroY = useTransform(heroProgress, [0, 1], ["0%", "50%"]);
-
-  const geometryRef = useRef(null);
-  const { scrollYProgress: geoProgress } = useScroll({
-    target: geometryRef,
-    offset: ["start end", "end start"]
-  });
-  const mandalaRotate1 = useTransform(geoProgress, [0, 1], [0, 180]);
-  const mandalaRotate2 = useTransform(geoProgress, [0, 1], [0, -180]);
 
   return (
     <PublicLayout>
       <main className="bg-[#07241D] text-[#F5F0E6] selection:bg-[#D4AF37] selection:text-[#0B3B2E] overflow-hidden">
         
         {/* 1. About Hero (Cinematic Entry) */}
-        <section ref={heroRef} className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
+        <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
           {/* Deep Cinematic Background */}
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,61,44,0.6)_0%,rgba(7,36,29,1)_100%)] z-0" />
           
-          <motion.div 
-            style={{ opacity: heroOpacity, y: heroY }}
-            className="absolute inset-0 z-0 flex items-center justify-center opacity-30 pointer-events-none"
-          >
+          <div className="absolute inset-0 z-0 flex items-center justify-center opacity-30 pointer-events-none">
             <div className="w-[150vw] h-[150vw] md:w-[80vw] md:h-[80vw]">
               <PremiumMandala />
             </div>
-          </motion.div>
+          </div>
 
           <div className="relative z-10 text-center px-4 max-w-5xl mx-auto flex flex-col items-center">
             <motion.p
@@ -294,7 +268,7 @@ export default function AboutPage() {
         </section>
 
         {/* 3. Sacred Geometry Section */}
-        <section ref={geometryRef} className="py-32 relative overflow-hidden bg-[#0B3B2E] border-y border-[#D4AF37]/10">
+        <section className="py-32 relative overflow-hidden bg-[#0B3B2E] border-y border-[#D4AF37]/10">
           <div className="container mx-auto px-4 max-w-7xl relative z-10">
             <div className="text-center max-w-3xl mx-auto mb-20">
               <span className="text-[#D4AF37] tracking-widest uppercase text-sm font-semibold block mb-4">The Golden Ratio</span>
@@ -305,12 +279,12 @@ export default function AboutPage() {
             </div>
 
             <div className="relative h-[600px] w-full flex items-center justify-center">
-              <motion.div style={{ rotate: mandalaRotate1 }} className="absolute w-[800px] h-[800px] opacity-10">
+              <div className="absolute w-[800px] h-[800px] opacity-10">
                 <PremiumMandala />
-              </motion.div>
-              <motion.div style={{ rotate: mandalaRotate2 }} className="absolute w-[600px] h-[600px] opacity-30">
+              </div>
+              <div className="absolute w-[600px] h-[600px] opacity-30">
                 <PremiumMandala />
-              </motion.div>
+              </div>
               <div className="absolute w-64 h-64 rounded-full bg-[#D4AF37]/5 backdrop-blur-3xl border border-[#D4AF37]/20 flex items-center justify-center shadow-[0_0_100px_rgba(212,175,55,0.1)]">
                 <span className="text-[#D4AF37] font-serif text-3xl italic">Harmony</span>
               </div>

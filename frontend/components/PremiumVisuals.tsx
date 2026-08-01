@@ -73,7 +73,12 @@ export default function PremiumVisuals() {
   const [particles, setParticles] = useState<Array<{x: number, y: number, size: number, speed: number, delay: number}>>([]);
   
   useEffect(() => {
-    const newParticles = Array.from({ length: 30 }).map(() => ({
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setParticles([]);
+      return;
+    }
+
+    const newParticles = Array.from({ length: 8 }).map(() => ({
       x: Math.random() * 100,
       y: Math.random() * 100,
       size: Math.random() * 3 + 1,

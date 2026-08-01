@@ -6,7 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, Heart, ShoppingBag, Lock } from "lucide-react";
 import { useStore } from "@/store/useStore";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 import CartDrawer from "./header/CartDrawer";
 import AccountMenu from "./header/AccountMenu";
@@ -18,6 +18,7 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showAccessGranted, setShowAccessGranted] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
@@ -33,28 +34,30 @@ export default function Header() {
   );
   const wishlistCount = wishlist.length;
 
-  // Scroll Animation Logic
-  const { scrollY } = useScroll();
-  const headerBg = useTransform(
-    scrollY,
-    [0, 100],
-    ["rgba(11,59,46,0)", "rgba(11,59,46,0.75)"],
-  );
-  const headerBackdropBlur = useTransform(
-    scrollY,
-    [0, 100],
-    ["blur(0px)", "blur(24px)"],
-  );
-  const headerBorder = useTransform(
-    scrollY,
-    [0, 100],
-    ["rgba(212,175,55,0)", "rgba(212,175,55,0.08)"],
-  );
-  const headerShadow = useTransform(
-    scrollY,
-    [0, 100],
-    ["0px 0px 0px rgba(0,0,0,0)", "0px 10px 30px rgba(0,0,0,0.3)"],
-  );
+  useEffect(() => {
+    let rafId = 0;
+
+    const updateScrollState = () => {
+      setIsScrolled(window.scrollY > 20);
+      rafId = 0;
+    };
+
+    const handleScroll = () => {
+      if (!rafId) {
+        rafId = window.requestAnimationFrame(updateScrollState);
+      }
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+      }
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     checkAuth();
@@ -127,14 +130,14 @@ export default function Header() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
         style={{
-          backgroundColor: headerBg,
-          backdropFilter: headerBackdropBlur,
-          borderBottomColor: headerBorder,
+          backgroundColor: isScrolled ? "rgba(11,59,46,0.75)" : "rgba(11,59,46,0)",
+          backdropFilter: isScrolled ? "blur(24px)" : "blur(0px)",
+          borderBottomColor: isScrolled ? "rgba(212,175,55,0.08)" : "rgba(212,175,55,0)",
           borderBottomWidth: "1px",
           borderBottomStyle: "solid",
-          boxShadow: headerShadow,
+          boxShadow: isScrolled ? "0px 10px 30px rgba(0,0,0,0.3)" : "0px 0px 0px rgba(0,0,0,0)",
         }}
-        className="fixed top-0 left-0 right-0 z-50 transition-colors duration-300"
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
       >
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
           {/* Logo */}

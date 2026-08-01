@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import PublicLayout from "@/components/layout/PublicLayout";
 import ProductCard, { ProductSkeleton } from "@/components/ProductCard";
 import { productService, categoryService } from "@/lib/services";
-import { motion, AnimatePresence, useScroll, useTransform, Variants } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { Search } from "lucide-react";
 import { useToast } from "@/components/Toast";
 import Link from "next/link";
@@ -55,11 +55,6 @@ export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [minPriceInput, setMinPriceInput] = useState("");
   const [maxPriceInput, setMaxPriceInput] = useState("");
-
-  const { scrollYProgress } = useScroll();
-  const heroY = useTransform(scrollYProgress, [0, 0.3], [0, 150]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
-  const mandalaRotate = useTransform(scrollYProgress, [0, 1], [0, 180]);
 
   useEffect(() => {
     const loadCategoriesAndQueryParams = async () => {
@@ -142,17 +137,13 @@ export default function ProductsPage() {
 
       {/* COLLECTION HERO */}
       <section className="relative min-h-[60vh] flex flex-col items-center justify-center pt-32 pb-20 px-4 overflow-hidden z-10">
-        <motion.div 
+        <div 
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150vw] md:w-[80vw] h-[150vw] md:h-[80vw] opacity-[0.03] pointer-events-none mix-blend-screen"
-          style={{ rotate: mandalaRotate }}
         >
           <PremiumMandala />
-        </motion.div>
+        </div>
         
-        <motion.div 
-          style={{ y: heroY, opacity: heroOpacity }}
-          className="relative z-10 text-center max-w-4xl mx-auto flex flex-col items-center"
-        >
+        <div className="relative z-10 text-center max-w-4xl mx-auto flex flex-col items-center">
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -169,13 +160,10 @@ export default function ProductsPage() {
           >
             The Signature <br/> <span className="italic font-light text-[#D4AF37]">Gallery.</span>
           </motion.h1>
-          <motion.div 
-            initial={{ opacity: 0, width: 0 }}
-            animate={{ opacity: 1, width: "100px" }}
-            transition={{ duration: 1.5, delay: 1 }}
-            className="h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent"
+          <div 
+            className="h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent w-[100px]"
           />
-        </motion.div>
+        </div>
       </section>
 
       {/* LUXURY FILTER BAR (Sticky) */}
