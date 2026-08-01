@@ -28,7 +28,7 @@ module.exports = {
     FRONTEND_URL: 'http://localhost:3000',
 
     // Production Frontend URL
-    PRODUCTION_FRONTEND_URL: 'https://your-domain.vercel.app',
+    PRODUCTION_FRONTEND_URL: 'https://pavirasignature.in',
 
     // Cloudinary (Image Uploads)
     CLOUDINARY_CLOUD_NAME: 'your_cloud_name',
@@ -55,6 +55,12 @@ module.exports = {
     // API URL
     NEXT_PUBLIC_API_URL: 'http://localhost:5000/api',
 
+    // Google OAuth / NextAuth
+    NEXTAUTH_URL: 'http://localhost:3000', // production: 'https://pavirasignature.in',
+    NEXTAUTH_SECRET: 'replace-with-a-strong-random-secret',
+    GOOGLE_CLIENT_ID: 'your-google-oauth-client-id',
+    GOOGLE_CLIENT_SECRET: 'your-google-oauth-client-secret',
+
     // Production API URL
     NEXT_PUBLIC_PRODUCTION_API_URL: '/api',
 
@@ -69,7 +75,7 @@ module.exports = {
     // App Configuration
     NEXT_PUBLIC_APP_NAME: 'Pavira Signature',
     NEXT_PUBLIC_APP_URL: 'http://localhost:3000',
-    NEXT_PUBLIC_PRODUCTION_APP_URL: 'https://your-domain.vercel.app',
+    NEXT_PUBLIC_PRODUCTION_APP_URL: 'https://pavirasignature.in',
   },
 
   // ========================================

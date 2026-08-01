@@ -134,7 +134,7 @@ MONGODB_URI=your_production_mongodb_uri
 JWT_SECRET=your_production_jwt_secret_32_chars_min
 NODE_ENV=production
 PORT=3000
-FRONTEND_URL=https://YOUR_VERCEL_DOMAIN.vercel.app
+FRONTEND_URL=https://pavirasignature.in
 
 # Email Service
 EMAIL_USER=your_production_email@gmail.com
@@ -166,9 +166,15 @@ CLOUDINARY_API_SECRET=your_api_secret
 NEXT_PUBLIC_API_URL=/api
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_...
 NEXT_PUBLIC_RAZORPAY_KEY_ID=rzp_live_...
+NEXTAUTH_URL=https://pavirasignature.in
+NEXTAUTH_SECRET=your_strong_random_nextauth_secret
+GOOGLE_CLIENT_ID=your_google_oauth_client_id
+GOOGLE_CLIENT_SECRET=your_google_oauth_client_secret
 ```
 
 **Note:** `NEXT_PUBLIC_API_URL=/api` uses relative URL, making the frontend request the backend from the same domain (essential for Vercel deployment).
+
+**Google OAuth callback URI:** Add `https://pavirasignature.in/api/auth/callback/google` in Google Cloud Console under Authorized redirect URIs. For local testing, also add `http://localhost:3000/api/auth/callback/google`.
 
 ### Step 4: Deploy
 
@@ -216,12 +222,12 @@ vercel deploy --prod
    ```
 
 5. **Test API Endpoint Directly:**
-   - Visit `https://YOUR_VERCEL_DOMAIN.vercel.app/api/health` (if endpoint exists)
+   - Visit `https://pavirasignature.in/api/health` (if endpoint exists)
    - Should return JSON, not HTML
 
 ### Issue: CORS Errors
 
-**Frontend URL:** `https://pavira-signature.vercel.app`
+**Frontend URL:** `https://pavirasignature.in`
 **Backend needs to allow this origin:**
 
 ✅ **Already configured in `backend/server.js`:**
@@ -231,12 +237,13 @@ const allowedOrigins = [
   process.env.FRONTEND_URL || "http://localhost:3000",
   "http://localhost:3000",
   "http://localhost:5173",
-  "https://pavira-signature.vercel.app",
+  "https://pavirasignature.in",
+  "https://www.pavirasignature.in",
   process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
 ].filter(Boolean);
 ```
 
-If you change your Vercel domain, update `FRONTEND_URL` environment variable.
+If you change your production domain, update `FRONTEND_URL`, `PRODUCTION_FRONTEND_URL`, and `NEXTAUTH_URL` environment variables.
 
 ### Issue: Static Assets Not Loading
 
@@ -250,7 +257,7 @@ If you change your Vercel domain, update `FRONTEND_URL` environment variable.
 ## Production Checklist
 
 - [ ] All environment variables set on Vercel
-- [ ] `FRONTEND_URL` matches your Vercel domain
+- [ ] `FRONTEND_URL` and `NEXTAUTH_URL` match `https://pavirasignature.in`
 - [ ] `MONGODB_URI` points to production database
 - [ ] `JWT_SECRET` is strong (32+ characters)
 - [ ] Email credentials configured

@@ -15,11 +15,11 @@ const getBackendUrl = () => {
 const nextAuthHandler = NextAuth({
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "dummy-google-client-id",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "dummy-google-client-secret",
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET || "fallback-nextauth-secret-for-pavira-signature-luxury",
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, account, profile }) {
       const googleProfile = profile as any;
@@ -54,9 +54,12 @@ const nextAuthHandler = NextAuth({
             if (response.ok && data?.success && data?.data) {
               token.backendToken = data.data.token;
               token.backendUser = data.data.user;
+            } else {
+              throw new Error(data?.message || "Backend Google login failed");
             }
           } catch (error) {
             console.error("NextAuth Google backend sync failed:", error);
+            token.backendSyncError = "Google sign-in could not be completed";
           }
         }
       }
@@ -64,17 +67,21 @@ const nextAuthHandler = NextAuth({
     },
     async session({ session, token }) {
       if (token) {
+        const backendUser = (token as any).backendUser;
         session.user = {
           ...session.user,
-          id: (token as any).id,
+          ...(backendUser || {}),
+          id: backendUser?.id || (token as any).id,
           googleId: (token as any).googleId,
-          firstName: (token as any).firstName,
-          lastName: (token as any).lastName,
+          firstName: backendUser?.firstName || (token as any).firstName,
+          lastName: backendUser?.lastName || (token as any).lastName,
           picture: (token as any).picture || session.user?.image,
-          email: (token as any).email || session.user?.email,
-          name: (token as any).name || session.user?.name,
+          image: (token as any).picture || session.user?.image,
+          email: backendUser?.email || (token as any).email || session.user?.email,
+          name: backendUser?.name || (token as any).name || session.user?.name,
         } as typeof session.user;
         (session as any).accessToken = (token as any).backendToken;
+        (session as any).authError = (token as any).backendSyncError;
       }
       return session;
     },

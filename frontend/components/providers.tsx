@@ -20,19 +20,26 @@ function AuthSync() {
     }
 
     const backendToken = (session as any).accessToken;
+    if (!backendToken) {
+      return;
+    }
+
+    const sessionUser = session.user as any;
     const user = {
-      id: (session.user as any).id || (session.user as any)._id || null,
+      id: sessionUser.id || sessionUser._id || null,
       email: session.user.email || "",
       name: session.user.name || "",
-      firstName: (session.user as any).firstName || "",
-      lastName: (session.user as any).lastName || "",
-      image: session.user.image || "",
-      googleId: (session.user as any).googleId || null,
+      firstName: sessionUser.firstName || "",
+      lastName: sessionUser.lastName || "",
+      image: session.user.image || sessionUser.picture || "",
+      googleId: sessionUser.googleId || null,
+      role: sessionUser.role || "customer",
+      phone: sessionUser.phone || "",
+      addresses: sessionUser.addresses || [],
     };
 
-    if (backendToken) {
-      setToken(backendToken);
-    }
+    sessionStorage.setItem("showAccessGrantedAlert", "true");
+    setToken(backendToken);
     setUser(user);
   }, [session, status, setToken, setUser]);
 
@@ -48,4 +55,3 @@ export function Providers({ children }: { children: React.ReactNode }) {
     </SessionProvider>
   );
 }
-

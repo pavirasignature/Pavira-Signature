@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { signIn } from "next-auth/react";
 import { authAPI } from "@/lib/api";
-import { Eye, EyeOff, Mail, Lock, ArrowLeft, ArrowRight } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, ArrowLeft } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import toast from "react-hot-toast";
 import { PremiumMandala } from "@/components/PremiumVisuals";
@@ -67,9 +67,14 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      await signIn("google", {
+      const result = await signIn("google", {
         callbackUrl: typeof window !== "undefined" ? `${window.location.origin}/` : "/",
+        redirect: true,
       });
+
+      if (result?.error) {
+        throw new Error(result.error);
+      }
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : "Google sign-in failed";
       setError(errMsg);
@@ -226,7 +231,9 @@ export default function LoginPage() {
                   disabled={loading}
                   className="w-full mt-4 inline-flex items-center justify-center gap-3 px-6 py-3.5 bg-white text-[#111E16] font-semibold uppercase tracking-widest text-sm rounded-xl border border-[#D4AF37]/35 hover:bg-[#F7F3E9] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_10px_rgba(0,0,0,0.08)]"
                 >
-                  <ArrowRight size={18} />
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-base font-bold text-[#4285F4]">
+                    G
+                  </span>
                   Continue with Google
                 </button>
 

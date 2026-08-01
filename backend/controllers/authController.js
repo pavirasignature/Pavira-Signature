@@ -292,16 +292,21 @@ exports.verifyEmail = async (req, res) => {
 exports.googleLogin = async (req, res) => {
   try {
     const { email, firstName, lastName, googleId, photoUrl } = req.body;
+    const normalizedEmail = email?.toLowerCase().trim();
 
-    if (!email || !googleId) {
+    if (!normalizedEmail || !googleId) {
       return sendError(res, 400, "Email and googleId are required");
     }
 
     // Find user by googleId
-    const { data: users } = await supabase
+    const { data: users, error: googleFetchError } = await supabase
       .from("users")
       .select("*")
       .eq("googleId", googleId);
+
+    if (googleFetchError) {
+      return sendError(res, 500, "Error checking Google account", googleFetchError.message);
+    }
 
     let user;
 
@@ -309,19 +314,32 @@ exports.googleLogin = async (req, res) => {
       user = users[0];
     } else {
       // Check if email exists
-      const { data: emailUsers } = await supabase
+      const { data: emailUsers, error: emailFetchError } = await supabase
         .from("users")
         .select("*")
-        .ilike("email", email.toLowerCase());
+        .ilike("email", normalizedEmail);
+
+      if (emailFetchError) {
+        return sendError(res, 500, "Error checking existing account", emailFetchError.message);
+      }
 
       if (emailUsers && emailUsers.length > 0) {
         // Update existing user with googleId
-        const { data: updatedUser } = await supabase
+        const { data: updatedUser, error: updateError } = await supabase
           .from("users")
-          .update({ googleId })
+          .update({
+            googleId,
+            isVerified: true,
+            isActive: true,
+          })
           .eq("id", emailUsers[0].id)
           .select()
           .single();
+
+        if (updateError) {
+          return sendError(res, 500, "Error connecting Google account", updateError.message);
+        }
+
         user = updatedUser;
       } else {
         // Create new user
@@ -330,8 +348,10 @@ exports.googleLogin = async (req, res) => {
           .insert([{
             firstName: firstName || "User",
             lastName: lastName || "",
-            email: email.toLowerCase(),
+            name: `${firstName || "User"} ${lastName || ""}`.trim(),
+            email: normalizedEmail,
             googleId,
+            photoUrl: photoUrl || "",
             role: "customer",
             isBlocked: false,
             isVerified: true, // Google users are auto-verified
@@ -348,6 +368,19 @@ exports.googleLogin = async (req, res) => {
         user = newUser;
       }
     }
+
+    if (user.isBlocked) {
+      return sendError(res, 403, "Your account has been blocked");
+    }
+
+    if (!user.isActive) {
+      return sendError(res, 403, "Your account has been deactivated");
+    }
+
+    await supabase
+      .from("users")
+      .update({ lastLogin: new Date().toISOString() })
+      .eq("id", user.id);
 
     // Generate token
     const token = generateToken(user.id);
