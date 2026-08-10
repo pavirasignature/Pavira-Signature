@@ -143,7 +143,8 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             priority={priority}
-            className="object-cover scale-100 group-hover:scale-[1.08] transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+            className="object-cover scale-100 group-hover:scale-[1.08] transition-transform duration-700"
+            style={{ transitionTimingFunction: "cubic-bezier(0.25, 1, 0.5, 1)" }}
           />
 
           {/* Discount Badge */}
