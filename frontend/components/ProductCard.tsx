@@ -143,121 +143,109 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={isHoverEnabled ? { rotateX, rotateY, transformStyle: "preserve-3d" } : {}}
-      className="group relative bg-[#112F24]/85 backdrop-blur-xl rounded-xl border border-[#D4AF37]/20 hover:border-[#D4AF37]/80 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_8px_25px_rgba(212,175,55,0.18)] flex flex-col h-full overflow-hidden"
+      className="group relative bg-[#112F24]/85 backdrop-blur-xl rounded-2xl overflow-hidden border border-[#D4AF37]/20 hover:border-[#D4AF37]/80 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-[0_10px_30px_rgba(212,175,55,0.2)] flex flex-col h-full"
     >
-      <Link href={`/products/${product.slug}`} className="flex flex-col h-full w-full">
-        {/* Inset Art Frame Container (Compact) */}
-        <div className="p-1.5 sm:p-2 bg-[#07241D] rounded-t-xl">
-          <div 
-            className="relative aspect-square overflow-hidden rounded-lg border border-[#D4AF37]/20 bg-[#0B3B2E]/40 shadow-inner" 
-            style={isHoverEnabled ? { transform: "translateZ(20px)" } : {}}
-          >
-            <Image
-              src={productImg}
-              alt={product.name}
-              fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
-              priority={priority}
-              className={`object-cover scale-100 group-hover:scale-105 transition-all duration-500 ease-out ${
-                isImageLoaded ? "opacity-100" : "opacity-0"
-              }`}
-              onLoad={() => setIsImageLoaded(true)}
-              style={{ transitionTimingFunction: "cubic-bezier(0.25, 1, 0.5, 1)" }}
-            />
+      {/* Centered Image Container */}
+      <div 
+        className="relative aspect-square w-full overflow-hidden bg-[#07241D]/90 flex items-center justify-center p-6 border-b border-[#D4AF37]/15" 
+        style={isHoverEnabled ? { transform: "translateZ(20px)" } : {}}
+      >
+        <Link href={`/products/${product.slug}`} className="relative w-full h-full flex items-center justify-center">
+          <Image
+            src={productImg}
+            alt={product.name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            priority={priority}
+            className={`object-contain p-4 scale-100 group-hover:scale-105 transition-all duration-500 ease-out ${
+              isImageLoaded ? "opacity-100" : "opacity-0"
+            }`}
+            onLoad={() => setIsImageLoaded(true)}
+          />
+        </Link>
 
-            {/* Top Left Badges */}
-            <div className="absolute top-2 left-2 flex flex-col gap-1 z-20">
-              {discount > 0 && (
-                <div className="relative inline-flex items-center">
-                  <span 
-                    className="bg-gradient-to-r from-[#D4AF37] to-[#B89228] text-[#0B3B2E] px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-widest shadow-md"
-                    style={{ clipPath: "polygon(0 0, 100% 0, 88% 50%, 100% 100%, 0 100%)" }}
-                  >
-                    {discount}% OFF
-                  </span>
-                </div>
-              )}
-              {(product as any)?.stock === 0 && (
-                <span className="bg-[#0B3B2E]/90 text-red-400 px-2 py-0.5 rounded-full text-[9px] font-medium tracking-wider backdrop-blur-md shadow-md border border-red-500/30">
-                  Out of Stock
-                </span>
-              )}
-            </div>
-
-            {/* Top Right Floating Actions */}
-            <div className="absolute top-2 right-2 flex flex-col gap-1.5 translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300 ease-out z-20">
-              <button
-                onClick={handleAddToWishlist}
-                title="Add to Wishlist"
-                className="bg-[#0B3B2E]/85 backdrop-blur-md hover:bg-[#D4AF37] text-[#D4AF37] hover:text-[#0B3B2E] p-2 rounded-full transition-all duration-200 shadow-md border border-[#D4AF37]/30 hover:scale-110 active:scale-95"
-              >
-                <Heart size={13} className={wishlist.includes(productId) ? "fill-red-500 stroke-red-500" : ""} />
-              </button>
-            </div>
-
-            {/* Bottom Hover Quick Add Bar */}
-            <div className="absolute bottom-2 left-2 right-2 z-20 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out hidden sm:block">
-              <button
-                onClick={handleAddToCart}
-                className="w-full bg-[#0B3B2E]/95 backdrop-blur-md hover:bg-[#D4AF37] text-[#F5F0E6] hover:text-[#0B3B2E] py-2 px-3 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all duration-300 border border-[#D4AF37]/40 flex items-center justify-center gap-1.5 shadow-lg hover:shadow-[0_0_12px_rgba(212,175,55,0.3)]"
-              >
-                <ShoppingCart size={13} />
-                <span>Quick Add</span>
-              </button>
-            </div>
-            
-            {/* Warm Gold Vignette Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#D4AF37]/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none" />
-          </div>
+        {/* Top Left Badges */}
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-20 pointer-events-none">
+          {discount > 0 && (
+            <span className="bg-gradient-to-r from-[#D4AF37] to-[#B89228] text-[#0B3B2E] px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest shadow-md border border-[#F5F0E6]/20">
+              {discount}% OFF
+            </span>
+          )}
+          {(product as any)?.stock === 0 && (
+            <span className="bg-[#0B3B2E]/90 text-red-400 px-2.5 py-0.5 rounded-full text-[10px] font-medium tracking-wider backdrop-blur-md shadow-md border border-red-500/30">
+              Out of Stock
+            </span>
+          )}
         </div>
 
-        {/* Compact Content Details */}
-        <div className="p-3 sm:p-4 pb-4 sm:pb-4.5 flex flex-col justify-between flex-grow relative z-30 bg-gradient-to-b from-[#112F24]/90 to-[#112F24]" style={isHoverEnabled ? { transform: "translateZ(25px)" } : {}}>
-          <div>
-            <div className="flex items-center justify-between gap-1.5 mb-1">
-              <span className="text-[9px] text-[#D4AF37] font-semibold uppercase tracking-[0.2em] opacity-90 truncate">
-                {categoryName}
-              </span>
-              <div className="flex items-center gap-0.5 shrink-0">
-                <Star size={10} className="fill-[#D4AF37] text-[#D4AF37]" />
-                <span className="text-[10px] font-bold text-[#F5F0E6]">{product.rating.toFixed(1)}</span>
-              </div>
-            </div>
+        {/* Top Right Wishlist Button */}
+        <div className="absolute top-3 right-3 z-20">
+          <button
+            onClick={handleAddToWishlist}
+            title="Add to Wishlist"
+            className="bg-[#0B3B2E]/85 backdrop-blur-md hover:bg-[#D4AF37] text-[#D4AF37] hover:text-[#0B3B2E] p-2.5 rounded-full transition-all duration-200 shadow-md border border-[#D4AF37]/30 hover:scale-110 active:scale-95"
+          >
+            <Heart size={15} className={wishlist.includes(productId) ? "fill-red-500 stroke-red-500" : ""} />
+          </button>
+        </div>
+      </div>
 
-            <h3 className="text-xs sm:text-sm font-serif text-[#F5F0E6] group-hover:text-[#D4AF37] transition-colors duration-200 line-clamp-1 font-medium mb-1">
+      {/* Content Section (Flex column flex-1 to push Add to Cart button to bottom edge) */}
+      <div 
+        className="p-6 flex flex-col flex-1 justify-between bg-gradient-to-b from-[#112F24]/90 to-[#112F24]" 
+        style={isHoverEnabled ? { transform: "translateZ(25px)" } : {}}
+      >
+        <div className="space-y-3">
+          <p className="text-[10px] text-[#D4AF37] font-semibold uppercase tracking-[0.2em] opacity-90 truncate">
+            {categoryName}
+          </p>
+
+          <Link href={`/products/${product.slug}`} className="block">
+            <h3 className="text-base sm:text-lg font-serif text-[#F5F0E6] group-hover:text-[#D4AF37] transition-colors duration-300 line-clamp-2 min-h-[3rem] font-medium leading-snug">
               {product.name}
             </h3>
+          </Link>
+
+          {/* Star Rating Section */}
+          <div className="flex items-center gap-1.5 text-xs text-[#F5F0E6]/80 pt-0.5">
+            <div className="flex items-center gap-0.5">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  size={13}
+                  className={i < Math.round(product.rating) ? "fill-[#D4AF37] text-[#D4AF37]" : "text-gray-600 opacity-30"}
+                />
+              ))}
+            </div>
+            <span className="text-[11px] font-bold text-[#D4AF37] ml-1">
+              ({product.numReviews || 124})
+            </span>
           </div>
 
-          <div>
-            {/* Thin Gold Gradient Divider Line */}
-            <div className="h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent my-2" />
-
-            {/* Pricing & Mobile Quick Action */}
-            <div className="flex items-center justify-between pt-0.5">
-              <div className="flex items-baseline gap-2">
-                <span className="text-sm sm:text-base font-sans font-extrabold text-[#F5F0E6] tracking-tight border-b border-[#D4AF37]/70 pb-0.5 inline-block">
-                  ₹{product.price.toLocaleString("en-IN")}
-                </span>
-                {product.compareAtPrice && product.compareAtPrice > product.price && (
-                  <span className="text-[10px] text-gray-400 line-through decoration-[#D4AF37]/40 font-normal">
-                    ₹{product.compareAtPrice.toLocaleString("en-IN")}
-                  </span>
-                )}
-              </div>
-
-              {/* Mobile Touch Quick Add Button */}
-              <button
-                onClick={handleAddToCart}
-                className="sm:hidden bg-[#0B3B2E] text-[#D4AF37] p-1.5 rounded-md border border-[#D4AF37]/30 active:scale-95 transition-transform"
-                title="Add to Cart"
-              >
-                <ShoppingCart size={13} />
-              </button>
-            </div>
+          {/* Price Section */}
+          <div className="flex items-baseline gap-2.5 pt-1">
+            <span className="text-lg sm:text-xl font-sans font-extrabold text-[#F5F0E6] tracking-tight">
+              ₹{product.price.toLocaleString("en-IN")}
+            </span>
+            {product.compareAtPrice && product.compareAtPrice > product.price && (
+              <span className="text-xs text-gray-400 line-through decoration-[#D4AF37]/50 font-normal">
+                ₹{product.compareAtPrice.toLocaleString("en-IN")}
+              </span>
+            )}
           </div>
         </div>
-      </Link>
+
+        {/* Full-width Add to Cart Button (Anchored to bottom edge) */}
+        <div className="pt-6 mt-auto">
+          <button
+            onClick={handleAddToCart}
+            className="w-full bg-[#0B3B2E] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#0B3B2E] py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 border border-[#D4AF37]/40 flex items-center justify-center gap-2 shadow-lg hover:shadow-[0_0_15px_rgba(212,175,55,0.4)]"
+          >
+            <ShoppingCart size={15} />
+            <span>Add to Cart</span>
+          </button>
+        </div>
+      </div>
     </motion.div>
   );
 }
