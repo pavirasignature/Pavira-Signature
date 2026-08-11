@@ -70,7 +70,9 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
   const router = useRouter();
   const productId = product._id || product.id || "";
   const productImg = getProductImage(product);
-  const discount = product.compareAtPrice ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100) : 0;
+  const discount = (product.compareAtPrice && product.compareAtPrice > product.price)
+    ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
+    : 0;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
