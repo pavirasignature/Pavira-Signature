@@ -237,7 +237,7 @@ export default function ProductsPage() {
               <motion.div 
                 key="loading"
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8"
+                className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10"
               >
                 {[...Array(8)].map((_, i) => <ProductSkeleton key={i} />)}
               </motion.div>
@@ -261,7 +261,7 @@ export default function ProductsPage() {
               >
                 {/* UNIFORM PRODUCT GRID */}
                 {products.length > 0 && (
-                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10">
                     {products.map((product) => (
                       <motion.div key={product._id || product.id} variants={itemVariants}>
                         <ProductCard product={product} />
