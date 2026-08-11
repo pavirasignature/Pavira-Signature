@@ -82,11 +82,13 @@ export async function middleware(request: NextRequest) {
             redirectsCache = data.data;
           }
         } else {
-          console.error("Middleware fetch returned non-JSON response:", await res.text());
+          // Gracefully handle non-JSON responses without logging massive HTML dumps
+          redirectsCache = {};
         }
       }
     } catch (error) {
-      console.error("Error fetching redirects in middleware:", error);
+      // Gracefully handle network timeouts or aborts silently
+      redirectsCache = redirectsCache || {};
     }
   }
 
