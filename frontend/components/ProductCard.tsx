@@ -98,6 +98,15 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
     toast.success("Added to wishlist");
   };
 
+  const [isHoverEnabled, setIsHoverEnabled] = React.useState(false);
+  const [isImageLoaded, setIsImageLoaded] = React.useState(false);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsHoverEnabled(window.matchMedia("(hover: hover) and (pointer: fine)").matches);
+    }
+  }, []);
+
   const categoryName = typeof product.category === "object" && product.category ? product.category.name : product.category || "Decor";
 
   // Magnetic Tilt Physics
@@ -110,7 +119,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
   const cardRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
+    if (!isHoverEnabled || !cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
@@ -123,6 +132,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
   };
 
   const handleMouseLeave = () => {
+    if (!isHoverEnabled) return;
     x.set(0);
     y.set(0);
   };
@@ -132,18 +142,21 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+      style={isHoverEnabled ? { rotateX, rotateY, transformStyle: "preserve-3d" } : {}}
       className="group relative bg-[#112F24]/65 backdrop-blur-xl rounded-2xl overflow-hidden border border-[#D4AF37]/15 hover:border-[#D4AF37]/40 transition-colors duration-500 hover:shadow-[0_0_30px_rgba(212,175,55,0.15)]"
     >
       <Link href={`/products/${product.slug}`} className="block h-full w-full">
-        <div className="relative aspect-square overflow-hidden bg-[#07241D]" style={{ transform: "translateZ(30px)" }}>
+        <div className="relative aspect-square overflow-hidden bg-[#07241D]" style={isHoverEnabled ? { transform: "translateZ(30px)" } : {}}>
           <Image
             src={productImg}
             alt={product.name}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             priority={priority}
-            className="object-cover scale-100 group-hover:scale-[1.08] transition-transform duration-700"
+            className={`object-cover scale-100 group-hover:scale-[1.08] transition-all duration-700 ${
+              isImageLoaded ? "opacity-100" : "opacity-0"
+            }`}
+            onLoad={() => setIsImageLoaded(true)}
             style={{ transitionTimingFunction: "cubic-bezier(0.25, 1, 0.5, 1)" }}
           />
 
