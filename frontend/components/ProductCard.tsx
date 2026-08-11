@@ -168,11 +168,6 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
 
         {/* Top Left Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-20 pointer-events-none">
-          {discount > 0 && (
-            <span className="bg-gradient-to-r from-[#D4AF37] to-[#B89228] text-[#0B3B2E] px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest shadow-md border border-[#F5F0E6]/20">
-              {discount}% OFF
-            </span>
-          )}
           {(product as any)?.stock === 0 && (
             <span className="bg-[#0B3B2E]/90 text-red-400 px-2.5 py-0.5 rounded-full text-[10px] font-medium tracking-wider backdrop-blur-md shadow-md border border-red-500/30">
               Out of Stock
@@ -229,11 +224,6 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
             <span className="text-lg sm:text-xl font-sans font-extrabold text-[#F5F0E6] tracking-tight">
               ₹{product.price.toLocaleString("en-IN")}
             </span>
-            {product.compareAtPrice && product.compareAtPrice > product.price && (
-              <span className="text-xs text-gray-400 line-through decoration-[#D4AF37]/50 font-normal">
-                ₹{product.compareAtPrice.toLocaleString("en-IN")}
-              </span>
-            )}
           </div>
         </div>
 
