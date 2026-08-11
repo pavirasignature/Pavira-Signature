@@ -127,8 +127,7 @@ export default function ProductsPage() {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
-  const featuredProducts = products.slice(0, 2);
-  const galleryProducts = products.slice(2);
+
 
   return (
     <PublicLayout>
@@ -260,21 +259,10 @@ export default function ProductsPage() {
                 animate="show"
                 className="space-y-12"
               >
-                {/* FEATURED COLLECTION (Asymmetrical) */}
-                {featuredProducts.length > 0 && (
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {featuredProducts.map((product) => (
-                      <motion.div key={product._id || product.id} variants={itemVariants}>
-                        <ProductCard product={product} priority={true} />
-                      </motion.div>
-                    ))}
-                  </div>
-                )}
-
-                {/* INFINITE GALLERY (Standard Grid) */}
-                {galleryProducts.length > 0 && (
+                {/* UNIFORM PRODUCT GRID */}
+                {products.length > 0 && (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    {galleryProducts.map((product) => (
+                    {products.map((product) => (
                       <motion.div key={product._id || product.id} variants={itemVariants}>
                         <ProductCard product={product} />
                       </motion.div>
