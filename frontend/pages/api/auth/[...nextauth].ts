@@ -19,7 +19,11 @@ const nextAuthHandler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || "pavira_signature_nextauth_secret_key_32chars",
+  pages: {
+    signIn: "/login",
+    error: "/login",
+  },
   callbacks: {
     async jwt({ token, account, profile }) {
       const googleProfile = profile as any;
