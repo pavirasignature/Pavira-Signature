@@ -16,14 +16,10 @@ class Redirect {
         }
         const { data, error } = await query;
         if (error) {
-          if (error.code === 'PGRST116' || error.message.includes("relation \"redirects\" does not exist") || error.message.includes("does not exist")) {
-            return [];
-          }
-          throw error;
+          return [];
         }
         return (data || []).map(item => new Redirect(item));
       } catch (err) {
-        console.error("Supabase Redirect fetch error, falling back to empty list:", err.message);
         return [];
       }
     })();
