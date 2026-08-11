@@ -147,19 +147,19 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
       style={isHoverEnabled ? { rotateX, rotateY, transformStyle: "preserve-3d" } : {}}
       className="group relative bg-[#112F24]/85 backdrop-blur-xl rounded-2xl overflow-hidden border border-[#D4AF37]/20 hover:border-[#D4AF37]/80 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-[0_10px_30px_rgba(212,175,55,0.2)] flex flex-col h-full"
     >
-      {/* Centered Image Container */}
+      {/* Full-Fill Image Container */}
       <div 
-        className="relative aspect-square w-full overflow-hidden bg-[#07241D]/90 flex items-center justify-center p-6 border-b border-[#D4AF37]/15" 
+        className="relative aspect-square w-full overflow-hidden bg-[#07241D] border-b border-[#D4AF37]/15 rounded-t-2xl" 
         style={isHoverEnabled ? { transform: "translateZ(20px)" } : {}}
       >
-        <Link href={`/products/${product.slug}`} className="relative w-full h-full flex items-center justify-center">
+        <Link href={`/products/${product.slug}`} className="block relative w-full h-full">
           <Image
             src={productImg}
             alt={product.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             priority={priority}
-            className={`object-contain p-4 scale-100 group-hover:scale-105 transition-all duration-500 ease-out ${
+            className={`object-cover object-center scale-100 group-hover:scale-105 transition-all duration-500 ease-out ${
               isImageLoaded ? "opacity-100" : "opacity-0"
             }`}
             onLoad={() => setIsImageLoaded(true)}
