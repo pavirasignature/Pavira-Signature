@@ -3,14 +3,10 @@ import GoogleProvider from "next-auth/providers/google";
 import type { NextApiRequest, NextApiResponse } from "next";
 // @ts-ignore
 import app from "../../../../backend/server";
-
-const getBackendUrl = () => {
-  const explicitUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL;
-  if (explicitUrl) {
-    return explicitUrl.replace(/\/api\/?$/, "");
-  }
-  return "http://localhost:5000";
-};
+// @ts-ignore
+import { supabase } from "../../../../backend/utils/supabase";
+// @ts-ignore
+import { generateToken } from "../../../../backend/utils/jwt";
 
 const nextAuthHandler = NextAuth({
   providers: [
@@ -29,8 +25,9 @@ const nextAuthHandler = NextAuth({
       const googleProfile = profile as any;
       if (account?.provider === "google" && googleProfile) {
         const googleId = googleProfile.sub || googleProfile.id;
+        const normalizedEmail = (googleProfile.email || "").toLowerCase().trim();
         token.id = googleId as string;
-        token.email = googleProfile.email as string;
+        token.email = normalizedEmail;
         token.name = googleProfile.name as string;
         token.picture = googleProfile.picture as string;
         token.googleId = googleId;
@@ -39,52 +36,97 @@ const nextAuthHandler = NextAuth({
 
         if (!token.backendToken) {
           try {
-            const backendBaseUrl = getBackendUrl();
-            const response = await fetch(`${backendBaseUrl}/api/auth/google`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                email: googleProfile.email,
-                firstName: googleProfile.given_name,
-                lastName: googleProfile.family_name,
-                googleId,
-                photoUrl: googleProfile.picture,
-              }),
-            });
+            let dbUser = null;
 
-            const contentType = response.headers.get("content-type");
-            if (response.ok && contentType && contentType.includes("application/json")) {
-              const data = await response.json();
-              if (data?.success && data?.data) {
-                token.backendToken = data.data.token;
-                token.backendUser = data.data.user;
+            // 1. Fetch user by googleId
+            const { data: usersByGoogleId } = await supabase
+              .from("users")
+              .select("*")
+              .eq("googleId", googleId);
+
+            if (usersByGoogleId && usersByGoogleId.length > 0) {
+              dbUser = usersByGoogleId[0];
+            } else if (normalizedEmail) {
+              // 2. Fetch user by email
+              const { data: usersByEmail } = await supabase
+                .from("users")
+                .select("*")
+                .ilike("email", normalizedEmail);
+
+              if (usersByEmail && usersByEmail.length > 0) {
+                const existingUser = usersByEmail[0];
+                const { data: updatedUser } = await supabase
+                  .from("users")
+                  .update({ googleId, isVerified: true, isActive: true })
+                  .eq("id", existingUser.id)
+                  .select()
+                  .single();
+                dbUser = updatedUser || existingUser;
+              } else {
+                // 3. Insert new Google user into Supabase
+                const { data: newUser } = await supabase
+                  .from("users")
+                  .insert([{
+                    firstName: googleProfile.given_name || "User",
+                    lastName: googleProfile.family_name || "",
+                    name: googleProfile.name || `${googleProfile.given_name || 'User'} ${googleProfile.family_name || ''}`.trim(),
+                    email: normalizedEmail,
+                    googleId,
+                    photoUrl: googleProfile.picture || "",
+                    role: "customer",
+                    isBlocked: false,
+                    isVerified: true,
+                    isActive: true,
+                  }])
+                  .select()
+                  .single();
+                dbUser = newUser;
               }
-            } else {
-              // Direct Google OAuth session fallback if backend server returns non-JSON or HTML
-              token.backendToken = "google_oauth_" + googleId;
+            }
+
+            if (dbUser) {
+              token.backendToken = generateToken(dbUser.id);
               token.backendUser = {
-                id: googleId,
-                email: googleProfile.email,
+                id: dbUser.id,
+                email: dbUser.email,
+                name: dbUser.name || `${dbUser.firstName || ''} ${dbUser.lastName || ''}`.trim(),
+                firstName: dbUser.firstName,
+                lastName: dbUser.lastName,
+                image: dbUser.photoUrl || googleProfile.picture,
+                role: dbUser.role || "customer",
+                googleId: dbUser.googleId,
+                isVerified: true,
+              };
+            } else {
+              // Emergency fallback if database connection is unavailable
+              const fallbackId = googleId || `google_${Date.now()}`;
+              token.backendToken = generateToken(fallbackId);
+              token.backendUser = {
+                id: fallbackId,
+                email: normalizedEmail,
                 name: googleProfile.name,
                 firstName: googleProfile.given_name,
                 lastName: googleProfile.family_name,
-                role: "user",
-                isVerified: true
+                image: googleProfile.picture,
+                role: "customer",
+                googleId,
+                isVerified: true,
               };
             }
           } catch (error) {
-            console.error("NextAuth Google backend sync fallback:", error);
-            token.backendToken = "google_oauth_" + googleId;
+            console.error("Supabase Google Auth Sync Error:", error);
+            const fallbackId = googleId || `google_${Date.now()}`;
+            token.backendToken = generateToken(fallbackId);
             token.backendUser = {
-              id: googleId,
-              email: googleProfile.email,
+              id: fallbackId,
+              email: normalizedEmail,
               name: googleProfile.name,
               firstName: googleProfile.given_name,
               lastName: googleProfile.family_name,
-              role: "user",
-              isVerified: true
+              image: googleProfile.picture,
+              role: "customer",
+              googleId,
+              isVerified: true,
             };
           }
         }
