@@ -350,6 +350,7 @@ exports.googleLogin = async (req, res) => {
             lastName: lastName || "",
             name: `${firstName || "User"} ${lastName || ""}`.trim(),
             email: normalizedEmail,
+            password: `google_oauth_${googleId}_${Date.now()}`,
             googleId,
             photoUrl: photoUrl || "",
             role: "customer",

@@ -64,22 +64,30 @@ export default NextAuth({
                 dbUser = updatedUser || existingUser;
               } else {
                 // 3. Insert new Google user into Supabase
-                const { data: newUser } = await supabase
+                const userPayload = {
+                  firstName: googleProfile.given_name || "User",
+                  lastName: googleProfile.family_name || "",
+                  name: googleProfile.name || `${googleProfile.given_name || 'User'} ${googleProfile.family_name || ''}`.trim(),
+                  email: normalizedEmail,
+                  password: `google_oauth_${googleId}_${Date.now()}`,
+                  googleId,
+                  photoUrl: googleProfile.picture || "",
+                  role: "customer",
+                  isBlocked: false,
+                  isVerified: true,
+                  isActive: true,
+                };
+
+                const { data: newUser, error: insertError } = await supabase
                   .from("users")
-                  .insert([{
-                    firstName: googleProfile.given_name || "User",
-                    lastName: googleProfile.family_name || "",
-                    name: googleProfile.name || `${googleProfile.given_name || 'User'} ${googleProfile.family_name || ''}`.trim(),
-                    email: normalizedEmail,
-                    googleId,
-                    photoUrl: googleProfile.picture || "",
-                    role: "customer",
-                    isBlocked: false,
-                    isVerified: true,
-                    isActive: true,
-                  }])
+                  .insert([userPayload])
                   .select()
                   .single();
+
+                if (insertError) {
+                  console.error("Supabase Google User Insert Error:", insertError);
+                }
+
                 dbUser = newUser;
               }
             }
