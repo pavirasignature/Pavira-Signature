@@ -18,16 +18,19 @@ export default function AutoRefreshWidget() {
       try {
         const res = await fetch(`/api/version?t=${Date.now()}`, { cache: 'no-store' });
         if (res.ok) {
-          const data = await res.json();
-          // If the server returns a different build time, a new deployment is live!
-          if (data.version && data.version !== 'dev' && currentVersion !== 'dev' && data.version !== currentVersion) {
-            console.log("New deployment detected! Showing update screen...");
-            setIsUpdating(true);
-            
-            // Wait for the beautiful overlay to fade in before forcing the hard reload
-            setTimeout(() => {
-              window.location.reload();
-            }, 2500);
+          const contentType = res.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+            const data = await res.json();
+            // If the server returns a different build time, a new deployment is live!
+            if (data.version && data.version !== 'dev' && currentVersion !== 'dev' && data.version !== currentVersion) {
+              console.log("New deployment detected! Showing update screen...");
+              setIsUpdating(true);
+              
+              // Wait for the beautiful overlay to fade in before forcing the hard reload
+              setTimeout(() => {
+                window.location.reload();
+              }, 2500);
+            }
           }
         }
       } catch (error) {

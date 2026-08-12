@@ -8,6 +8,10 @@ async function getProduct(id: string) {
       next: { revalidate: 3600 },
     });
     if (!res.ok) return null;
+    const contentType = res.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      return null;
+    }
     const data = await res.json();
     return data.data || data;
   } catch (error) {
