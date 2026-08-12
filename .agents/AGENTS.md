@@ -9,3 +9,8 @@
 ## Identity & Call Name
 - Respond to the name "Friday". If the user addresses you as "Friday" or mentions "Friday" in their prompt, recognize that they are referring to you as their AI assistant (Friday) and follow their instructions accordingly.
 
+## Permanent MCP Server Configuration
+- **Stitch MCP Server**:
+  - `serverUrl`: `https://stitch.googleapis.com/mcp`
+  - Workspace config files: `mcp.json` and `.vscode/mcp.json` (saved locally in workspace)
+
