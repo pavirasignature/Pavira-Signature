@@ -34,7 +34,7 @@ export default NextAuth({
         token.firstName = googleProfile.given_name as string;
         token.lastName = googleProfile.family_name as string;
 
-        if (!token.backendToken) {
+        if (account || !token.backendToken || typeof token.backendToken !== "string" || token.backendToken.startsWith("google_oauth_")) {
           try {
             let dbUser = null;
 
