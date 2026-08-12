@@ -71,7 +71,6 @@ export default NextAuth({
                   email: normalizedEmail,
                   password: `google_oauth_${googleId}_${Date.now()}`,
                   googleId,
-                  photoUrl: googleProfile.picture || "",
                   role: "customer",
                   isBlocked: false,
                   isVerified: true,

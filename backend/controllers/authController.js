@@ -352,7 +352,6 @@ exports.googleLogin = async (req, res) => {
             email: normalizedEmail,
             password: `google_oauth_${googleId}_${Date.now()}`,
             googleId,
-            photoUrl: photoUrl || "",
             role: "customer",
             isBlocked: false,
             isVerified: true, // Google users are auto-verified
