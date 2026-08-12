@@ -8,7 +8,7 @@ import { supabase } from "../../../../backend/utils/supabase";
 // @ts-ignore
 import { generateToken } from "../../../../backend/utils/jwt";
 
-const nextAuthHandler = NextAuth({
+export default NextAuth({
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
@@ -156,52 +156,3 @@ const nextAuthHandler = NextAuth({
   },
   debug: process.env.NODE_ENV !== "production",
 });
-
-const nextAuthActions = new Set([
-  "signin",
-  "signout",
-  "session",
-  "csrf",
-  "providers",
-  "callback",
-  "_log",
-  "error"
-]);
-
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const nextauthQuery = req.query.nextauth;
-  const action = Array.isArray(nextauthQuery) ? nextauthQuery[0] : nextauthQuery;
-
-  if (action && nextAuthActions.has(action)) {
-    return nextAuthHandler(req, res);
-  }
-
-  // Otherwise, it's a backend Express route (like login, register, me, verify-email, etc.)
-  try {
-    return new Promise<void>((resolve, reject) => {
-      // Express handler expects (req, res, next)
-      app(req, res, (err: any) => {
-        if (err) {
-          console.error("Express App Error within NextAuth route:", err);
-          res.status(500).json({ error: "Express App Error", details: err.message || String(err) });
-          return resolve();
-        }
-        return resolve();
-      });
-    });
-  } catch (error: any) {
-    console.error("Failed to route to backend/server from NextAuth page:", error);
-    res.status(500).json({
-      error: "Failed to route to backend/server",
-      message: error.message,
-      stack: error.stack,
-    });
-  }
-}
-
-export const config = {
-  api: {
-    bodyParser: false, // Let Express or NextAuth handle body parsing from request stream
-    externalResolver: true,
-  },
-};
