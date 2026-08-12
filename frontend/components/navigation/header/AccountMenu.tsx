@@ -63,9 +63,11 @@ export default function AccountMenu({ isLoggedIn, userName, userRole, handleLogo
             className="absolute top-full right-0 mt-4 w-56 bg-[#0B3B2E]/95 backdrop-blur-xl border border-[#D4AF37]/20 rounded-xl shadow-2xl overflow-hidden z-50"
           >
             <div className="p-4 border-b border-[#D4AF37]/10 bg-[#07241D]/50">
-              <p className="text-xs text-[#D4AF37] uppercase tracking-widest font-bold mb-1">
-                {userRole === "admin" ? "Administrator" : "Collector"}
-              </p>
+              {userRole === "admin" && (
+                <p className="text-xs text-[#D4AF37] uppercase tracking-widest font-bold mb-1">
+                  Administrator
+                </p>
+              )}
               <p className="text-sm font-serif text-[#F5F0E6] truncate">{userName}</p>
             </div>
             
