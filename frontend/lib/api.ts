@@ -10,17 +10,12 @@ import axios from "axios";
 // Safe API URL resolution
 let API_URL: string;
 const isBrowser = typeof window !== "undefined";
-const isLocalhost = isBrowser && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
 const envApiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-if (envApiUrl && (!isBrowser || !envApiUrl.includes("localhost") || isLocalhost)) {
+if (envApiUrl && envApiUrl.trim() !== "") {
   API_URL = envApiUrl;
-} else if (isBrowser && !isLocalhost) {
-  API_URL = "/api";
-} else if (process.env.NODE_ENV === "production") {
-  API_URL = "/api";
 } else {
-  API_URL = "http://localhost:5000/api";
+  API_URL = "/api";
 }
 
 const api = axios.create({
