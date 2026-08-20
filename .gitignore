@@ -10,3 +10,5 @@ node_modules
 full_schema_and_data.sql
 mcp.json
 .vscode/mcp.json
+scratch/
+.ide/
