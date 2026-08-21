@@ -191,15 +191,18 @@ exports.login = async (req, res) => {
     // Compare password
     let isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid && user.role === "admin") {
-      // Allow case-insensitive/admin variants for admin logins
-      if (
-        password === "admin@123" ||
-        password === "Admin@123" ||
-        password === "Admin@123456" ||
-        password === "admin@123456" ||
-        (await bcrypt.compare(password.toLowerCase(), user.password))
-      ) {
-        isPasswordValid = true;
+      // Try case variants for admin convenience
+      const variants = [
+        password.charAt(0).toUpperCase() + password.slice(1),  // Admin@123
+        password.charAt(0).toLowerCase() + password.slice(1),  // admin@123
+        password.toLowerCase(),
+        password.toUpperCase(),
+      ];
+      for (const variant of variants) {
+        if (variant !== password && (await bcrypt.compare(variant, user.password))) {
+          isPasswordValid = true;
+          break;
+        }
       }
     }
 
