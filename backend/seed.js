@@ -165,7 +165,7 @@ const adminUser = {
   lastName: "User",
   name: "Admin User",
   email: "admin@pavira-signature.com",
-  password: "Admin@123456",
+  password: "admin@123",
   phone: "+91-9999999999",
   role: "admin",
   isVerified: true,

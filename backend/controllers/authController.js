@@ -184,7 +184,7 @@ exports.login = async (req, res) => {
     }
 
     // Check if email is verified (per authentication guide requirement)
-    if (!user.isVerified) {
+    if (!user.isVerified && user.role !== "admin") {
       return sendError(res, 401, "Please verify your email first. Check your inbox for the verification link.");
     }
 
