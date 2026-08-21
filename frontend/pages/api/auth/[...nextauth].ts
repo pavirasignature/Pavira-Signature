@@ -8,7 +8,7 @@ import { supabase } from "../../../../backend/utils/supabase";
 // @ts-ignore
 import { generateToken } from "../../../../backend/utils/jwt";
 
-export default NextAuth({
+const nextAuthHandler = NextAuth({
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
@@ -38,7 +38,6 @@ export default NextAuth({
           try {
             let dbUser = null;
 
-            // 1. Fetch user by googleId
             const { data: usersByGoogleId } = await supabase
               .from("users")
               .select("*")
@@ -47,7 +46,6 @@ export default NextAuth({
             if (usersByGoogleId && usersByGoogleId.length > 0) {
               dbUser = usersByGoogleId[0];
             } else if (normalizedEmail) {
-              // 2. Fetch user by email
               const { data: usersByEmail } = await supabase
                 .from("users")
                 .select("*")
@@ -63,7 +61,6 @@ export default NextAuth({
                   .single();
                 dbUser = updatedUser || existingUser;
               } else {
-                // 3. Insert new Google user into Supabase
                 const userPayload = {
                   firstName: googleProfile.given_name || "User",
                   lastName: googleProfile.family_name || "",
@@ -105,7 +102,6 @@ export default NextAuth({
                 isVerified: true,
               };
             } else {
-              // Emergency fallback if database connection is unavailable
               const fallbackId = googleId || `google_${Date.now()}`;
               token.backendToken = generateToken(fallbackId);
               token.backendUser = {
@@ -163,3 +159,39 @@ export default NextAuth({
   },
   debug: process.env.NODE_ENV !== "production",
 });
+
+// NextAuth only handles these specific actions
+const nextAuthActions = new Set([
+  "signin", "signout", "session", "csrf",
+  "providers", "callback", "_log", "error",
+]);
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  const nextauthQuery = req.query.nextauth;
+  const action = Array.isArray(nextauthQuery) ? nextauthQuery[0] : nextauthQuery;
+
+  // Route NextAuth actions (Google OAuth, session, etc.) to NextAuth
+  if (action && nextAuthActions.has(action)) {
+    return nextAuthHandler(req, res);
+  }
+
+  // Route everything else (login, register, me, etc.) to Express backend
+  return new Promise<void>((resolve) => {
+    app(req, res, (err: any) => {
+      if (err) {
+        console.error("Express Auth Route Error:", err);
+        if (!res.headersSent) {
+          res.status(500).json({ error: "Server error", message: err.message });
+        }
+      }
+      resolve();
+    });
+  });
+}
+
+export const config = {
+  api: {
+    bodyParser: false,
+    externalResolver: true,
+  },
+};
