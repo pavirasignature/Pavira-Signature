@@ -65,7 +65,7 @@ const lifestyleImages = [
 
 // --- Subcomponents ---
 
-const ParallaxImage = ({ src, className = "" }: { src: string, className?: string }) => {
+const ParallaxImage = ({ src, className = "", speed }: { src: string; className?: string; speed?: number }) => {
   return (
     <div className={`relative overflow-hidden ${className}`}>
       <div className="absolute inset-[-20%] w-[140%] h-[140%]">
