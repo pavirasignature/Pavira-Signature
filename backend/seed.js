@@ -172,6 +172,18 @@ const adminUser = {
   isActive: true
 };
 
+const paviraAdmin = {
+  firstName: "Pavira",
+  lastName: "Signature",
+  name: "Pavira Signature",
+  email: "pavirasignature@gmail.com",
+  password: "Admin@123",
+  phone: "+91-9999999999",
+  role: "admin",
+  isVerified: true,
+  isActive: true
+};
+
 const customerUser = {
   firstName: "Adit",
   lastName: "Panchal",
@@ -221,8 +233,9 @@ const seedDatabase = async () => {
 
     // Seed users
     const admin = await User.create(adminUser);
+    const pavira = await User.create(paviraAdmin);
     const customer = await User.create(customerUser);
-    console.log(`✓ Seeded users. Admin: ${admin.email}, Customer: ${customer.email}`);
+    console.log(`✓ Seeded users. Admin: ${admin.email}, Pavira: ${pavira.email}, Customer: ${customer.email}`);
 
     console.log("\n✨ Supabase Seeding Completed successfully!");
     process.exit(0);
