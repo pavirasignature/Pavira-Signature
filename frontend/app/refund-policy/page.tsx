@@ -1,5 +1,21 @@
+import type { Metadata } from "next";
 import Header from "@/components/navigation/Header";
 import Footer from "@/components/navigation/Footer";
+
+export const metadata: Metadata = {
+  title: "Return & Refund Policy | Pavira Signature",
+  description:
+    "Learn about our return, refund, and replacement policies at Pavira Signature for handcrafted home decor products.",
+  alternates: {
+    canonical: "https://pavirasignature.in/refund-policy",
+  },
+  openGraph: {
+    title: "Return & Refund Policy | Pavira Signature",
+    description:
+      "Learn about our return, refund, and replacement policies at Pavira Signature for handcrafted home decor products.",
+    url: "https://pavirasignature.in/refund-policy",
+  },
+};
 
 export default function RefundPolicyPage() {
   return (

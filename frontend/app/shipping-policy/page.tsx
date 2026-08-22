@@ -1,5 +1,21 @@
+import type { Metadata } from "next";
 import Header from "@/components/navigation/Header";
 import Footer from "@/components/navigation/Footer";
+
+export const metadata: Metadata = {
+  title: "Shipping & Delivery Policy | Pavira Signature",
+  description:
+    "Information about domestic and international shipping methods, timelines, and gallery-standard packaging for Pavira Signature orders.",
+  alternates: {
+    canonical: "https://pavirasignature.in/shipping-policy",
+  },
+  openGraph: {
+    title: "Shipping & Delivery Policy | Pavira Signature",
+    description:
+      "Information about domestic and international shipping methods, timelines, and gallery-standard packaging for Pavira Signature orders.",
+    url: "https://pavirasignature.in/shipping-policy",
+  },
+};
 
 export default function ShippingPolicyPage() {
   return (

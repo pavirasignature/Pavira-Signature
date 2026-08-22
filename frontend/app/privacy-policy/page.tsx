@@ -1,5 +1,21 @@
+import type { Metadata } from "next";
 import Header from "@/components/navigation/Header";
 import Footer from "@/components/navigation/Footer";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy | Pavira Signature",
+  description:
+    "Read the privacy policy of Pavira Signature. Understand how we collect, protect, and handle your personal data.",
+  alternates: {
+    canonical: "https://pavirasignature.in/privacy-policy",
+  },
+  openGraph: {
+    title: "Privacy Policy | Pavira Signature",
+    description:
+      "Read the privacy policy of Pavira Signature. Understand how we collect, protect, and handle your personal data.",
+    url: "https://pavirasignature.in/privacy-policy",
+  },
+};
 
 export default function PrivacyPolicyPage() {
   return (

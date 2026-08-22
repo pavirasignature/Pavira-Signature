@@ -35,9 +35,6 @@ export const metadata: Metadata = {
   creator: "Punit Creation",
   publisher: "Punit Creation",
   metadataBase: new URL("https://pavirasignature.in"),
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     type: "website",
     locale: "en_IN",
@@ -97,15 +94,26 @@ export default function RootLayout({
               name: "Pavira Signature",
               url: "https://pavirasignature.in",
               logo: "https://pavirasignature.in/logo.png",
-              description: "Transform your home into a luxury space with Pavira Signature's premium home decor collections, hand-crafted clocks, metal wall art, panels, and scented candles.",
+              description: "Premium handcrafted home decor by master artisans - clocks, metal wall art, canvas paintings, and designer decor pieces.",
+              email: "info@pavirasignature.in",
               contactPoint: {
                 "@type": "ContactPoint",
-                telephone: "+91-9988112233", // Placeholder for actual support number
+                telephone: "+91-84878-16296",
                 contactType: "Customer Support",
+                areaServed: "IN",
+                availableLanguage: ["en", "hi"],
+              },
+              address: {
+                "@type": "PostalAddress",
+                streetAddress: "A-47, Nilkanth Arcade Estate",
+                addressLocality: "Ahmedabad",
+                addressRegion: "Gujarat",
+                postalCode: "382430",
+                addressCountry: "IN",
               },
               sameAs: [
                 "https://www.instagram.com/pavirasignature",
-                "https://www.facebook.com/pavirasignature"
+                "https://www.facebook.com/pavirasignature",
               ],
             }),
           }}

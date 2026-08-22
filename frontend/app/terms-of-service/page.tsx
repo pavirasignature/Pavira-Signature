@@ -1,5 +1,21 @@
+import type { Metadata } from "next";
 import Header from "@/components/navigation/Header";
 import Footer from "@/components/navigation/Footer";
+
+export const metadata: Metadata = {
+  title: "Terms of Service | Pavira Signature",
+  description:
+    "Terms of Service and conditions for purchasing handcrafted luxury home decor products from Pavira Signature.",
+  alternates: {
+    canonical: "https://pavirasignature.in/terms-of-service",
+  },
+  openGraph: {
+    title: "Terms of Service | Pavira Signature",
+    description:
+      "Terms of Service and conditions for purchasing handcrafted luxury home decor products from Pavira Signature.",
+    url: "https://pavirasignature.in/terms-of-service",
+  },
+};
 
 export default function TermsOfServicePage() {
   return (
