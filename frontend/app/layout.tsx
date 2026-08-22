@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
+import Script from "next/script";
 // @ts-ignore - CSS import
 import "./globals.css";
 import ClientBody from "@/components/ClientBody";
@@ -92,6 +93,10 @@ export default function RootLayout({
       >
         <ClientBody>{children}</ClientBody>
         <AutoRefreshWidget />
+        <Script
+          src="https://checkout.razorpay.com/v1/checkout.js"
+          strategy="beforeInteractive"
+        />
       </body>
     </html>
   );

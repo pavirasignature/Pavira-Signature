@@ -29,7 +29,7 @@
     "multer": "^2.0.2",
     "nodemailer": "^6.9.7",
     "pdfkit": "^0.14.0",
-    "razorpay": "^2.8.6",
+    "razorpay": "^2.9.8",
     "stripe": "^14.0.0"
   },
   "devDependencies": {
