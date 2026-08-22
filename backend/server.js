@@ -250,12 +250,21 @@ const ensureUploadBucket = async () => {
 
 ensureUploadBucket();
 
+// Public Cache Middleware for GET requests to improve SEO & Performance
+const publicCache = (req, res, next) => {
+  if (req.method === "GET") {
+    res.setHeader("Cache-Control", "public, max-age=3600"); // Cache for 1 hour
+    res.setHeader("X-Content-Type-Options", "nosniff");
+  }
+  next();
+};
+
 // Routes
 app.use("/api/auth", authLimiter, authRoutes);
-app.use("/api/products", productRoutes);
+app.use("/api/products", publicCache, productRoutes);
 app.use("/api/orders", checkoutLimiter, orderRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/categories", categoryRoutes);
+app.use("/api/categories", publicCache, categoryRoutes);
 app.use("/api/coupons", couponRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/admin", adminRoutes);

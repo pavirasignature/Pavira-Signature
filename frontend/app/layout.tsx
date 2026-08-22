@@ -87,6 +87,30 @@ export default function RootLayout({
       className={`dark ${nunito.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Pavira Signature",
+              url: "https://pavirasignature.in",
+              logo: "https://pavirasignature.in/logo.png",
+              description: "Transform your home into a luxury space with Pavira Signature's premium home decor collections, hand-crafted clocks, metal wall art, panels, and scented candles.",
+              contactPoint: {
+                "@type": "ContactPoint",
+                telephone: "+91-9988112233", // Placeholder for actual support number
+                contactType: "Customer Support",
+              },
+              sameAs: [
+                "https://www.instagram.com/pavirasignature",
+                "https://www.facebook.com/pavirasignature"
+              ],
+            }),
+          }}
+        />
+      </head>
       <body
         className="bg-[#F8F7F3] text-[#1A1A1A] font-sans antialiased overflow-x-hidden selection:bg-accent selection:text-accent-foreground"
         suppressHydrationWarning
