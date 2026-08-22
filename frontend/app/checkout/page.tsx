@@ -204,23 +204,40 @@ export default function CheckoutPage() {
           orderId: orderData._id,
         });
         const razorpayData = razorpayResponse.data || razorpayResponse;
-        // Integrate Razorpay checkout
+        // Integrate Razorpay checkout (STEP 3, 4, 5 & 6)
         const options = {
           key: razorpayData.keyId || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
           amount: razorpayData.amount,
-          currency: razorpayData.currency,
-          order_id: razorpayData.id,
+          currency: razorpayData.currency || "INR",
+          name: "Pavira Signature",
+          description: `Luxury Decor - Order #${orderData.orderNumber || orderData._id}`,
+          image: "https://pavirasignature.in/logo.png",
+          order_id: razorpayData.id || razorpayData.order_id,
+          prefill: {
+            name: (user as any)?.name || shippingAddress.fullName || "",
+            email: (user as any)?.email || "",
+            contact: shippingAddress.phone || "",
+          },
+          theme: {
+            color: "#0B3B2E",
+          },
+          modal: {
+            ondismiss: () => {
+              toast("Payment cancelled or window closed", { icon: "ℹ️" });
+            },
+          },
           handler: async (response: any) => {
             try {
+              // Send response for server-side HMAC-SHA256 verification (STEP 6 & 7)
               await paymentService.verifyRazorpayPayment({
-                orderId: orderData._id,
-                razorpayOrderId: razorpayData.id,
+                orderId: orderData._id || orderData.id,
+                razorpayOrderId: razorpayData.id || razorpayData.order_id,
                 razorpayPaymentId: response.razorpay_payment_id,
                 razorpaySignature: response.razorpay_signature,
               });
               clearCart();
               setIsOrderPlaced(true);
-              toast.success("Order placed successfully!");
+              toast.success("Payment verified! Order placed successfully!");
             } catch (err: any) {
               console.error("Razorpay verification failed:", err);
               toast.error(
@@ -232,6 +249,12 @@ export default function CheckoutPage() {
         };
         // @ts-ignore
         const rzp = new window.Razorpay(options);
+        rzp.on("payment.failed", (failedRes: any) => {
+          console.error("Razorpay payment failed:", failedRes.error);
+          toast.error(
+            failedRes.error?.description || "Payment failed. Please try again.",
+          );
+        });
         rzp.open();
       } else {
         // COD

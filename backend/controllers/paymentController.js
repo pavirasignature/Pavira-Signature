@@ -242,7 +242,7 @@ exports.verifyStripeSession = async (req, res) => {
 };
 
 /**
- * Create Razorpay Order
+ * Create Razorpay Order (STEP 2)
  * POST /api/payments/razorpay/create-order
  */
 exports.createRazorpayOrder = async (req, res) => {
@@ -261,15 +261,27 @@ exports.createRazorpayOrder = async (req, res) => {
       return sendError(res, 403, "Not authorized to pay for this order");
     }
 
-    // Create Razorpay order
+    const amountInPaise = Math.round(Number(order.totalPrice || 0) * 100);
+    if (amountInPaise < 100) {
+      return sendError(res, 400, "Order amount must be at least ₹1.00");
+    }
+
+    // Create Razorpay order with auto-capture enabled (STEP 2 & 8)
     const razorpayOrder = await razorpay.orders.create({
-      amount: Math.round(order.totalPrice * 100), // Convert to paise
+      amount: amountInPaise,
       currency: "INR",
-      receipt: order.orderNumber,
+      receipt: String(order.orderNumber || orderId).substring(0, 40),
+      payment_capture: 1,
       notes: {
-        orderId: order.id || order._id,
-        userId: req.userId,
+        orderId: String(order.id || order._id),
+        userId: String(req.userId),
       },
+    });
+
+    // Store razorpayOrderId in Supabase order
+    await Order.findByIdAndUpdate(orderId, {
+      "paymentInfo.razorpayOrderId": razorpayOrder.id,
+      "paymentInfo.paymentStatus": "initiated",
     });
 
     return sendSuccess(
@@ -277,6 +289,7 @@ exports.createRazorpayOrder = async (req, res) => {
       200,
       {
         id: razorpayOrder.id,
+        order_id: razorpayOrder.id,
         amount: razorpayOrder.amount,
         currency: razorpayOrder.currency,
         keyId: process.env.RAZORPAY_KEY_ID,
@@ -290,7 +303,7 @@ exports.createRazorpayOrder = async (req, res) => {
 };
 
 /**
- * Verify Razorpay Payment
+ * Verify Razorpay Payment (STEP 7, 8, 9 & 10)
  * POST /api/payments/razorpay/verify
  */
 exports.verifyRazorpayPayment = async (req, res) => {
@@ -302,7 +315,11 @@ exports.verifyRazorpayPayment = async (req, res) => {
       req.body;
     const crypto = require("crypto");
 
-    // Verify signature
+    if (!razorpayPaymentId || !razorpayOrderId || !razorpaySignature) {
+      return sendError(res, 400, "Missing payment verification parameters");
+    }
+
+    // Verify HMAC-SHA256 signature (STEP 7)
     const body = razorpayOrderId + "|" + razorpayPaymentId;
     const expectedSignature = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
@@ -310,7 +327,8 @@ exports.verifyRazorpayPayment = async (req, res) => {
       .digest("hex");
 
     if (expectedSignature !== razorpaySignature) {
-      return sendError(res, 400, "Invalid payment signature");
+      console.warn("Security Alert: Invalid Razorpay signature for order:", orderId);
+      return sendError(res, 400, "Invalid payment signature. Verification failed.");
     }
 
     const order = await Order.findById(orderId);
@@ -322,10 +340,25 @@ exports.verifyRazorpayPayment = async (req, res) => {
       return sendError(res, 403, "Not authorized to verify this payment");
     }
 
-    // Update order payment info
+    // Explicit capture check if payment status is authorized (STEP 8)
+    try {
+      const payment = await razorpay.payments.fetch(razorpayPaymentId);
+      if (payment && payment.status === "authorized") {
+        await razorpay.payments.capture(
+          razorpayPaymentId,
+          payment.amount,
+          payment.currency || "INR",
+        );
+      }
+    } catch (captureErr) {
+      console.log("Razorpay capture check note:", captureErr.message);
+    }
+
+    // Update order status in Supabase (STEP 9)
     const updatedOrder = await Order.findByIdAndUpdate(orderId, {
       paymentInfo: {
         paymentId: razorpayPaymentId,
+        razorpayOrderId: razorpayOrderId,
         paymentStatus: "completed",
         paidAt: new Date().toISOString(),
       },
@@ -334,10 +367,124 @@ exports.verifyRazorpayPayment = async (req, res) => {
       orderStatus: "confirmed",
     });
 
+    // Send confirmation email (STEP 10)
+    try {
+      const { data: userData } = await supabase
+        .from("users")
+        .select("email")
+        .eq("id", req.userId)
+        .single();
+
+      if (userData && userData.email) {
+        await sendOrderConfirmationEmail(userData.email, updatedOrder);
+      }
+    } catch (emailErr) {
+      console.warn("Order confirmation email notice:", emailErr.message);
+    }
+
     return sendSuccess(res, 200, updatedOrder, "Payment verified successfully");
   } catch (error) {
     console.error("Verify razorpay payment error:", error);
     return sendError(res, 500, "Error verifying payment", error.message);
+  }
+};
+
+/**
+ * Capture Razorpay Payment (Explicit STEP 8)
+ * POST /api/payments/razorpay/capture
+ */
+exports.captureRazorpayPayment = async (req, res) => {
+  if (!razorpay) {
+    return sendError(res, 501, "Razorpay is not configured on this server");
+  }
+  try {
+    const { paymentId, amount, currency = "INR" } = req.body;
+    if (!paymentId || !amount) {
+      return sendError(res, 400, "paymentId and amount are required");
+    }
+
+    const captured = await razorpay.payments.capture(
+      paymentId,
+      Math.round(Number(amount)),
+      currency,
+    );
+    return sendSuccess(res, 200, captured, "Payment captured successfully");
+  } catch (error) {
+    console.error("Razorpay capture error:", error);
+    return sendError(res, 500, "Error capturing payment", error.message);
+  }
+};
+
+/**
+ * Razorpay Webhook Handler (STEP 11: Realtime Backup)
+ * POST /api/payments/razorpay/webhook
+ */
+exports.handleRazorpayWebhook = async (req, res) => {
+  try {
+    const crypto = require("crypto");
+    const webhookSignature = req.headers["x-razorpay-signature"];
+    const webhookSecret =
+      process.env.RAZORPAY_WEBHOOK_SECRET || process.env.RAZORPAY_KEY_SECRET;
+
+    if (!webhookSignature || !webhookSecret) {
+      return res.status(400).json({ status: "error", message: "Missing webhook signature or secret" });
+    }
+
+    // Verify webhook signature
+    const expectedSignature = crypto
+      .createHmac("sha256", webhookSecret)
+      .update(JSON.stringify(req.body))
+      .digest("hex");
+
+    if (expectedSignature !== webhookSignature) {
+      console.warn("Razorpay Webhook: Invalid signature rejected");
+      return res.status(400).json({ status: "error", message: "Invalid webhook signature" });
+    }
+
+    const event = req.body.event;
+    const payload = req.body.payload;
+
+    console.log("Razorpay Webhook Received Event:", event);
+
+    if (event === "payment.captured" || event === "order.paid") {
+      const paymentEntity = payload.payment?.entity;
+      const orderNotes = paymentEntity?.notes || {};
+      const orderId = orderNotes.orderId;
+
+      if (orderId) {
+        const existingOrder = await Order.findById(orderId);
+        if (existingOrder && !existingOrder.isPaid) {
+          await Order.findByIdAndUpdate(orderId, {
+            paymentInfo: {
+              paymentId: paymentEntity.id,
+              paymentStatus: "completed",
+              paidAt: new Date().toISOString(),
+            },
+            isPaid: true,
+            paidAt: new Date().toISOString(),
+            orderStatus: "confirmed",
+          });
+          console.log(`Razorpay Webhook: Order ${orderId} marked as paid`);
+        }
+      }
+    } else if (event === "payment.failed") {
+      const paymentEntity = payload.payment?.entity;
+      const orderNotes = paymentEntity?.notes || {};
+      const orderId = orderNotes.orderId;
+
+      if (orderId) {
+        await Order.findByIdAndUpdate(orderId, {
+          "paymentInfo.paymentStatus": "failed",
+          "paymentInfo.paymentId": paymentEntity.id,
+        });
+        console.log(`Razorpay Webhook: Payment failed for Order ${orderId}`);
+      }
+    }
+
+    return res.status(200).json({ status: "ok" });
+  } catch (error) {
+    console.error("Razorpay webhook error:", error);
+    return res.status(500).json({ status: "error", message: error.message });
   }
 };
 

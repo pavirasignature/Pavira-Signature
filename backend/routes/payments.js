@@ -7,6 +7,8 @@ const {
   verifyStripeSession,
   createRazorpayOrder,
   verifyRazorpayPayment,
+  captureRazorpayPayment,
+  handleRazorpayWebhook,
   confirmCODPayment,
   processCardPayment,
 } = require("../controllers/paymentController");
@@ -18,6 +20,8 @@ router.post("/stripe/create-checkout-session", protect, createStripeCheckoutSess
 router.post("/stripe/verify", protect, verifyStripeSession);
 router.post("/razorpay/create-order", protect, createRazorpayOrder);
 router.post("/razorpay/verify", protect, verifyRazorpayPayment);
+router.post("/razorpay/capture", protect, captureRazorpayPayment);
+router.post("/razorpay/webhook", handleRazorpayWebhook); // Webhook called directly by Razorpay servers
 router.post("/cod/confirm", protect, confirmCODPayment);
 router.post("/card/process", protect, processCardPayment);
 
