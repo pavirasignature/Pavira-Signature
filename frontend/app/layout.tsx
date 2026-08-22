@@ -110,6 +110,23 @@ export default function RootLayout({
             }),
           }}
         />
+        {/* Google Analytics 4 */}
+        <Script
+          strategy="afterInteractive"
+          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID || 'G-XXXXXXXXXX'}`}
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${process.env.NEXT_PUBLIC_GA_ID || 'G-XXXXXXXXXX'}');
+            `,
+          }}
+        />
       </head>
       <body
         className="bg-[#F8F7F3] text-[#1A1A1A] font-sans antialiased overflow-x-hidden selection:bg-accent selection:text-accent-foreground"

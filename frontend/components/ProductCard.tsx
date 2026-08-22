@@ -155,7 +155,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
         <Link href={`/products/${product.slug}`} className="block relative w-full h-full">
           <Image
             src={productImg}
-            alt={product.name}
+            alt={`${product.name} - Handcrafted Premium Decor`}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             priority={priority}
