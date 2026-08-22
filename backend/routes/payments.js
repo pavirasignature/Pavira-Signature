@@ -22,6 +22,14 @@ router.post("/razorpay/create-order", protect, createRazorpayOrder);
 router.post("/razorpay/verify", protect, verifyRazorpayPayment);
 router.post("/razorpay/capture", protect, captureRazorpayPayment);
 router.post("/razorpay/webhook", handleRazorpayWebhook); // Webhook called directly by Razorpay servers
+
+// Standard aliases
+router.post("/create-order", protect, createRazorpayOrder);
+router.post("/verify", protect, verifyRazorpayPayment);
+router.post("/verify-payment", protect, verifyRazorpayPayment);
+router.post("/capture", protect, captureRazorpayPayment);
+router.post("/webhook", handleRazorpayWebhook);
+
 router.post("/cod/confirm", protect, confirmCODPayment);
 router.post("/card/process", protect, processCardPayment);
 

@@ -9,12 +9,17 @@ const Order = require("../models/Order");
 const { sendError, sendSuccess } = require("../utils/response");
 const { supabase } = require("../utils/supabase");
 
-const hasRazorpayKeys = !!(process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET);
+const razorpayKeyId =
+  process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+const razorpaySecretKey =
+  process.env.RAZORPAY_KEY_SECRET || process.env.RAZORPAY_SECRET_KEY;
+
+const hasRazorpayKeys = !!(razorpayKeyId && razorpaySecretKey);
 
 const razorpay = hasRazorpayKeys
   ? new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID,
-      key_secret: process.env.RAZORPAY_KEY_SECRET,
+      key_id: razorpayKeyId,
+      key_secret: razorpaySecretKey,
     })
   : null;
 
@@ -446,10 +451,14 @@ exports.handleRazorpayWebhook = async (req, res) => {
 
     console.log("Razorpay Webhook Received Event:", event);
 
-    if (event === "payment.captured" || event === "order.paid") {
+    if (
+      event === "payment.captured" ||
+      event === "order.paid" ||
+      event === "payment.authorized"
+    ) {
       const paymentEntity = payload.payment?.entity;
       const orderNotes = paymentEntity?.notes || {};
-      const orderId = orderNotes.orderId;
+      const orderId = orderNotes.orderId || paymentEntity?.description;
 
       if (orderId) {
         const existingOrder = await Order.findById(orderId);
@@ -465,6 +474,21 @@ exports.handleRazorpayWebhook = async (req, res) => {
             orderStatus: "confirmed",
           });
           console.log(`Razorpay Webhook: Order ${orderId} marked as paid`);
+
+          // Attempt email confirmation via webhook
+          try {
+            const { data: userData } = await supabase
+              .from("users")
+              .select("email")
+              .eq("id", existingOrder.user)
+              .single();
+            if (userData && userData.email) {
+              const { sendOrderConfirmationEmail } = require("../utils/email");
+              await sendOrderConfirmationEmail(userData.email, existingOrder);
+            }
+          } catch (emailErr) {
+            console.warn("Webhook email notice:", emailErr.message);
+          }
         }
       }
     } else if (event === "payment.failed") {
@@ -478,6 +502,26 @@ exports.handleRazorpayWebhook = async (req, res) => {
           "paymentInfo.paymentId": paymentEntity.id,
         });
         console.log(`Razorpay Webhook: Payment failed for Order ${orderId}`);
+      }
+    } else if (event === "refund.created" || event === "refund.processed") {
+      const refundEntity = payload.refund?.entity;
+      const paymentId = refundEntity?.payment_id;
+
+      if (paymentId) {
+        const { data: matchedOrders } = await supabase
+          .from("orders")
+          .select("id")
+          .eq("paymentInfo->>paymentId", paymentId);
+
+        if (matchedOrders && matchedOrders.length > 0) {
+          for (const ord of matchedOrders) {
+            await Order.findByIdAndUpdate(ord.id, {
+              orderStatus: "refunded",
+              "paymentInfo.paymentStatus": "refunded",
+            });
+            console.log(`Razorpay Webhook: Order ${ord.id} marked as refunded`);
+          }
+        }
       }
     }
 
