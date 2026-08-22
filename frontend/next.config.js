@@ -52,10 +52,7 @@ const nextConfig = {
 
   env: {
     NEXT_PUBLIC_API_URL:
-      process.env.NEXT_PUBLIC_API_URL ||
-      (process.env.NODE_ENV === "production"
-        ? "/api"
-        : "http://localhost:5000/api"),
+      process.env.NEXT_PUBLIC_API_URL || "/api",
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
     NEXT_PUBLIC_RAZORPAY_KEY_ID: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -66,26 +63,9 @@ const nextConfig = {
   },
 
   async rewrites() {
-    // On Vercel, the Express backend is mounted via pages/api/[...all].ts
-    // so rewrites must NOT intercept /api/* requests.
-    // Rewrites are only needed in local dev to proxy to localhost:5000.
-    if (process.env.VERCEL === '1' || process.env.NODE_ENV === 'production') {
-      return [];
-    }
-    return [
-      {
-        source: '/api/auth/:path*',
-        destination: '/api/auth/:path*',
-      },
-      {
-        source: '/api/auth',
-        destination: '/api/auth',
-      },
-      {
-        source: '/api/:path*',
-        destination: 'http://localhost:5000/api/:path*'
-      }
-    ]
+    // All API requests are handled by the embedded Express app
+    // via pages/api/[...all].ts — no proxy needed in any environment.
+    return [];
   },
 
   // optimizePackageImports is intentionally disabled - it causes React #31 during

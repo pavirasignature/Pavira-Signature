@@ -84,9 +84,16 @@ export const useStore = create<StoreState>()(
         if (typeof window !== "undefined") {
           sessionStorage.removeItem("token");
           sessionStorage.removeItem("user");
+          sessionStorage.removeItem("loginMethod");
           // Also clear the persisted Zustand storage so stale cart/wishlist
           // never reappears on next page load
           localStorage.removeItem("pavira-signature-app-storage");
+          // Clear next-auth session too
+          import("next-auth/react").then(({ signOut }) => {
+            signOut({ redirect: false });
+          }).catch((err) => {
+            console.error("Error signing out from NextAuth:", err);
+          });
         }
       },
 

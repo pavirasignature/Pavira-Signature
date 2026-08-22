@@ -19,6 +19,14 @@ function AuthSync() {
       return;
     }
 
+    if (typeof window !== "undefined") {
+      const currentMethod = sessionStorage.getItem("loginMethod");
+      if (currentMethod === "credentials") {
+        // Do not overwrite custom credentials (like admin) with NextAuth session on tab switch
+        return;
+      }
+    }
+
     const backendToken = (session as any).accessToken;
     if (!backendToken) {
       return;
@@ -38,7 +46,10 @@ function AuthSync() {
       addresses: sessionUser.addresses || [],
     };
 
-    sessionStorage.setItem("showAccessGrantedAlert", "true");
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("showAccessGrantedAlert", "true");
+      sessionStorage.setItem("loginMethod", "google");
+    }
     setToken(backendToken);
     setUser(user);
   }, [session, status, setToken, setUser]);

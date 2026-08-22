@@ -44,6 +44,7 @@ export default function LoginPage() {
         
         if (typeof window !== "undefined") {
           sessionStorage.setItem("showAccessGrantedAlert", "true");
+          sessionStorage.setItem("loginMethod", "credentials");
         }
         
         toast.success("Login successful!");
