@@ -70,11 +70,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   try {
     const supabaseUrl =
-      process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+      process.env.SUPABASE_URL ||
+      process.env.NEXT_PUBLIC_SUPABASE_URL ||
+      "https://rpyviraphzesrexovccp.supabase.co";
     const supabaseKey =
       process.env.SUPABASE_KEY ||
+      process.env.SUPABASE_SERVICE_ROLE_KEY ||
       process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJweXZpcmFwaHplc3JleG92Y2NwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MzYwNzUzMywiZXhwIjoyMDk5MTgzNTMzfQ.HdwZOXijSNnvkFWIJJCUGBM_lCOzbgk7if9p4AzoX6M";
 
     if (!supabaseUrl || !supabaseKey) {
       return staticRoutes;
