@@ -135,6 +135,11 @@ export default function RootLayout({
             `,
           }}
         />
+        {/* Razorpay Checkout SDK */}
+        <Script
+          src="https://checkout.razorpay.com/v1/checkout.js"
+          strategy="lazyOnload"
+        />
       </head>
       <body
         className="bg-[#F8F7F3] text-[#1A1A1A] font-sans antialiased overflow-x-hidden selection:bg-accent selection:text-accent-foreground"

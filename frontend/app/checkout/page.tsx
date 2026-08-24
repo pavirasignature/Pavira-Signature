@@ -30,7 +30,7 @@ export default function CheckoutPage() {
     country: "India",
   });
   const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
-  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [paymentMethod, setPaymentMethod] = useState("razorpay");
   const [couponCode, setCouponCode] = useState("");
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
@@ -173,7 +173,25 @@ export default function CheckoutPage() {
 
     setLoading(true);
     try {
-      // Create order
+      // 1. Ensure Razorpay checkout script is loaded
+      if (paymentMethod === "razorpay") {
+        const isScriptLoaded = await new Promise((resolve) => {
+          if (typeof window !== "undefined" && (window as any).Razorpay) {
+            return resolve(true);
+          }
+          const script = document.createElement("script");
+          script.src = "https://checkout.razorpay.com/v1/checkout.js";
+          script.onload = () => resolve(true);
+          script.onerror = () => resolve(false);
+          document.body.appendChild(script);
+        });
+
+        if (!isScriptLoaded) {
+          throw new Error("Razorpay SDK could not load. Please check your internet connection.");
+        }
+      }
+
+      // 2. Create order in database
       const orderResponse = await orderService.createOrder({
         items: cart.map((item) => ({
           product: item.product,
@@ -190,27 +208,25 @@ export default function CheckoutPage() {
       }
 
       const orderData = orderResponse.data;
+      const effectiveOrderId = orderData._id || orderData.id;
       setOrder(orderData);
       
-      // Process payment based on method
-      if (paymentMethod === "card" || paymentMethod === "stripe") {
-        // Redirect to the built-in card payment page
-        const orderAmount = orderData.totalPrice || totalPrice;
-        router.push(
-          `/payment/card?orderId=${orderData._id}&amount=${orderAmount}`,
-        );
-      } else if (paymentMethod === "razorpay") {
+      // 3. Process payment based on method
+      if (paymentMethod === "razorpay") {
         const razorpayResponse = await paymentService.createRazorpayOrder({
-          orderId: orderData._id,
+          orderId: effectiveOrderId,
         });
         const razorpayData = razorpayResponse.data || razorpayResponse;
-        // Integrate Razorpay checkout (STEP 3, 4, 5 & 6)
+
         const options = {
-          key: razorpayData.keyId || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+          key:
+            razorpayData.keyId ||
+            process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ||
+            "rzp_test_TSgNjvLn7x0WEt",
           amount: razorpayData.amount,
           currency: razorpayData.currency || "INR",
           name: "Pavira Signature",
-          description: `Luxury Decor - Order #${orderData.orderNumber || orderData._id}`,
+          description: `Luxury Decor - Order #${orderData.orderNumber || effectiveOrderId}`,
           image: "https://pavirasignature.in/logo.png",
           order_id: razorpayData.id || razorpayData.order_id,
           prefill: {
@@ -223,14 +239,14 @@ export default function CheckoutPage() {
           },
           modal: {
             ondismiss: () => {
-              toast("Payment cancelled or window closed", { icon: "ℹ️" });
+              setLoading(false);
+              toast("Payment window closed", { icon: "ℹ️" });
             },
           },
           handler: async (response: any) => {
             try {
-              // Send response for server-side HMAC-SHA256 verification (STEP 6 & 7)
               await paymentService.verifyRazorpayPayment({
-                orderId: orderData._id || orderData.id,
+                orderId: effectiveOrderId,
                 razorpayOrderId: razorpayData.id || razorpayData.order_id,
                 razorpayPaymentId: response.razorpay_payment_id,
                 razorpaySignature: response.razorpay_signature,
@@ -244,31 +260,35 @@ export default function CheckoutPage() {
                 err.response?.data?.message ||
                   "Failed to verify Razorpay payment",
               );
+            } finally {
+              setLoading(false);
             }
           },
         };
+
         // @ts-ignore
-        const rzp = new window.Razorpay(options);
+        const rzp = new (window as any).Razorpay(options);
         rzp.on("payment.failed", (failedRes: any) => {
           console.error("Razorpay payment failed:", failedRes.error);
+          setLoading(false);
           toast.error(
             failedRes.error?.description || "Payment failed. Please try again.",
           );
         });
         rzp.open();
       } else {
-        // COD
+        // Cash on Delivery (COD)
         await paymentService.confirmCODPayment({
-          orderId: orderData._id,
+          orderId: effectiveOrderId,
         });
         clearCart();
         setIsOrderPlaced(true);
         toast.success("Order placed successfully!");
+        setLoading(false);
       }
     } catch (error: any) {
       console.error("Place order failed:", error);
-      toast.error(error.response?.data?.message || "Failed to place order");
-    } finally {
+      toast.error(error.response?.data?.message || error.message || "Failed to place order");
       setLoading(false);
     }
   };
@@ -486,37 +506,15 @@ export default function CheckoutPage() {
                     <input
                       type="radio"
                       name="payment"
-                      value="card"
-                      checked={paymentMethod === "card"}
-                      onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="mr-3 text-[#D4AF37] focus:ring-0"
-                    />
-                    <div className="flex-1">
-                      <span className="font-semibold text-white">
-                        Credit/Debit Card
-                      </span>
-                      <p className="text-sm text-gray-400">
-                        Pay securely with your card
-                      </p>
-                    </div>
-                    {paymentMethod === "card" && (
-                      <Check className="text-[#D4AF37]" />
-                    )}
-                  </label>
-
-                  <label className="flex items-center p-4 bg-[#111E16] rounded-lg cursor-pointer border-2 border-[#2A4734] hover:border-[#D4AF37] transition-colors">
-                    <input
-                      type="radio"
-                      name="payment"
                       value="razorpay"
                       checked={paymentMethod === "razorpay"}
                       onChange={(e) => setPaymentMethod(e.target.value)}
                       className="mr-3 text-[#D4AF37] focus:ring-0"
                     />
                     <div className="flex-1">
-                      <span className="font-semibold text-white">Razorpay</span>
-                      <p className="text-sm text-gray-400">
-                        UPI, Cards, Net Banking
+                      <span className="font-semibold text-white">Online Payment (Razorpay)</span>
+                      <p className="text-sm text-[#D4AF37]/90 font-medium">
+                        Instant UPI (GPay, PhonePe, Paytm), Net Banking, Cards & Wallets
                       </p>
                     </div>
                     {paymentMethod === "razorpay" && (

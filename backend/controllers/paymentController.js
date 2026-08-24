@@ -262,7 +262,8 @@ exports.createRazorpayOrder = async (req, res) => {
       return sendError(res, 404, "Order not found");
     }
 
-    if (order.user !== req.userId) {
+    const orderUserId = typeof order.user === "object" ? order.user?.id : order.user;
+    if (String(orderUserId) !== String(req.userId) && req.user?.role !== "admin") {
       return sendError(res, 403, "Not authorized to pay for this order");
     }
 
@@ -297,7 +298,7 @@ exports.createRazorpayOrder = async (req, res) => {
         order_id: razorpayOrder.id,
         amount: razorpayOrder.amount,
         currency: razorpayOrder.currency,
-        keyId: process.env.RAZORPAY_KEY_ID,
+        keyId: razorpayKeyId || process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
       },
       "Razorpay order created successfully",
     );
@@ -324,10 +325,19 @@ exports.verifyRazorpayPayment = async (req, res) => {
       return sendError(res, 400, "Missing payment verification parameters");
     }
 
+    const secret =
+      process.env.RAZORPAY_KEY_SECRET ||
+      process.env.RAZORPAY_SECRET_KEY ||
+      razorpaySecretKey;
+
+    if (!secret) {
+      return sendError(res, 500, "Razorpay secret key not found");
+    }
+
     // Verify HMAC-SHA256 signature (STEP 7)
     const body = razorpayOrderId + "|" + razorpayPaymentId;
     const expectedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .createHmac("sha256", secret)
       .update(body)
       .digest("hex");
 
@@ -341,7 +351,8 @@ exports.verifyRazorpayPayment = async (req, res) => {
       return sendError(res, 404, "Order not found");
     }
 
-    if (order.user !== req.userId) {
+    const orderUserId = typeof order.user === "object" ? order.user?.id : order.user;
+    if (String(orderUserId) !== String(req.userId) && req.user?.role !== "admin") {
       return sendError(res, 403, "Not authorized to verify this payment");
     }
 
