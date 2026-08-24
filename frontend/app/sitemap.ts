@@ -2,11 +2,7 @@ import { MetadataRoute } from "next";
 import { createClient } from "@supabase/supabase-js";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_APP_URL ||
-    (process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : "https://pavirasignature.in");
+  const baseUrl = "https://pavirasignature.in";
   const siteUrl = baseUrl.replace(/\/$/, "");
 
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -26,13 +22,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${siteUrl}/about`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.7,
+      priority: 0.8,
     },
     {
       url: `${siteUrl}/contact`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.7,
+      priority: 0.8,
     },
     {
       url: `${siteUrl}/faq`,
@@ -44,7 +40,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${siteUrl}/shipping`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.6,
+      priority: 0.7,
     },
     {
       url: `${siteUrl}/privacy-policy`,
@@ -81,34 +77,54 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
-      console.warn(
-        "Sitemap: Supabase credentials not available, returning static routes."
-      );
       return staticRoutes;
     }
 
     const supabase = createClient(supabaseUrl, supabaseKey);
-    const { data: products, error } = await supabase
+
+    // 1. Fetch all products
+    const { data: products, error: prodError } = await supabase
       .from("products")
       .select("id, slug, updated_at")
-      .limit(1000);
+      .limit(2000);
 
-    if (error || !products) {
-      console.error(
-        "Sitemap: Failed to fetch products from Supabase:",
-        error?.message
-      );
-      return staticRoutes;
+    const productRoutes: MetadataRoute.Sitemap = [];
+    if (!prodError && products) {
+      for (const product of products) {
+        const identifier = product.slug || product.id;
+        if (identifier) {
+          productRoutes.push({
+            url: `${siteUrl}/products/${identifier}`,
+            lastModified: new Date(product.updated_at || new Date()),
+            changeFrequency: "weekly",
+            priority: 0.9,
+          });
+        }
+      }
     }
 
-    const productRoutes: MetadataRoute.Sitemap = products.map((product: any) => ({
-      url: `${siteUrl}/products/${product.id}`,
-      lastModified: new Date(product.updated_at || new Date()),
-      changeFrequency: "weekly",
-      priority: 0.85,
-    }));
+    // 2. Fetch categories
+    const { data: categories, error: catError } = await supabase
+      .from("categories")
+      .select("id, slug, updated_at")
+      .limit(100);
 
-    return [...staticRoutes, ...productRoutes];
+    const categoryRoutes: MetadataRoute.Sitemap = [];
+    if (!catError && categories) {
+      for (const cat of categories) {
+        const catSlug = cat.slug || cat.id;
+        if (catSlug) {
+          categoryRoutes.push({
+            url: `${siteUrl}/products?category=${encodeURIComponent(catSlug)}`,
+            lastModified: new Date(cat.updated_at || new Date()),
+            changeFrequency: "weekly",
+            priority: 0.85,
+          });
+        }
+      }
+    }
+
+    return [...staticRoutes, ...productRoutes, ...categoryRoutes];
   } catch (error) {
     console.error("Error generating dynamic sitemap:", error);
     return staticRoutes;
