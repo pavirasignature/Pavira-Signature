@@ -101,26 +101,51 @@ app.use(
   }),
 );
 
-// Security middleware
-app.use(helmet());
-
-// Tiered Rate Limiting Configuration
-
-// 1. Speed Limiter: Slows down requests after 50 hits in 15 mins
-const speedLimiter = slowDown({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  delayAfter: 50, // allow 50 requests per 15 minutes, then...
-  delayMs: (hits) => (hits - 50) * 500, // add 500ms of delay per request above 50
+// Security middleware - safe for Next.js / serverless / edge runtime
+app.use((req, res, next) => {
+  try {
+    helmet({
+      hidePoweredBy: false,
+      crossOriginResourcePolicy: false,
+    })(req, res, (err) => {
+      if (err) return next();
+      next();
+    });
+  } catch (_) {
+    next();
+  }
 });
 
-// 2. Global Rate Limiter: Hard limit at 150 hits in 15 mins (or 1000 in dev)
-const globalLimiter = rateLimit({
+// Safe IP Key Generator for Express behind Next.js / Vercel Serverless
+const safeKeyGenerator = (req) => {
+  const xForwardedFor = req.headers ? req.headers["x-forwarded-for"] : null;
+  if (xForwardedFor) {
+    return Array.isArray(xForwardedFor) ? xForwardedFor[0] : String(xForwardedFor).split(",")[0].trim();
+  }
+  return (
+    req.headers?.["x-real-ip"] ||
+    req.socket?.remoteAddress ||
+    req.connection?.remoteAddress ||
+    "127.0.0.1"
+  );
+};
+
+// 1. Speed Limiter: Slows down requests after 100 hits in 15 mins
+const speedLimiter = slowDown({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max:
-    process.env.NODE_ENV === "development" || !process.env.NODE_ENV
-      ? 1000
-      : 150, 
-  skip: (req) => req.method === "OPTIONS", // Ignore CORS preflight
+  delayAfter: 100,
+  delayMs: (hits) => (hits - 100) * 200,
+  keyGenerator: safeKeyGenerator,
+  validate: { default: false },
+});
+
+// 2. Global Rate Limiter: Hard limit at 500 hits in 15 mins
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: process.env.NODE_ENV === "development" || !process.env.NODE_ENV ? 5000 : 500,
+  skip: (req) => req.method === "OPTIONS",
+  keyGenerator: safeKeyGenerator,
+  validate: { default: false },
   message: {
     success: false,
     message: "Too many requests, please try again later.",
@@ -130,8 +155,10 @@ const globalLimiter = rateLimit({
 // 3. Stricter Limiter for Auth Routes
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10, // Max 10 requests per 15 minutes for auth endpoints
+  max: process.env.NODE_ENV === "development" || !process.env.NODE_ENV ? 1000 : 100,
   skip: (req) => req.method === "OPTIONS",
+  keyGenerator: safeKeyGenerator,
+  validate: { default: false },
   message: {
     success: false,
     message: "Too many authentication attempts, please try again later.",
@@ -143,6 +170,8 @@ const checkoutLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 20, // Max 20 checkout attempts per 15 mins
   skip: (req) => req.method === "OPTIONS",
+  keyGenerator: safeKeyGenerator,
+  validate: { default: false },
   message: {
     success: false,
     message: "Too many order requests, please try again later.",
