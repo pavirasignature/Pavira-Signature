@@ -4,6 +4,8 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { Mail, Phone, MapPin, Clock, ArrowRight, Paintbrush, Building2, Hammer, Plus, Minus, CheckCircle2 } from "lucide-react";
+import { contactService } from "@/lib/services";
+import toast from "react-hot-toast";
 
 const faqs = [
   {
@@ -48,15 +50,27 @@ export default function ContactClient() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const res = await contactService.sendInquiry(formData);
       setSubmitted(true);
+      toast.success(
+        res.message || "Your inquiry has been transmitted to our team successfully!",
+        { duration: 6000 }
+      );
       setFormData({ name: "", email: "", subject: "", message: "" });
-      setTimeout(() => setSubmitted(false), 5000);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Form submission error:", error);
+      toast.error(
+        error?.response?.data?.message ||
+          "Unable to send message. Please try again or reach out at pavirasignature@gmail.com."
+      );
     } finally {
       setLoading(false);
     }
@@ -195,8 +209,15 @@ export default function ContactClient() {
                     <CheckCircle2 className="w-16 h-16 text-[#D4AF37]" strokeWidth={1.5} />
                     <h4 className="text-2xl font-serif text-[#F5F0E6]">Inquiry Received</h4>
                     <p className="text-[#F5F0E6]/70 text-sm font-light max-w-md">
-                      Thank you for contacting Pavira Signature. An art consultant will review your request and get back to you shortly.
+                      Thank you for contacting Pavira Signature. Your message has been sent to our art advisory team at <strong className="text-[#D4AF37]">pavirasignature@gmail.com</strong>. We will review your request and get back to you shortly.
                     </p>
+                    <button
+                      type="button"
+                      onClick={() => setSubmitted(false)}
+                      className="mt-6 px-8 py-3 bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-xs uppercase tracking-widest font-semibold rounded-full transition-colors"
+                    >
+                      Send Another Inquiry
+                    </button>
                   </motion.div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">

@@ -40,6 +40,7 @@ const adminRoutes = require("./routes/admin");
 const uploadRoutes = require("./routes/upload");
 const wishlistRoutes = require("./routes/wishlists");
 const redirectRoutes = require("./routes/redirects");
+const contactRoutes = require("./routes/contact");
 
 // Initialize express app
 const app = express();
@@ -271,6 +272,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/wishlists", wishlistRoutes);
 app.use("/api/redirects", redirectRoutes);
+app.use("/api/contact", contactRoutes);
 
 // Health check route
 app.get("/api/health", async (req, res) => {

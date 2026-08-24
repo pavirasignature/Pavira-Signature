@@ -6,10 +6,10 @@
 const nodemailer = require("nodemailer");
 
 const EMAIL_SERVICE = process.env.EMAIL_SERVICE || "Gmail";
-const EMAIL_USER = process.env.EMAIL_USER || "care@pavirasignature.in";
+const EMAIL_USER = process.env.EMAIL_USER || "pavirasignature@gmail.com";
 const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD || "hatb ijfn wete fhww";
 const EMAIL_FROM =
-  process.env.EMAIL_FROM || "Pavira Signature <care@pavirasignature.in>";
+  process.env.EMAIL_FROM || "Pavira Signature <pavirasignature@gmail.com>";
 
 const transporter = nodemailer.createTransport({
   service: EMAIL_SERVICE,
@@ -557,10 +557,164 @@ const sendVerificationEmail = async (
   }
 };
 
+/**
+ * Send Contact/Inquiry Notification to Pavira Signature Gmail Admin
+ */
+const sendInquiryEmailToAdmin = async ({ name, email, subject, message }) => {
+  try {
+    const adminRecipients = [
+      "pavirasignature@gmail.com",
+      EMAIL_USER,
+    ].filter(Boolean);
+    // Remove duplicates
+    const uniqueRecipients = [...new Set(adminRecipients)].join(", ");
+
+    const mailOptions = {
+      from: `Pavira Signature Concierge <${EMAIL_USER}>`,
+      to: uniqueRecipients,
+      replyTo: `${name} <${email}>`,
+      subject: `[Website Inquiry] ${subject || "New Message"} — From ${name}`,
+      text: `New customer inquiry received from website contact form:\n\nName: ${name}\nEmail: ${email}\nSubject: ${subject}\n\nMessage:\n${message}\n\nTo respond directly, simply reply to this email.`,
+      html: `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #07241D; color: #F5F0E6; margin: 0; padding: 20px; }
+    .container { max-width: 600px; margin: 0 auto; background: #0B3B2E; border: 1px solid rgba(212,175,55,0.3); border-radius: 16px; overflow: hidden; }
+    .header { background: #07241D; padding: 30px; text-align: center; border-bottom: 1px solid rgba(212,175,55,0.2); }
+    .title { color: #D4AF37; font-size: 24px; font-weight: bold; letter-spacing: 2px; margin: 0; }
+    .subtitle { color: #F5F0E6; font-size: 13px; text-transform: uppercase; letter-spacing: 3px; margin-top: 8px; opacity: 0.8; }
+    .content { padding: 30px; }
+    .field { margin-bottom: 20px; }
+    .label { color: #D4AF37; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; margin-bottom: 6px; }
+    .value { background: rgba(7,36,29,0.7); border: 1px solid rgba(212,175,55,0.15); padding: 12px 16px; border-radius: 8px; color: #F5F0E6; font-size: 15px; }
+    .message-box { background: rgba(7,36,29,0.9); border: 1px solid rgba(212,175,55,0.25); padding: 18px; border-radius: 8px; color: #F5F0E6; font-size: 15px; line-height: 1.6; white-space: pre-wrap; }
+    .btn { display: inline-block; background: #D4AF37; color: #07241D; padding: 14px 28px; border-radius: 30px; font-weight: bold; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; font-size: 13px; margin-top: 20px; }
+    .footer { text-align: center; padding: 20px; font-size: 12px; color: #D4AF37; opacity: 0.7; border-top: 1px solid rgba(212,175,55,0.1); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">PAVIRA SIGNATURE</div>
+      <div class="subtitle">New Customer Inquiry Received</div>
+    </div>
+    <div class="content">
+      <div class="field">
+        <div class="label">Customer Name</div>
+        <div class="value">${name}</div>
+      </div>
+      <div class="field">
+        <div class="label">Email Address</div>
+        <div class="value"><a href="mailto:${email}" style="color: #D4AF37; text-decoration: none;">${email}</a></div>
+      </div>
+      <div class="field">
+        <div class="label">Nature of Inquiry / Subject</div>
+        <div class="value">${subject || "General Inquiry"}</div>
+      </div>
+      <div class="field">
+        <div class="label">Message & Requirements</div>
+        <div class="message-box">${message}</div>
+      </div>
+      <div style="text-align: center; margin-top: 30px;">
+        <a href="mailto:${email}?subject=Re: ${encodeURIComponent(subject || 'Your Inquiry to Pavira Signature')}" class="btn">Reply Directly to Customer</a>
+      </div>
+    </div>
+    <div class="footer">
+      This inquiry was submitted through the Pavira Signature contact form.
+    </div>
+  </div>
+</body>
+</html>
+      `,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`Inquiry notification email sent to admin (${uniqueRecipients}):`, info.messageId);
+    return info;
+  } catch (error) {
+    console.error("Error sending inquiry email to admin:", error);
+    throw error;
+  }
+};
+
+/**
+ * Send Confirmation Acknowledgment Email to Customer
+ */
+const sendInquiryConfirmationToCustomer = async ({ name, email, subject, message }) => {
+  try {
+    const mailOptions = {
+      from: `Pavira Signature <${EMAIL_USER}>`,
+      to: email,
+      subject: `We Have Received Your Inquiry — Pavira Signature`,
+      text: `Dear ${name},\n\nThank you for reaching out to Pavira Signature.\n\nOur concierge design team has received your inquiry regarding "${subject || "Custom Decor"}". One of our master consultants will review your request and get back to you within 24 hours.\n\nSummary of your inquiry:\n${message}\n\nWarm regards,\nPavira Signature Concierge Team\nhttps://pavirasignature.in`,
+      html: `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: 'Times New Roman', Times, Georgia, serif; background-color: #07241D; color: #F5F0E6; margin: 0; padding: 20px; }
+    .container { max-width: 600px; margin: 0 auto; background: #0B3B2E; border: 1px solid rgba(212,175,55,0.3); border-radius: 16px; overflow: hidden; }
+    .header { background: #07241D; padding: 35px 20px; text-align: center; border-bottom: 1px solid rgba(212,175,55,0.2); }
+    .logo { color: #D4AF37; font-size: 28px; font-weight: bold; letter-spacing: 3px; margin: 0; }
+    .tagline { color: #F5F0E6; font-size: 11px; text-transform: uppercase; letter-spacing: 4px; margin-top: 8px; opacity: 0.8; }
+    .content { padding: 35px 30px; font-size: 16px; line-height: 1.8; color: #F5F0E6; }
+    .salutation { font-size: 22px; color: #D4AF37; margin-bottom: 20px; font-style: italic; }
+    .summary-card { background: rgba(7,36,29,0.7); border: 1px solid rgba(212,175,55,0.2); padding: 20px; border-radius: 12px; margin: 25px 0; font-family: sans-serif; font-size: 14px; }
+    .footer { text-align: center; padding: 25px; font-size: 12px; color: #D4AF37; opacity: 0.8; border-top: 1px solid rgba(212,175,55,0.1); background: #07241D; font-family: sans-serif; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">PAVIRA SIGNATURE</div>
+      <div class="tagline">The Art of Luxury</div>
+    </div>
+    <div class="content">
+      <div class="salutation">Dear ${name},</div>
+      <p>Thank you for reaching out to <strong>Pavira Signature</strong>.</p>
+      <p>Our dedicated design concierge and master art advisory team have received your inquiry regarding <em>"${subject || "Custom Commission"}"</em>.</p>
+      <p>We are reviewing your request with the highest care and attention to detail. An art consultant will connect with you within <strong>24 business hours</strong>.</p>
+      
+      <div class="summary-card">
+        <div style="color: #D4AF37; font-weight: bold; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; margin-bottom: 8px;">Your Message:</div>
+        <div style="color: #E0E0E0; line-height: 1.5; white-space: pre-wrap;">${message}</div>
+      </div>
+
+      <p style="margin-top: 30px;">In the meantime, feel free to explore our full exhibition of bespoke wall art and handcrafted timepieces.</p>
+      <p style="margin-top: 25px; color: #D4AF37; font-style: italic;">
+        Warmest regards,<br>
+        <strong>Pavira Signature Concierge Team</strong><br>
+        Ahmedabad, Gujarat, India
+      </p>
+    </div>
+    <div class="footer">
+      &copy; 2026 Pavira Signature. All rights reserved.<br>
+      <a href="https://pavirasignature.in" style="color: #D4AF37; text-decoration: none;">pavirasignature.in</a>
+    </div>
+  </div>
+</body>
+</html>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`Inquiry acknowledgment email sent to customer: ${email}`);
+  } catch (error) {
+    console.warn("Could not send customer inquiry confirmation email:", error.message);
+  }
+};
+
 module.exports = {
   sendWelcomeEmail,
   sendVerificationEmail,
   sendOrderConfirmationEmail,
   sendPasswordResetEmail,
   sendShippingUpdateEmail,
+  sendInquiryEmailToAdmin,
+  sendInquiryConfirmationToCustomer,
 };
+
