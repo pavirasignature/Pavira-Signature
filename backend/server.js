@@ -237,8 +237,18 @@ const xssClean = (req, res, next) => {
 };
 
 // Body parser middleware
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+// Skip if body was already parsed upstream (e.g. injected by Next.js API route)
+app.use((req, res, next) => {
+  if (req.body !== undefined && req.body !== null) {
+    // Body already pre-populated — skip Express body parsing
+    return next();
+  }
+  express.json({ limit: "50mb" })(req, res, (err) => {
+    if (err) return next(err);
+    if (req.body !== undefined && req.body !== null) return next();
+    express.urlencoded({ extended: true, limit: "50mb" })(req, res, next);
+  });
+});
 app.use(cookieParser());
 
 // Data sanitization against NoSQL query injection
