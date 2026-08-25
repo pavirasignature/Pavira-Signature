@@ -1,12 +1,48 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import type { NextApiRequest, NextApiResponse } from "next";
-// @ts-ignore
-import app from "../../../../backend/server";
-// @ts-ignore
-import { supabase } from "../../../../backend/utils/supabase";
-// @ts-ignore
-import { generateToken } from "../../../../backend/utils/jwt";
+
+// ─── Lazy-load backend modules (prevents module-load failures from breaking NextAuth) ─
+// If the Express backend fails to load, NextAuth routes still work.
+let _app: any = null;
+let _supabase: any = null;
+let _generateToken: any = null;
+
+function getExpressApp() {
+  if (!_app) {
+    try {
+      // @ts-ignore
+      _app = require("../../../../backend/server");
+    } catch (e) {
+      console.error("[NextAuth] Failed to load Express backend:", e);
+    }
+  }
+  return _app;
+}
+
+function getSupabase() {
+  if (!_supabase) {
+    try {
+      // @ts-ignore
+      _supabase = require("../../../../backend/utils/supabase").supabase;
+    } catch (e) {
+      console.error("[NextAuth] Failed to load Supabase client:", e);
+    }
+  }
+  return _supabase;
+}
+
+function getGenerateToken() {
+  if (!_generateToken) {
+    try {
+      // @ts-ignore
+      _generateToken = require("../../../../backend/utils/jwt").generateToken;
+    } catch (e) {
+      console.error("[NextAuth] Failed to load JWT util:", e);
+    }
+  }
+  return _generateToken;
+}
 
 // ─── NextAuth Handler (Google OAuth only) ────────────────────────────────────
 const nextAuthHandler = NextAuth({
@@ -42,6 +78,13 @@ const nextAuthHandler = NextAuth({
           token.backendToken.startsWith("google_oauth_")
         ) {
           try {
+            const supabase = getSupabase();
+            const generateToken = getGenerateToken();
+
+            if (!supabase || !generateToken) {
+              throw new Error("Backend services unavailable");
+            }
+
             let dbUser = null;
 
             const { data: usersByGoogleId } = await supabase
@@ -128,8 +171,11 @@ const nextAuthHandler = NextAuth({
             }
           } catch (error) {
             console.error("Supabase Google Auth Sync Error:", error);
+            const generateToken = getGenerateToken();
             const fallbackId = googleId || `google_${Date.now()}`;
-            token.backendToken = generateToken(fallbackId);
+            token.backendToken = generateToken
+              ? generateToken(fallbackId)
+              : `fallback_${fallbackId}`;
             token.backendUser = {
               id: fallbackId,
               email: normalizedEmail,
@@ -202,7 +248,7 @@ function readRawBody(req: NextApiRequest): Promise<Buffer> {
 }
 
 async function ensureBodyParsed(req: NextApiRequest): Promise<void> {
-  // Skip if body already populated (e.g. Next.js parsed it, or already injected)
+  // Skip if body already populated
   if (req.body !== undefined && req.body !== null) return;
 
   try {
@@ -250,6 +296,14 @@ export default async function handler(
   // ② Manual auth routes (/api/auth/login, /api/auth/register, etc.) → Express
   // Parse the raw body manually first (since bodyParser is false)
   await ensureBodyParsed(req);
+
+  const app = getExpressApp();
+  if (!app) {
+    return res.status(503).json({
+      success: false,
+      message: "Backend service temporarily unavailable. Please try again.",
+    });
+  }
 
   return new Promise<void>((resolve) => {
     app(req, res, (err: any) => {
