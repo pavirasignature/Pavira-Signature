@@ -319,6 +319,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  // Ensure body is parsed for all POST/PUT requests (since bodyParser: false is set in config)
+  await ensureBodyParsed(req);
+
   const nextauthQuery = req.query.nextauth;
   const action = Array.isArray(nextauthQuery)
     ? nextauthQuery[0]
@@ -332,8 +335,6 @@ export default async function handler(
   }
 
   // ② Manual auth routes (/api/auth/login, /api/auth/register, etc.) → Express
-  await ensureBodyParsed(req);
-
   const app = getExpressApp();
   if (!app) {
     return res.status(503).json({
