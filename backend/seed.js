@@ -176,7 +176,7 @@ const paviraAdmin = {
   firstName: "Pavira",
   lastName: "Signature",
   name: "Pavira Signature",
-  email: "pavirasignature@gmail.com",
+  email: "connect@pavirasignature.in",
   password: "Admin@123",
   phone: "+91-9999999999",
   role: "admin",

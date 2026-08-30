@@ -34,7 +34,7 @@ exports.submitInquiry = async (req, res) => {
       created_at: new Date().toISOString(),
     };
 
-    // 1. Send Notification Email to Admin (pavirasignature@gmail.com)
+    // 1. Send Notification Email to Admin (connect@pavirasignature.in)
     await sendInquiryEmailToAdmin(cleanData);
 
     // 2. Send Confirmation Email to Customer
@@ -69,7 +69,7 @@ exports.submitInquiry = async (req, res) => {
     return sendError(
       res,
       500,
-      "Unable to transmit your message at this time. Please try again or email us directly at pavirasignature@gmail.com.",
+      "Unable to transmit your message at this time. Please try again or email us directly at connect@pavirasignature.in.",
       error.message,
     );
   }

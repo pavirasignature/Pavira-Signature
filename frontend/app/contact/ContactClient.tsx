@@ -69,7 +69,7 @@ export default function ContactClient() {
       console.error("Form submission error:", error);
       toast.error(
         error?.response?.data?.message ||
-          "Unable to send message. Please try again or reach out at pavirasignature@gmail.com."
+          "Unable to send message. Please try again or reach out at connect@pavirasignature.in."
       );
     } finally {
       setLoading(false);
@@ -80,7 +80,7 @@ export default function ContactClient() {
     company: "Pavira Signature",
     phone: "84878 16296",
     address: "A-47, Nilkanth Arcade Estate, G.I.D.C., Road No.15, Kathwada, Odhav, Ahmedabad, Gujarat 382430",
-    email: "pavirasignature@gmail.com",
+    email: "connect@pavirasignature.in",
   };
 
   return (
@@ -209,7 +209,7 @@ export default function ContactClient() {
                     <CheckCircle2 className="w-16 h-16 text-[#D4AF37]" strokeWidth={1.5} />
                     <h4 className="text-2xl font-serif text-[#F5F0E6]">Inquiry Received</h4>
                     <p className="text-[#F5F0E6]/70 text-sm font-light max-w-md">
-                      Thank you for contacting Pavira Signature. Your message has been sent to our art advisory team at <strong className="text-[#D4AF37]">pavirasignature@gmail.com</strong>. We will review your request and get back to you shortly.
+                      Thank you for contacting Pavira Signature. Your message has been sent to our art advisory team at <strong className="text-[#C6A861]">connect@pavirasignature.in</strong>. We will review your request and get back to you shortly.
                     </p>
                     <button
                       type="button"

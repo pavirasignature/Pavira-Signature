@@ -9,275 +9,109 @@
 
 @layer base {
   :root {
-    /* Luxury Palette Theme
-       Primary Brand (Main Emerald):     #0B3B2E (HSL 164 69% 14%)
-       Deep Accent (Hero Dark Green):    #07241D (HSL 166 67% 8%)
-       Primary Accent (Champagne Gold):  #D4B06A (HSL 40 56% 62%)
-       Highlight Accent (Gold Highlight):#E6C78B (HSL 39 63% 72%)
-       Base Background (Gallery Ivory):  #F8F7F3 (HSL 48 20% 96%)
-       Typography (Premium Dark Text):   #1A1A1A (HSL 0 0% 10%)
-    */
+    --background: 43 29% 95%; /* Ivory #F7F5F0 */
+    --foreground: 0 0% 10%; /* Charcoal #191919 */
 
-    --background: 48 20% 96%;
-    --foreground: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
 
-    --card: 48 20% 96%;
-    --card-foreground: 0 0% 100%;
+    --popover: 43 29% 95%;
+    --popover-foreground: 0 0% 10%;
 
-    --popover: 48 20% 96%;
-    --popover-foreground: 0 0% 100%;
+    --primary: 164 68% 14%; /* Deep Green #0B3B2E */
+    --primary-foreground: 43 29% 95%;
 
-    --primary: 164 69% 14%;
-    --primary-foreground: 48 20% 96%;
+    --secondary: 0 0% 10%; /* Charcoal #191919 */
+    --secondary-foreground: 43 29% 95%;
 
-    --secondary: 166 67% 8%;
-    --secondary-foreground: 48 20% 96%;
-
-    --muted: 48 10% 90%;
+    --muted: 43 20% 90%;
     --muted-foreground: 0 0% 40%;
 
-    --accent: 40 56% 62%;
-    --accent-foreground: 164 69% 14%;
+    --accent: 42 47% 58%; /* Muted Gold #C6A861 */
+    --accent-foreground: 0 0% 10%;
 
     --destructive: 0 70% 45%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 48 10% 86%;
-    --input: 48 10% 86%;
-    --ring: 40 56% 62%;
+    --border: 43 20% 85%;
+    --input: 43 20% 85%;
+    --ring: 42 47% 58%;
 
-    --radius: 0.5rem;
+    --radius: 0rem; /* Sharp corners for premium feel */
   }
 
-  /* Match dark variables or keep them consistent with the brand theme */
   .dark {
-    --background: 48 20% 96%;
-    --foreground: 0 0% 100%;
-    --card: 48 20% 96%;
-    --card-foreground: 0 0% 100%;
-    --popover: 48 20% 96%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 164 69% 14%;
-    --primary-foreground: 48 20% 96%;
-    --secondary: 166 67% 8%;
-    --secondary-foreground: 48 20% 96%;
-    --muted: 48 10% 90%;
-    --muted-foreground: 0 0% 40%;
-    --accent: 40 56% 62%;
-    --accent-foreground: 164 69% 14%;
-    --destructive: 0 70% 45%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 48 10% 86%;
-    --input: 48 10% 86%;
-    --ring: 40 56% 62%;
+    --background: 0 0% 10%; /* Charcoal */
+    --foreground: 43 29% 95%; /* Ivory */
+    
+    --card: 0 0% 12%;
+    --card-foreground: 43 29% 95%;
+
+    --popover: 0 0% 10%;
+    --popover-foreground: 43 29% 95%;
+
+    --primary: 164 68% 14%;
+    --primary-foreground: 43 29% 95%;
+
+    --secondary: 43 29% 95%;
+    --secondary-foreground: 0 0% 10%;
+
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 60%;
+
+    --accent: 42 47% 58%;
+    --accent-foreground: 0 0% 10%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 42 47% 58%;
   }
 }
 
 @layer base {
   * {
-    /* stylelint-disable-next-line at-rule-no-unknown */
     @apply border-border;
   }
-
   body {
-    /* stylelint-disable-next-line at-rule-no-unknown */
-    @apply bg-background text-foreground;
-    font-feature-settings:
-      "rlig" 1,
-      "calt" 1;
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
   }
 }
 
 @layer utilities {
   .glass {
-    /* stylelint-disable-next-line at-rule-no-unknown */
-    @apply bg-white/10 backdrop-blur-lg border border-white/20;
+    @apply bg-white/60 backdrop-blur-md border border-white/20;
   }
-
-  .glass-dark {
-    /* stylelint-disable-next-line at-rule-no-unknown */
-    @apply bg-black/30 backdrop-blur-lg border border-white/10;
-  }
-
-  .gradient-gold {
-    /* stylelint-disable-next-line at-rule-no-unknown */
-    @apply bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500;
-  }
-
-  .gradient-beige {
-    /* stylelint-disable-next-line at-rule-no-unknown */
-    @apply bg-gradient-to-r from-beige-100 via-beige-200 to-beige-300;
-  }
-
-  .text-gradient {
-    /* stylelint-disable-next-line at-rule-no-unknown */
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-yellow-600 to-orange-600;
+  .dark .glass {
+    @apply bg-black/40 backdrop-blur-md border border-white/10;
   }
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
-
 ::-webkit-scrollbar-track {
-  /* stylelint-disable-next-line at-rule-no-unknown */
-  @apply bg-gray-100;
+  @apply bg-background;
 }
-
 ::-webkit-scrollbar-thumb {
-  /* stylelint-disable-next-line at-rule-no-unknown */
-  @apply bg-gray-300 rounded-full;
+  @apply bg-muted-foreground/30;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  /* stylelint-disable-next-line at-rule-no-unknown */
-  @apply bg-gray-400;
+  @apply bg-muted-foreground/50;
 }
 
-/* Smooth scrolling handled by Lenis */
 @keyframes shimmer {
-  0% {
-    background-position: -1000px 0;
-  }
-
-  100% {
-    background-position: 1000px 0;
-  }
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
 }
-
 .animate-shimmer {
-  animation: shimmer 2.2s infinite linear;
-  background: linear-gradient(to right,
-      rgba(255, 255, 255, 0.03) 0%,
-      rgba(255, 255, 255, 0.08) 20%,
-      rgba(255, 255, 255, 0.03) 40%,
-      rgba(255, 255, 255, 0.03) 100%);
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(to right, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0.08) 20%, rgba(0,0,0,0.03) 40%, rgba(0,0,0,0.03) 100%);
   background-size: 1000px 100%;
 }
-
-/* Global fallback color override for pure white text across the entire site */
-html,
-body,
-*,
-*::placeholder,
-input,
-select,
-textarea,
-button,
-a,
-span,
-div,
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  color: #FFFFFF !important;
-}
-
-/* Ensure hover, active, focus states preserve white text visibility */
-a:hover,
-a:focus,
-a:active,
-button:hover,
-button:focus,
-button:active,
-input:focus,
-select:focus,
-textarea:focus {
-  color: #FFFFFF !important;
-}
-
-/* Restore dark text colors on light background components (e.g. product cards) */
-.bg-white,
-.bg-white p,
-.bg-white h3,
-.bg-white span,
-.bg-white div {
-  color: #1A1A1A !important;
-}
-
-/* Specific product card field overrides for color hierarchy */
-.bg-white .text-\[\#D4B06A\],
-.bg-white .text-\[\#D4B06A\] * {
-  color: #D4B06A !important;
-}
-
-.bg-white .text-\[\#0B3B2E\],
-.bg-white .text-\[\#0B3B2E\] * {
-  color: #0B3B2E !important;
-}
-
-.bg-white .text-\[\#1A1A1A\]\/50 {
-  color: rgba(26, 26, 26, 0.5) !important;
-}
-
-.bg-white .text-gray-400 {
-  color: #9CA3AF !important;
-}
-
-/* Ensure hover state transitions on product card title works */
-.bg-white h3:hover,
-.bg-white h3.group-hover\:text-\[\#D4B06A\]:hover,
-.bg-white .group:hover h3 {
-  color: #D4B06A !important;
-}
-
-/* Ensure gold buttons/badges preserve dark green text for readability */
-.bg-\[\#D4AF37\],
-.bg-\[\#D4AF37\] *,
-.bg-accent,
-.bg-accent * {
-  color: #07241D !important;
-}
-
-/* Maintain hover text change to white on gold buttons if class specifies */
-.hover\:text-white:hover,
-.hover\:text-white:hover * {
-  color: #FFFFFF !important;
-}
-
-/* Brand header text color overrides */
-.brand-name {
-  color: #D4AF37 !important;
-}
-.brand-owner {
-  color: #FFFFFF !important;
-}
-
-.text-yellow-500, .text-yellow-500 * {
-  color: #EAB308 !important;
-}
-.text-yellow-500\/80, .text-yellow-500\/80 * {
-  color: rgba(234, 179, 8, 0.8) !important;
-}
-
-/* Custom scrollbar for dark admin dashboard widgets */
-.admin-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(212, 175, 55, 0.3) transparent;
-}
-
-.admin-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-  display: block;
-}
-
-.admin-scrollbar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 9999px;
-}
-
-.admin-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(212, 175, 55, 0.3);
-  border-radius: 9999px;
-  border: 1px solid rgba(27, 45, 32, 0.8);
-}
-
-.admin-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(212, 175, 55, 0.6);
+.dark .animate-shimmer {
+  background: linear-gradient(to right, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.08) 20%, rgba(255,255,255,0.03) 40%, rgba(255,255,255,0.03) 100%);
+  background-size: 1000px 100%;
 }

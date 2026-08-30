@@ -24,28 +24,28 @@ const config: Config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
 
-        // Luxury Emerald & Gold theme
+        // Restrained Premium Palette
         primary: {
-          DEFAULT: "#0B3B2E", // Main Emerald
-          foreground: "#F8F7F3", // Gallery Ivory
+          DEFAULT: "#0B3B2E", // Deep Green
+          foreground: "#F7F5F0", // Warm White
         },
         secondary: {
-          DEFAULT: "#07241D", // Deep Accent (Hero Dark Green)
-          foreground: "#F8F7F3",
+          DEFAULT: "#191919", // Charcoal
+          foreground: "#F7F5F0",
         },
         accent: {
-          DEFAULT: "#D4B06A", // Champagne Gold
-          foreground: "#0B3B2E",
+          DEFAULT: "#C6A861", // Muted Champagne Gold
+          foreground: "#191919",
         },
         base: {
-          DEFAULT: "#F8F7F3", // Gallery Ivory background
-          foreground: "#1A1A1A", // Premium Dark Text
+          DEFAULT: "#F7F5F0", // Ivory / Warm White
+          foreground: "#191919", // Charcoal
         },
 
         // Back-compat aliases used across the app
-        gold: "#D4B06A",
-        beige: "#F8F7F3",
-        "dark-gray": "#1A1A1A",
+        gold: "#C6A861",
+        beige: "#F7F5F0",
+        "dark-gray": "#191919",
 
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -83,10 +83,6 @@ const config: Config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-20px)' },
-        },
         "fade-in": {
           from: { opacity: "0", transform: "translateY(10px)" },
           to: { opacity: "1", transform: "translateY(0)" },
@@ -95,22 +91,12 @@ const config: Config = {
           from: { opacity: "0", transform: "translateY(30px)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
-        "pulse-gold": {
-          '0%, 100%': { boxShadow: "0 0 0 0 rgba(212, 176, 106, 0.55)" },
-          '50%': { boxShadow: "0 0 0 10px rgba(212, 176, 106, 0)" },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        float: "float 3s ease-in-out infinite",
         "fade-in": "fade-in 0.5s ease-in",
         "slide-up": "slide-up 0.6s ease-out",
-        "pulse-gold": "pulse-gold 2s ease-in-out infinite",
-      },
-      backgroundImage: {
-        gradient: "linear-gradient(135deg, #07241D 0%, #0B3B2E 100%)",
-        "gradient-gold": "linear-gradient(135deg, #D4B06A 0%, #E6C78B 100%)",
       },
     },
   },
