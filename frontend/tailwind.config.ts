@@ -24,32 +24,41 @@ const config: Config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
 
-        // Restrained Premium Palette
+        // Restrained Premium E-Commerce Palette
         primary: {
-          DEFAULT: "#0B3B2E", // Deep Green
-          foreground: "#F7F5F0", // Warm White
+          DEFAULT: "#0C3A2E", // Deep Forest Green
+          foreground: "#F9F6F0", // Warm Ivory
         },
         secondary: {
-          DEFAULT: "#191919", // Charcoal
-          foreground: "#F7F5F0",
+          DEFAULT: "#0C3A2E", // Deep Forest Green
+          foreground: "#F9F6F0",
         },
         accent: {
-          DEFAULT: "#C6A861", // Muted Champagne Gold
-          foreground: "#191919",
+          DEFAULT: "#D4AF37", // Muted Gold
+          foreground: "#1A1A1A",
         },
         base: {
-          DEFAULT: "#F7F5F0", // Ivory / Warm White
-          foreground: "#191919", // Charcoal
+          DEFAULT: "#F9F6F0", // Warm Ivory
+          foreground: "#1A1A1A", // Almost Black
+        },
+        success: {
+          DEFAULT: "#2A7D6B", // Soft Teal
+          foreground: "#F9F6F0",
         },
 
-        // Back-compat aliases used across the app
-        gold: "#C6A861",
-        beige: "#F7F5F0",
-        "dark-gray": "#191919",
+        // Back-compat & semantic aliases
+        gold: "#D4AF37",
+        ivory: "#F9F6F0",
+        beige: "#F9F6F0",
+        "dark-gray": "#1A1A1A",
+        "almost-black": "#1A1A1A",
+        "forest-green": "#0C3A2E",
+        "soft-teal": "#2A7D6B",
+        "muted-rust": "#A85751",
 
         destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: "#A85751", // Muted Rust
+          foreground: "#F9F6F0",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",

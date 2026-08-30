@@ -100,7 +100,7 @@ export default function ShippingPolicyPage() {
               <h2 className="text-xl font-serif text-[#D4AF37] mb-4">Shipping Support</h2>
               <p className="mb-2">For any shipping-related query, please contact us:</p>
               <div className="space-y-1 text-sm text-[#F5F0E6]/80 font-normal">
-                <p><strong>Email:</strong> <a href="mailto:support@pavirasignature.in" className="hover:text-[#D4AF37] underline transition-colors">support@pavirasignature.in</a></p>
+                <p><strong>Email:</strong> <a href="mailto:connect@pavirasignature.in" className="hover:text-[#D4AF37] underline transition-colors">connect@pavirasignature.in</a></p>
                 <p><strong>WhatsApp:</strong> <a href="https://wa.me/918487816296" className="hover:text-[#D4AF37] underline transition-colors">+91 8487816296</a></p>
                 <p><strong>Location:</strong> Ahmedabad, Gujarat, India</p>
                 <p><strong>Opening Hours:</strong> Monday to Saturday, 10:00 AM - 6:00 PM</p>

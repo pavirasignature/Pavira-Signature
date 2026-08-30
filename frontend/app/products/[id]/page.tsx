@@ -138,20 +138,19 @@ export default async function ProductDetailPage({
   if (!product) {
     return (
       <PublicLayout>
-        <main className="min-h-screen bg-[#07241D] text-[#F5F0E6] flex flex-col items-center justify-center relative overflow-hidden px-4">
-          <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,61,44,0.4)_0%,rgba(7,36,29,1)_100%)] z-0 pointer-events-none" />
+        <main className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center relative overflow-hidden px-4">
           <div className="text-center relative z-10 max-w-md">
-            <h1 className="text-3xl font-serif text-[#D4AF37] mb-4">
-              Masterpiece Not Found
+            <h1 className="text-3xl font-brand text-[#1A1A1A] mb-4">
+              Piece Not Found
             </h1>
-            <p className="text-gray-300 font-light mb-8 text-sm">
-              The product you are seeking may have been curated into a private collection or moved.
+            <p className="text-muted-foreground font-light mb-8 text-sm leading-relaxed">
+              The piece you are seeking may have been archived or moved into a private collection.
             </p>
             <a
               href="/products"
-              className="inline-block px-8 py-3 bg-[#D4AF37] text-[#07241D] font-bold uppercase tracking-widest text-xs rounded-full hover:bg-[#E6C78B] transition-colors"
+              className="inline-block px-8 py-3.5 bg-[#0C3A2E] text-white font-semibold uppercase tracking-widest text-xs transition-colors hover:bg-[#0C3A2E]/90"
             >
-              Explore Gallery
+              Explore Collection
             </a>
           </div>
         </main>
@@ -231,7 +230,7 @@ export default async function ProductDetailPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <main className="min-h-screen bg-[#07241D] text-[#F5F0E6] relative overflow-hidden selection:bg-[#D4AF37] selection:text-[#07241D]">
+      <main className="min-h-screen bg-background text-foreground relative overflow-hidden">
         <ProductDetailClient product={product} />
       </main>
     </PublicLayout>

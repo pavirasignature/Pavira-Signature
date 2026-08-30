@@ -222,15 +222,13 @@ export default function WishlistPage() {
                     </div>
 
                     {/* Action Button */}
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                    <button
                       onClick={() => handleAddToCart(item.product)}
-                      className="w-full px-4 py-2 bg-[#D4AF37] text-black font-bold rounded-lg hover:bg-[#C9A52C] transition flex items-center justify-center gap-2"
+                      className="w-full px-4 py-2.5 bg-[#0C3A2E] text-white font-semibold uppercase tracking-widest text-xs hover:bg-[#0C3A2E]/90 transition flex items-center justify-center gap-2"
                     >
-                      <ShoppingCart size={20} />
+                      <ShoppingCart size={15} />
                       Add to Cart
-                    </motion.button>
+                    </button>
                   </div>
                 </motion.div>
               ))}
@@ -260,14 +258,12 @@ export default function WishlistPage() {
               </div>
  
               {/* Clear Button */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <button
                 onClick={handleClearWishlist}
-                className="bg-red-500/10 border border-red-500/20 hover:border-red-500 rounded-xl p-6 text-red-400 hover:text-red-300 font-bold transition text-center relative z-10"
+                className="bg-[#A85751]/10 border border-[#A85751]/20 hover:border-[#A85751] rounded-xl p-6 text-[#A85751] hover:text-[#A85751]/80 font-bold transition text-center relative z-10"
               >
                 Clear Wishlist
-              </motion.button>
+              </button>
             </motion.div>
           </>
         )}

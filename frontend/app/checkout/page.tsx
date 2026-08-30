@@ -642,27 +642,27 @@ export default function CheckoutPage() {
 
                 {/* Place Order Button */}
                 {hasOutOfStockItems && (
-                  <div className="mb-4 p-3 bg-red-950/20 border border-red-500/20 text-red-200 text-sm font-light rounded-lg text-center">
-                    please check our website after few time till then pls stay connect to us
+                  <div className="mb-4 p-3 bg-[#A85751]/10 border border-[#A85751]/30 text-[#A85751] text-xs font-medium rounded-sm text-center">
+                    One or more items in your cart are currently out of stock. Please remove them to proceed.
                   </div>
                 )}
 
                 {isOrderPlaced ? (
-                  <div className="w-full bg-[#111E16] border border-[#D4AF37] text-[#D4AF37] py-4 rounded-lg font-semibold flex items-center justify-center text-center px-4 shadow-[0_0_15px_rgba(212,175,55,0.15)]">
-                    Thanks For Ordering Wait until Owner accepts your order
+                  <div className="w-full bg-[#2A7D6B]/10 border border-[#2A7D6B] text-[#2A7D6B] py-4 rounded-sm font-semibold flex items-center justify-center text-center px-4">
+                    Thank you for your order. We are preparing your shipment with care.
                   </div>
                 ) : (
                   <button
                     onClick={handlePlaceOrder}
                     disabled={loading || hasOutOfStockItems}
-                    className="w-full bg-[#D4AF37] text-black py-4 rounded-lg font-semibold hover:bg-[#D4AF37]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                    className="w-full bg-[#0C3A2E] text-white py-4 rounded-sm font-semibold hover:bg-[#0C3A2E]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-xs uppercase tracking-widest"
                   >
                     {loading ? (
-                      "Processing..."
+                      "Processing Order..."
                     ) : (
                       <>
                         Place Order
-                        <ArrowRight size={20} className="ml-2" />
+                        <ArrowRight size={16} className="ml-2" />
                       </>
                     )}
                   </button>

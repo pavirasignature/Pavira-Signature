@@ -127,9 +127,9 @@ export default function SignupPage() {
   };
 
   return (
-    <main className="min-h-screen w-full flex bg-[#07241D] text-white selection:bg-[#D4AF37] selection:text-[#0B3B2E]">
+    <main className="min-h-screen w-full flex bg-background text-foreground selection:bg-accent selection:text-white">
       {/* Left Panel - Storytelling (Hidden on mobile) */}
-      <div className="hidden lg:flex w-[60%] relative overflow-hidden items-center justify-center bg-[#0B3B2E]">
+      <div className="hidden lg:flex w-[60%] relative overflow-hidden items-center justify-center bg-[#0C3A2E]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.15)_0%,rgba(11,59,46,1)_100%)] z-0" />
 
         {/* Animated Mandala Background */}
@@ -347,7 +347,7 @@ export default function SignupPage() {
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.98 }}
                     disabled={loading || !agreed}
-                    className="w-full px-6 py-4 bg-[#D4AF37] text-[#0B3B2E] font-bold uppercase tracking-widest text-sm rounded-xl hover:bg-[#E6C78B] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)]"
+                    className="w-full px-6 py-4 bg-[#0C3A2E] text-white font-bold uppercase tracking-widest text-xs rounded-sm hover:bg-[#0C3A2E]/90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? "Creating Account..." : "Create Account"}
                   </motion.button>

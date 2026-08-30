@@ -41,7 +41,7 @@ export default function FaqClient() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl md:text-5xl font-serif text-[#0B3B2E] mb-6">
+          <h1 className="text-4xl md:text-5xl font-brand text-[#0C3A2E] mb-6">
             Frequently Asked Questions
           </h1>
           <p className="text-gray-600 font-light text-lg">
@@ -58,7 +58,7 @@ export default function FaqClient() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="bg-white p-8 rounded-2xl shadow-sm border border-[#D4AF37]/20"
             >
-              <h3 className="text-xl font-serif text-[#0B3B2E] mb-3">
+              <h3 className="text-xl font-brand text-[#0C3A2E] mb-3">
                 {faq.question}
               </h3>
               <p className="text-gray-600 font-light leading-relaxed">

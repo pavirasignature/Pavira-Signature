@@ -30,10 +30,10 @@ export default function ProfessionalsPage() {
             </p>
             <Link 
               href="/contact?subject=Trade Catalogue Request"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-background text-foreground uppercase tracking-widest text-sm font-semibold hover:bg-accent hover:text-background transition-colors duration-300"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-[#D4AF37] text-[#1A1A1A] uppercase tracking-widest text-xs font-bold hover:bg-white transition-colors duration-300"
             >
               Request Trade Catalogue
-              <ArrowRight size={18} />
+              <ArrowRight size={16} />
             </Link>
           </div>
         </section>
@@ -87,7 +87,7 @@ export default function ProfessionalsPage() {
             </p>
             <Link 
               href="mailto:connect@pavirasignature.in?subject=Trade Account Application"
-              className="inline-block border border-foreground text-foreground px-8 py-4 uppercase tracking-widest text-sm font-semibold hover:bg-foreground hover:text-background transition-colors"
+              className="inline-block bg-[#0C3A2E] text-white px-8 py-4 uppercase tracking-widest text-xs font-semibold hover:bg-[#0C3A2E]/90 transition-colors"
             >
               Apply via Email
             </Link>

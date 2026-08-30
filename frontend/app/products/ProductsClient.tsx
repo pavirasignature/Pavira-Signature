@@ -1,41 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
 import ProductCard, { ProductSkeleton } from "@/components/ProductCard";
 import { productService, categoryService } from "@/lib/services";
-import { motion, AnimatePresence, Variants } from "framer-motion";
-import { Search } from "lucide-react";
+import { Search, ArrowRight } from "lucide-react";
 import { useToast } from "@/components/Toast";
 import Link from "next/link";
-import { PremiumMandala } from "@/components/PremiumVisuals";
-
-// Dynamically import the heavy visual background effects to avoid blocking initial render
-const PremiumVisuals = dynamic(() => import("@/components/PremiumVisuals"), { ssr: false });
-
-// Stagger animation variants
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15
-    }
-  }
-};
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 40 },
-  show: { 
-    opacity: 1, 
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 100,
-      damping: 15
-    }
-  }
-};
 
 export default function ProductsClient() {
   const toast = useToast();
@@ -74,7 +44,10 @@ export default function ProductsClient() {
         let categoryId = "";
         if (categoryParam && fetchedCategories.length > 0) {
           const matched = fetchedCategories.find(
-            (c) => c.slug === categoryParam || c._id === categoryParam || c.id === categoryParam
+            (c) =>
+              c.slug === categoryParam ||
+              c._id === categoryParam ||
+              c.id === categoryParam
           );
           if (matched) {
             categoryId = matched._id || matched.id;
@@ -108,15 +81,22 @@ export default function ProductsClient() {
 
   useEffect(() => {
     fetchProducts();
-  }, [filters.category, filters.minPrice, filters.maxPrice, filters.search, filters.sort]);
+  }, [
+    filters.category,
+    filters.minPrice,
+    filters.maxPrice,
+    filters.search,
+    filters.sort,
+  ]);
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
       const response = await productService.getProducts(filters);
-      setProducts(response.data || []);
+      const list = response.data?.products || response.data || [];
+      setProducts(Array.isArray(list) ? list : []);
     } catch (error) {
-      toast("Failed to fetch products", "error");
+      toast("Failed to fetch collection", "error");
     } finally {
       setLoading(false);
     }
@@ -127,168 +107,173 @@ export default function ProductsClient() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B3B2E] text-[#F5F0E6] overflow-x-hidden selection:bg-[#D4AF37] selection:text-[#0B3B2E] font-sans">
-      <PremiumVisuals />
-
-      {/* COLLECTION HERO */}
-      <section className="relative min-h-[60vh] flex flex-col items-center justify-center pt-32 pb-20 px-4 overflow-hidden z-10">
-        <div 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150vw] md:w-[80vw] h-[150vw] md:h-[80vw] opacity-[0.03] pointer-events-none mix-blend-screen"
-        >
-          <PremiumMandala />
-        </div>
-        
-        <div className="relative z-10 text-center max-w-4xl mx-auto flex flex-col items-center">
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.5 }}
-            className="text-[#D4AF37] uppercase tracking-[0.3em] text-xs font-bold mb-6"
-          >
-            Curated Exhibition
-          </motion.p>
-          {/* SEO Optimized H1 Header */}
-          <motion.h1 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 2, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="text-4xl md:text-6xl font-serif font-medium leading-[1.1] mb-8 tracking-tight drop-shadow-2xl text-white"
-          >
-            Shop Premium Handcrafted <br/> <span className="italic font-light text-[#D4AF37]">Decor Collections.</span>
-          </motion.h1>
-          <div 
-            className="h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent w-[100px]"
-          />
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden font-sans">
+      {/* COLLECTION HEADER */}
+      <section className="pt-32 pb-16 px-6 bg-[#F2EFE9] border-b border-border/60 text-center">
+        <div className="max-w-3xl mx-auto">
+          <p className="text-xs uppercase tracking-[0.35em] text-[#0C3A2E] font-semibold mb-3">
+            The Art of Luxury
+          </p>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-brand text-[#1A1A1A] leading-tight mb-4">
+            Curated Décor Collections
+          </h1>
+          <p className="text-sm md:text-base text-muted-foreground font-light max-w-xl mx-auto">
+            Architectural wall clocks, precision-layered metal art, and statement
+            panels engineered and finished in Ahmedabad.
+          </p>
         </div>
       </section>
 
-      {/* LUXURY FILTER BAR (Sticky) */}
-      <div className="sticky top-[72px] z-40 bg-[#0B3B2E]/70 backdrop-blur-xl border-y border-[#D4AF37]/20 shadow-2xl transition-all duration-300">
+      {/* FILTER BAR (Sticky) */}
+      <div className="sticky top-[72px] z-40 bg-white/95 backdrop-blur-md border-b border-border shadow-sm">
         <div className="container mx-auto max-w-7xl px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="relative w-full md:w-1/3 group">
-            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#D4AF37]/60 group-focus-within:text-[#D4AF37] transition-colors" />
+          {/* Search */}
+          <div className="relative w-full md:w-1/3">
+            <Search
+              size={15}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+            />
             <input
               type="text"
-              placeholder="Search masterpieces..."
+              placeholder="Search by name, material, or style..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-[#112F24]/50 border border-[#D4AF37]/20 rounded-full pl-11 pr-4 py-2.5 text-xs text-[#F5F0E6] placeholder-gray-400 focus:outline-none focus:border-[#D4AF37]/60 focus:bg-[#112F24]/80 transition-all shadow-inner"
+              className="w-full bg-[#F9F6F0] border border-border pl-10 pr-4 py-2.5 text-xs text-[#1A1A1A] placeholder-muted-foreground focus:outline-none focus:border-[#0C3A2E] transition-colors"
             />
           </div>
-          
+
+          {/* Filters & Sorting */}
           <div className="w-full md:w-auto flex flex-wrap md:flex-nowrap gap-3 items-center justify-center">
+            {/* Category Dropdown */}
             <select
               value={filters.category}
               onChange={(e) => handleFilterChange("category", e.target.value)}
-              className="bg-[#112F24]/50 border border-[#D4AF37]/20 rounded-full px-4 py-2.5 text-xs text-[#F5F0E6] focus:outline-none focus:border-[#D4AF37]/60 appearance-none cursor-pointer pr-8 hover:bg-[#112F24]/80 transition-all"
-              style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23D4AF37%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right .7rem top 50%', backgroundSize: '.65rem auto' }}
+              className="bg-[#F9F6F0] border border-border px-4 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#0C3A2E] cursor-pointer"
             >
-              <option value="" className="bg-[#0B3B2E]">All Collections</option>
+              <option value="">All Categories</option>
               {categories.map((cat) => (
-                <option key={cat._id || cat.id} value={cat._id || cat.id} className="bg-[#0B3B2E]">
+                <option key={cat._id || cat.id} value={cat._id || cat.id}>
                   {cat.name}
                 </option>
               ))}
             </select>
-            
-            <div className="flex items-center gap-2">
+
+            {/* Price Inputs */}
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <input
                 type="number"
                 min={0}
                 placeholder="Min ₹"
                 value={minPriceInput}
                 onChange={(e) => setMinPriceInput(e.target.value)}
-                className="w-24 bg-[#112F24]/50 border border-[#D4AF37]/20 rounded-full px-3 py-2.5 text-xs text-[#F5F0E6] placeholder-gray-500 focus:outline-none focus:border-[#D4AF37]/60 text-center transition-all"
+                className="w-20 bg-[#F9F6F0] border border-border px-2.5 py-2.5 text-xs text-[#1A1A1A] text-center focus:outline-none focus:border-[#0C3A2E]"
               />
-              <span className="text-[#D4AF37]/50">-</span>
+              <span>–</span>
               <input
                 type="number"
                 min={0}
                 placeholder="Max ₹"
                 value={maxPriceInput}
                 onChange={(e) => setMaxPriceInput(e.target.value)}
-                className="w-24 bg-[#112F24]/50 border border-[#D4AF37]/20 rounded-full px-3 py-2.5 text-xs text-[#F5F0E6] placeholder-gray-500 focus:outline-none focus:border-[#D4AF37]/60 text-center transition-all"
+                className="w-20 bg-[#F9F6F0] border border-border px-2.5 py-2.5 text-xs text-[#1A1A1A] text-center focus:outline-none focus:border-[#0C3A2E]"
               />
             </div>
 
+            {/* Sort Dropdown */}
             <select
               value={filters.sort}
               onChange={(e) => handleFilterChange("sort", e.target.value)}
-              className="bg-[#112F24]/50 border border-[#D4AF37]/20 rounded-full px-4 py-2.5 text-xs text-[#F5F0E6] focus:outline-none focus:border-[#D4AF37]/60 appearance-none cursor-pointer pr-8 hover:bg-[#112F24]/80 transition-all"
-              style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23D4AF37%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right .7rem top 50%', backgroundSize: '.65rem auto' }}
+              className="bg-[#F9F6F0] border border-border px-4 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#0C3A2E] cursor-pointer"
             >
-              <option value="-createdAt" className="bg-[#0B3B2E]">Latest Arrivals</option>
-              <option value="price" className="bg-[#0B3B2E]">Price: Ascending</option>
-              <option value="-price" className="bg-[#0B3B2E]">Price: Descending</option>
-              <option value="-rating" className="bg-[#0B3B2E]">Exceptional Quality</option>
+              <option value="-createdAt">Newest First</option>
+              <option value="price">Price: Low to High</option>
+              <option value="-price">Price: High to Low</option>
+              <option value="-rating">Top Rated</option>
             </select>
           </div>
         </div>
       </div>
 
-      <main className="relative z-10 pt-16 pb-32">
+      {/* PRODUCTS GRID SECTION */}
+      <main className="py-16 pb-28">
         <div className="container mx-auto px-6 max-w-7xl">
-          
-          <AnimatePresence mode="wait">
-            {loading ? (
-              <motion.div 
-                key="loading"
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(6)].map((_, i) => (
+                <ProductSkeleton key={i} />
+              ))}
+            </div>
+          ) : products.length === 0 ? (
+            <div className="text-center py-28 max-w-md mx-auto">
+              <h3 className="text-2xl font-brand text-[#1A1A1A] mb-2">
+                No Pieces Found
+              </h3>
+              <p className="text-muted-foreground font-light text-sm mb-6">
+                No items match your selected filters. Please adjust your price
+                range or category criteria.
+              </p>
+              <button
+                onClick={() => {
+                  setSearchTerm("");
+                  setMinPriceInput("");
+                  setMaxPriceInput("");
+                  setFilters({
+                    category: "",
+                    minPrice: 0,
+                    maxPrice: 100000,
+                    search: "",
+                    sort: "-createdAt",
+                  });
+                }}
+                className="px-6 py-2.5 bg-[#0C3A2E] text-white text-xs uppercase tracking-widest font-semibold hover:bg-[#0C3A2E]/90 transition-colors"
               >
-                {[...Array(6)].map((_, i) => <ProductSkeleton key={i} />)}
-              </motion.div>
-            ) : products.length === 0 ? (
-              <motion.div 
-                key="empty"
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                className="text-center py-32"
-              >
-                <div className="w-24 h-24 mx-auto mb-6 opacity-20"><PremiumMandala /></div>
-                <h3 className="text-2xl font-serif text-[#D4AF37] mb-2">No Masterpieces Found</h3>
-                <p className="text-gray-400 font-light text-sm">Adjust your filters to explore our collection.</p>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="content"
-                variants={containerVariants}
-                initial="hidden"
-                animate="show"
-                className="space-y-12"
-              >
-                {/* PERFECTLY ALIGNED PRODUCT GRID */}
-                {products.length > 0 && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {products.map((product) => (
-                      <motion.div key={product._id || product.id} variants={itemVariants} className="h-full">
-                        <ProductCard product={product} />
-                      </motion.div>
-                    ))}
-                  </div>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
-
+                Reset Filters
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {products.map((product) => (
+                <ProductCard
+                  key={product._id || product.id}
+                  product={product}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </main>
 
-      {/* COLLECTION CTA */}
-      <section className="relative py-32 border-t border-[#D4AF37]/20 bg-[#07241D] overflow-hidden z-10">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150vw] h-[150vw] opacity-5 pointer-events-none mix-blend-screen">
-          <PremiumMandala />
-        </div>
-        <div className="container mx-auto px-6 text-center relative z-10 max-w-2xl">
-          <h2 className="text-3xl md:text-5xl font-serif text-[#D4AF37] mb-6">Desire Something Unique?</h2>
-          <p className="text-gray-300 mb-10 font-light text-sm leading-relaxed">
-            Our artisans are available for private commissions. Work directly with our design team to create a bespoke mandala tailored to your exact dimensions, color palette, and spiritual intentions.
+      {/* TRADE & BESPOKE INQUIRY CALLOUT */}
+      <section className="py-20 bg-[#F2EFE9] border-t border-border/60">
+        <div className="container mx-auto px-6 text-center max-w-3xl">
+          <p className="text-xs uppercase tracking-[0.3em] text-[#D4AF37] font-semibold mb-2">
+            Bespoke & Commercial
           </p>
-          <Link href="/contact" className="inline-flex items-center gap-4 group cursor-pointer bg-[#0B3B2E] px-8 py-4 rounded-full border border-[#D4AF37]/30 hover:bg-[#D4AF37] transition-all duration-500 hover:shadow-[0_0_20px_rgba(212,175,55,0.3)]">
-            <span className="text-xs tracking-widest uppercase font-bold text-[#D4AF37] group-hover:text-[#0B3B2E] transition-colors">Commission a Piece</span>
-          </Link>
+          <h2 className="text-3xl md:text-4xl font-brand text-[#1A1A1A] mb-4">
+            Need Custom Dimensions or Bulk Specifications?
+          </h2>
+          <p className="text-muted-foreground font-light text-sm leading-relaxed mb-8 max-w-xl mx-auto">
+            We work directly with architects, interior designers, and hospitality
+            planners to fabricate custom sizes, finish colorways, and multi-piece
+            installations.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <Link
+              href="/professionals"
+              className="inline-flex items-center gap-2 bg-[#0C3A2E] text-white hover:bg-[#0C3A2E]/90 px-8 py-3.5 text-xs uppercase tracking-widest font-semibold transition-colors"
+            >
+              <span>Explore Trade Program</span>
+              <ArrowRight size={14} />
+            </Link>
+            <Link
+              href="/contact?subject=Custom Order"
+              className="inline-flex items-center gap-2 border border-[#0C3A2E] text-[#0C3A2E] hover:bg-[#0C3A2E] hover:text-white px-8 py-3.5 text-xs uppercase tracking-widest font-semibold transition-colors"
+            >
+              <span>Request Consultation</span>
+            </Link>
+          </div>
         </div>
       </section>
-
     </div>
   );
 }

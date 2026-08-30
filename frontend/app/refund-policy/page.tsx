@@ -52,7 +52,7 @@ export default function RefundPolicyPage() {
                 <p className="text-sm">You must provide a <strong>clear unboxing video</strong> and <strong>clear images</strong> of the received product to process your return or replacement request.</p>
               </div>
               <p>
-                To initiate a return, please email us at <a href="mailto:support@pavirasignature.in" className="text-[#D4AF37] underline">support@pavirasignature.in</a> or WhatsApp at <strong className="text-[#D4AF37]">+91 8487816296</strong> with your order details and the reason for the return.
+                To initiate a return, please email us at <a href="mailto:connect@pavirasignature.in" className="text-[#D4AF37] underline">connect@pavirasignature.in</a> or WhatsApp at <strong className="text-[#D4AF37]">+91 8487816296</strong> with your order details and the reason for the return.
               </p>
             </div>
 
@@ -137,7 +137,7 @@ export default function RefundPolicyPage() {
             <div className="bg-[#0B3B2E]/50 border border-[#D4AF37]/10 p-6 rounded-2xl text-sm">
               <h2 className="text-xl font-serif text-[#D4AF37] mb-4">Support & Inquiries</h2>
               <div className="space-y-1 font-normal text-[#F5F0E6]/80">
-                <p><strong>Email:</strong> <a href="mailto:support@pavirasignature.in" className="hover:text-[#D4AF37] underline transition-colors">support@pavirasignature.in</a></p>
+                <p><strong>Email:</strong> <a href="mailto:connect@pavirasignature.in" className="hover:text-[#D4AF37] underline transition-colors">connect@pavirasignature.in</a></p>
                 <p><strong>WhatsApp:</strong> <a href="https://wa.me/918487816296" className="hover:text-[#D4AF37] underline transition-colors">+91 8487816296</a></p>
                 <p><strong>Location:</strong> Ahmedabad, Gujarat, India</p>
                 <p><strong>Opening Hours:</strong> Monday to Saturday, 10:00 AM - 6:00 PM</p>

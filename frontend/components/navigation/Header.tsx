@@ -130,19 +130,19 @@ export default function Header() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
         style={{
-          backgroundColor: isScrolled ? "rgba(247,245,240,0.85)" : "transparent",
+          backgroundColor: isScrolled ? "rgba(249, 246, 240, 0.95)" : "transparent",
           backdropFilter: isScrolled ? "blur(16px)" : "blur(0px)",
-          borderBottomColor: isScrolled ? "rgba(0,0,0,0.1)" : "transparent",
+          borderBottomColor: isScrolled ? "rgba(0,0,0,0.08)" : "transparent",
           borderBottomWidth: "1px",
           borderBottomStyle: "solid",
-          boxShadow: isScrolled ? "0px 10px 30px rgba(0,0,0,0.05)" : "none",
+          boxShadow: isScrolled ? "0px 4px 20px rgba(0,0,0,0.03)" : "none",
         }}
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
       >
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="group flex items-center gap-3">
-            <div className="w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 relative flex items-center justify-center overflow-hidden group-hover:scale-105 group-hover:drop-shadow-[0_0_12px_rgba(212,175,55,0.6)] transition-all duration-300">
+            <div className="w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 relative flex items-center justify-center overflow-hidden transition-transform duration-300 group-hover:scale-105">
               <Image
                 src="/logo.png"
                 alt="Pavira Signature Logo"

@@ -142,11 +142,10 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 <Link
                   href="/checkout"
                   onClick={onClose}
-                  className="w-full group relative flex items-center justify-center gap-3 bg-foreground text-background py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-foreground/90 transition-colors overflow-hidden"
+                  className="w-full flex items-center justify-center gap-3 bg-[#0C3A2E] text-white py-3.5 rounded-sm font-semibold uppercase tracking-widest text-xs hover:bg-[#0C3A2E]/90 transition-colors"
                 >
-                  <span className="relative z-10">Proceed to Checkout</span>
-                  <ArrowRight size={18} className="relative z-10 group-hover:translate-x-1 transition-transform" />
-                  <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                  <span>Proceed to Checkout</span>
+                  <ArrowRight size={16} />
                 </Link>
                 <p className="text-center text-[10px] text-muted-foreground mt-4 tracking-wider">
                   Shipping & taxes calculated at checkout.

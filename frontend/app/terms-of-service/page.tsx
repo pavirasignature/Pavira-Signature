@@ -176,7 +176,7 @@ export default function TermsOfServicePage() {
             <div className="bg-[#0B3B2E]/50 border border-[#D4AF37]/10 p-6 rounded-2xl text-sm">
               <h2 className="text-xl font-serif text-[#D4AF37] mb-4">SECTION 19 - CONTACT INFORMATION</h2>
               <div className="space-y-1 font-normal text-[#F5F0E6]/80">
-                <p><strong>Email:</strong> <a href="mailto:support@pavirasignature.in" className="hover:text-[#D4AF37] underline transition-colors">support@pavirasignature.in</a></p>
+                <p><strong>Email:</strong> <a href="mailto:connect@pavirasignature.in" className="hover:text-[#D4AF37] underline transition-colors">connect@pavirasignature.in</a></p>
                 <p><strong>Location:</strong> Ahmedabad, Gujarat, India</p>
               </div>
             </div>

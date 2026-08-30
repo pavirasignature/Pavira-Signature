@@ -81,7 +81,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${nunito.variable}`}
+      className={`${nunito.variable}`}
       suppressHydrationWarning
     >
       <head>
@@ -94,8 +94,8 @@ export default function RootLayout({
               name: "Pavira Signature",
               url: "https://pavirasignature.in",
               logo: "https://pavirasignature.in/logo.png",
-              description: "Premium handcrafted home decor by master artisans - clocks, metal wall art, canvas paintings, and designer decor pieces.",
-              email: "info@pavirasignature.in",
+              description: "Contemporary wall decor designed and crafted in Ahmedabad - statement clocks, metal wall art, canvas, and designer decor pieces.",
+              email: "connect@pavirasignature.in",
               contactPoint: {
                 "@type": "ContactPoint",
                 telephone: "+91-84878-16296",
@@ -142,7 +142,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className="bg-[#F8F7F3] text-[#1A1A1A] font-sans antialiased overflow-x-hidden selection:bg-accent selection:text-accent-foreground"
+        className="bg-background text-foreground font-sans antialiased overflow-x-hidden selection:bg-accent selection:text-accent-foreground"
         suppressHydrationWarning
       >
         <ClientBody>{children}</ClientBody>

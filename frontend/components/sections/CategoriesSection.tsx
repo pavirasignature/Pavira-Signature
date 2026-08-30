@@ -154,10 +154,10 @@ export default function CategoriesSection() {
 
   const categoryColors = [
     "from-primary to-accent",
-    "from-[#0B3B2E] to-[#D4B06A]",
-    "from-[#07241D] to-[#E6C78B]",
-    "from-[#0B3B2E] to-[#E6C78B]",
-    "from-[#07241D] to-[#D4B06A]",
+    "from-[#0C3A2E] to-[#D4AF37]",
+    "from-[#0C3A2E] to-[#D4AF37]",
+    "from-[#0C3A2E] to-[#D4AF37]",
+    "from-[#0C3A2E] to-[#D4AF37]",
     "from-primary to-accent",
   ];
 
@@ -167,7 +167,7 @@ export default function CategoriesSection() {
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-20 right-10 w-72 h-72 bg-accent/10 rounded-full blur-3xl animate-pulse animation-delay-2000" />
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-[#0B3B2E]/10 rounded-full blur-3xl animate-pulse animation-delay-4000" />
+        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-[#0C3A2E]/10 rounded-full blur-3xl animate-pulse animation-delay-4000" />
       </div>
 
       <div className="relative z-10 container mx-auto px-4">
@@ -188,7 +188,7 @@ export default function CategoriesSection() {
           </div>
           <h2 className="text-5xl md:text-6xl font-bold text-[#1A1A1A] mb-4 leading-tight">
             Premium{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-[#0B3B2E]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-[#0C3A2E]">
               Categories
             </span>
           </h2>

@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 export default function ShippingClient() {
   return (
-    <div className="min-h-screen bg-[#F8F7F3] pt-32 pb-20">
+    <div className="min-h-screen bg-background pt-32 pb-20">
       <div className="container mx-auto px-6 max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -13,11 +13,11 @@ export default function ShippingClient() {
           transition={{ duration: 0.8 }}
           className="mb-16"
         >
-          <h1 className="text-4xl md:text-5xl font-serif text-[#0B3B2E] mb-6">
+          <h1 className="text-4xl md:text-5xl font-brand text-[#0C3A2E] mb-6">
             Shipping & Returns
           </h1>
           <div className="bg-white p-8 rounded-2xl shadow-sm border border-[#D4AF37]/20 space-y-6 text-gray-600 font-light leading-relaxed">
-            <h2 className="text-2xl font-serif text-[#0B3B2E]">
+            <h2 className="text-2xl font-brand text-[#0C3A2E]">
               Shipping Information
             </h2>
             <p>
@@ -33,7 +33,7 @@ export default function ShippingClient() {
               </li>
             </ul>
 
-            <h2 className="text-2xl font-serif text-[#0B3B2E] mt-8">
+            <h2 className="text-2xl font-brand text-[#0C3A2E] mt-8">
               Returns & Exchanges
             </h2>
             <p>

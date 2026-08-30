@@ -61,7 +61,10 @@ export default function CartPage() {
 
   const handleCheckout = () => {
     if (hasOutOfStockItems) {
-      toast.error("please check our website after few time till then pls stay connect to us");
+      toast.error("One or more items in your cart are out of stock", {
+        style: { background: "#1A1A1A", color: "#F9F6F0", border: "1px solid #A85751" },
+        iconTheme: { primary: "#A85751", secondary: "#F9F6F0" }
+      });
       return;
     }
     router.push("/checkout");
@@ -82,7 +85,7 @@ export default function CartPage() {
             </p>
             <button
               onClick={() => router.push("/products")}
-              className="bg-[#D4AF37] text-[#07271F] px-8 py-4 rounded-xl font-semibold hover:bg-[#E6C78B] transition-colors shadow-[0_0_15px_rgba(212,175,55,0.2)]"
+              className="bg-[#0C3A2E] text-white px-8 py-3.5 rounded-sm text-xs uppercase tracking-widest font-semibold hover:bg-[#0C3A2E]/90 transition-colors"
             >
               Browse Products
             </button>
@@ -130,8 +133,8 @@ export default function CartPage() {
                       </p>
 
                       {item.stock === 0 ? (
-                        <div className="text-red-400 text-xs font-light bg-red-950/20 border border-red-500/10 p-3 rounded-lg max-w-md">
-                          please check our website after few time till then pls stay connect to us
+                        <div className="text-[#A85751] text-xs font-medium bg-[#A85751]/10 border border-[#A85751]/20 p-2 rounded-sm max-w-md mt-2">
+                          Currently out of stock
                         </div>
                       ) : (
                         /* Quantity */
@@ -208,21 +211,21 @@ export default function CartPage() {
                 <button
                   onClick={handleCheckout}
                   disabled={loading || syncing || hasOutOfStockItems}
-                  className="w-full bg-[#D4AF37] text-[#07271F] py-4 rounded-xl font-semibold hover:bg-[#E6C78B] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-[0_0_15px_rgba(212,175,55,0.2)]"
+                  className="w-full bg-[#0C3A2E] text-white py-3.5 rounded-sm text-xs uppercase tracking-widest font-semibold hover:bg-[#0C3A2E]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                 >
                   {loading ? (
                     "Processing..."
                   ) : (
                     <>
                       Proceed to Checkout
-                      <ArrowRight size={20} className="ml-2" />
+                      <ArrowRight size={16} className="ml-2" />
                     </>
                   )}
                 </button>
 
                 {hasOutOfStockItems && (
-                  <p className="text-red-400 text-xs text-center mt-4 font-light">
-                    please check our website after few time till then pls stay connect to us
+                  <p className="text-[#A85751] text-xs text-center mt-3 font-medium">
+                    Please remove out of stock items to proceed.
                   </p>
                 )}
 

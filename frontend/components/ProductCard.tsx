@@ -70,9 +70,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
   const router = useRouter();
   const productId = product._id || product.id || "";
   const productImg = getProductImage(product);
-  const discount = (product.compareAtPrice && product.compareAtPrice > product.price)
-    ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
-    : 0;
+  const isOutOfStock = (product as any)?.stock === 0;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -81,8 +79,18 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
       router.push("/login");
       return;
     }
+    if (isOutOfStock) {
+      toast.error("This item is currently out of stock", {
+        style: { background: "#1A1A1A", color: "#F9F6F0", border: "1px solid #A85751" },
+        iconTheme: { primary: "#A85751", secondary: "#F9F6F0" }
+      });
+      return;
+    }
     addToCart({ product: productId, quantity: 1, price: product.price, name: product.name, image: productImg });
-    toast.success("Added to cart");
+    toast.success("Added to cart", {
+      style: { background: "#0C3A2E", color: "#F9F6F0", border: "1px solid #2A7D6B" },
+      iconTheme: { primary: "#2A7D6B", secondary: "#F9F6F0" }
+    });
   };
 
   const handleAddToWishlist = (e: React.MouseEvent) => {
@@ -97,161 +105,125 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
       return;
     }
     addToWishlist(productId);
-    toast.success("Added to wishlist");
+    toast.success("Added to wishlist", {
+      style: { background: "#0C3A2E", color: "#F9F6F0", border: "1px solid #D4AF37" },
+      iconTheme: { primary: "#D4AF37", secondary: "#0C3A2E" }
+    });
   };
 
-  const [isHoverEnabled, setIsHoverEnabled] = React.useState(false);
   const [isImageLoaded, setIsImageLoaded] = React.useState(false);
-
-  React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      setIsHoverEnabled(window.matchMedia("(hover: hover) and (pointer: fine)").matches);
-    }
-  }, []);
-
   const categoryName = typeof product.category === "object" && product.category ? product.category.name : product.category || "Decor";
 
-  // Magnetic Tilt Physics
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const mouseXSpring = useSpring(x, { stiffness: 150, damping: 15 });
-  const mouseYSpring = useSpring(y, { stiffness: 150, damping: 15 });
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["5deg", "-5deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-5deg", "5deg"]);
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isHoverEnabled || !cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-    const xPct = mouseX / width - 0.5;
-    const yPct = mouseY / height - 0.5;
-    x.set(xPct);
-    y.set(yPct);
-  };
-
-  const handleMouseLeave = () => {
-    if (!isHoverEnabled) return;
-    x.set(0);
-    y.set(0);
-  };
-
   return (
-    <motion.div
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={isHoverEnabled ? { rotateX, rotateY, transformStyle: "preserve-3d" } : {}}
-      className="group relative bg-[#112F24]/85 backdrop-blur-xl rounded-2xl overflow-hidden border border-[#D4AF37]/20 hover:border-[#D4AF37]/80 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-[0_10px_30px_rgba(212,175,55,0.2)] flex flex-col h-full"
-    >
-      {/* Full-Fill Image Container */}
-      <div 
-        className="relative aspect-square w-full overflow-hidden bg-[#07241D] border-b border-[#D4AF37]/15 rounded-t-2xl" 
-        style={isHoverEnabled ? { transform: "translateZ(20px)" } : {}}
-      >
+    <div className="group relative bg-white border border-border/80 hover:border-foreground/30 transition-all duration-300 flex flex-col h-full">
+      {/* Product Image Container */}
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#F2EFE9]">
         <Link href={`/products/${product.slug}`} className="block relative w-full h-full">
           <Image
             src={productImg}
-            alt={`${product.name} - Handcrafted Premium Decor`}
+            alt={`${product.name} - Pavira Signature Decor`}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             priority={priority}
-            className={`object-cover object-center scale-100 group-hover:scale-105 transition-all duration-500 ease-out ${
+            className={`object-cover object-center scale-100 group-hover:scale-105 transition-transform duration-700 ease-out ${
               isImageLoaded ? "opacity-100" : "opacity-0"
             }`}
             onLoad={() => setIsImageLoaded(true)}
           />
         </Link>
 
-        {/* Top Left Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-20 pointer-events-none">
-          {(product as any)?.stock === 0 && (
-            <span className="bg-[#0B3B2E]/90 text-red-400 px-2.5 py-0.5 rounded-full text-[10px] font-medium tracking-wider backdrop-blur-md shadow-md border border-red-500/30">
+        {/* Top Left Badges: Out of Stock */}
+        {isOutOfStock && (
+          <div className="absolute top-3 left-3 z-20 pointer-events-none">
+            <span className="bg-[#A85751] text-white px-2.5 py-1 text-[10px] font-semibold tracking-wider uppercase">
               Out of Stock
             </span>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Top Right Wishlist Button */}
         <div className="absolute top-3 right-3 z-20">
           <button
             onClick={handleAddToWishlist}
-            title="Add to Wishlist"
-            className="bg-[#0B3B2E]/85 backdrop-blur-md hover:bg-[#D4AF37] text-[#D4AF37] hover:text-[#0B3B2E] p-2.5 rounded-full transition-all duration-200 shadow-md border border-[#D4AF37]/30 hover:scale-110 active:scale-95"
+            title="Save to Wishlist"
+            className="bg-white/90 backdrop-blur-sm hover:bg-white text-[#1A1A1A] p-2 transition-colors border border-border shadow-sm"
           >
-            <Heart size={15} className={wishlist.includes(productId) ? "fill-red-500 stroke-red-500" : ""} />
+            <Heart size={16} className={wishlist.includes(productId) ? "fill-[#A85751] stroke-[#A85751]" : "stroke-current"} />
           </button>
         </div>
       </div>
 
-      {/* Content Section (Flex column flex-1 to push Add to Cart button to bottom edge) */}
-      <div 
-        className="p-6 flex flex-col flex-1 justify-between bg-gradient-to-b from-[#112F24]/90 to-[#112F24]" 
-        style={isHoverEnabled ? { transform: "translateZ(25px)" } : {}}
-      >
-        <div className="space-y-3">
-          <p className="text-[10px] text-[#D4AF37] font-semibold uppercase tracking-[0.2em] opacity-90 truncate">
+      {/* Content Section */}
+      <div className="p-5 flex flex-col flex-1 justify-between bg-white">
+        <div className="space-y-2">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-medium">
             {categoryName}
           </p>
 
           <Link href={`/products/${product.slug}`} className="block">
-            <h3 className="text-base sm:text-lg font-serif text-[#F5F0E6] group-hover:text-[#D4AF37] transition-colors duration-300 line-clamp-2 min-h-[3rem] font-medium leading-snug">
+            <h3 className="text-base font-serif text-[#1A1A1A] group-hover:text-[#0C3A2E] transition-colors duration-200 line-clamp-2 min-h-[2.75rem] font-normal leading-snug">
               {product.name}
             </h3>
           </Link>
 
-          {/* Star Rating Section */}
-          <div className="flex items-center gap-1.5 text-xs text-[#F5F0E6]/80 pt-0.5">
-            <div className="flex items-center gap-0.5">
+          {/* Star Rating */}
+          <div className="flex items-center gap-1 text-xs text-muted-foreground pt-0.5">
+            <div className="flex items-center">
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
-                  size={13}
-                  className={i < Math.round(product.rating) ? "fill-[#D4AF37] text-[#D4AF37]" : "text-gray-600 opacity-30"}
+                  size={12}
+                  className={i < Math.round(product.rating) ? "fill-[#D4AF37] text-[#D4AF37]" : "text-gray-300"}
                 />
               ))}
             </div>
-            <span className="text-[11px] font-bold text-[#D4AF37] ml-1">
-              ({product.numReviews || 124})
+            <span className="text-[11px] text-muted-foreground ml-1">
+              ({product.numReviews || 24})
             </span>
           </div>
 
-          {/* Price Section */}
-          <div className="flex items-baseline gap-2.5 pt-1">
-            <span className="text-lg sm:text-xl font-sans font-extrabold text-[#F5F0E6] tracking-tight">
+          {/* Price */}
+          <div className="pt-1">
+            <span className="text-lg font-sans font-semibold text-[#1A1A1A] tracking-tight">
               ₹{product.price.toLocaleString("en-IN")}
             </span>
           </div>
         </div>
 
-        {/* Full-width Add to Cart Button (Anchored to bottom edge) */}
-        <div className="pt-6 mt-auto">
-          <button
-            onClick={handleAddToCart}
-            className="w-full bg-[#0B3B2E] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#0B3B2E] py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 border border-[#D4AF37]/40 flex items-center justify-center gap-2 shadow-lg hover:shadow-[0_0_15px_rgba(212,175,55,0.4)]"
-          >
-            <ShoppingCart size={15} />
-            <span>Add to Cart</span>
-          </button>
+        {/* Action Button */}
+        <div className="pt-4 mt-auto">
+          {isOutOfStock ? (
+            <button
+              disabled
+              className="w-full py-2.5 px-4 text-xs font-semibold uppercase tracking-widest bg-[#A85751]/10 text-[#A85751] border border-[#A85751]/30 cursor-not-allowed text-center"
+            >
+              Out of Stock
+            </button>
+          ) : (
+            <button
+              onClick={handleAddToCart}
+              className="w-full bg-[#0C3A2E] text-white hover:bg-[#0C3A2E]/90 py-2.5 px-4 text-xs font-semibold uppercase tracking-widest transition-colors flex items-center justify-center gap-2"
+            >
+              <ShoppingCart size={14} />
+              <span>Add to Cart</span>
+            </button>
+          )}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
 export function ProductSkeleton() {
   return (
-    <div className="bg-[#112F24]/40 backdrop-blur-xl rounded-2xl overflow-hidden border border-[#D4AF37]/10 shadow-xl relative w-full aspect-[3/4]">
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
-      <div className="aspect-square bg-[#0B3B2E]/50 relative overflow-hidden" />
-      <div className="p-6 space-y-4">
-        <div className="h-2 w-1/4 bg-[#D4AF37]/20 rounded" />
-        <div className="h-6 w-3/4 bg-[#F5F0E6]/20 rounded" />
-        <div className="pt-4 border-t border-[#D4AF37]/10 flex justify-between items-center mt-4">
-          <div className="h-5 w-20 bg-[#F5F0E6]/20 rounded" />
+    <div className="bg-white border border-border/80 overflow-hidden relative w-full flex flex-col h-full animate-pulse">
+      <div className="aspect-[4/5] bg-[#F2EFE9] w-full" />
+      <div className="p-5 space-y-3">
+        <div className="h-3 w-1/3 bg-muted rounded-none" />
+        <div className="h-4 w-3/4 bg-muted rounded-none" />
+        <div className="h-3 w-1/4 bg-muted rounded-none" />
+        <div className="pt-4 mt-auto">
+          <div className="h-9 w-full bg-muted rounded-none" />
         </div>
       </div>
     </div>

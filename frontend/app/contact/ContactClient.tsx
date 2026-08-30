@@ -211,9 +211,9 @@ export default function ContactClient() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full py-4 bg-foreground text-background uppercase tracking-widest text-sm font-semibold hover:bg-foreground/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="w-full py-4 bg-[#0C3A2E] text-white uppercase tracking-widest text-xs font-semibold hover:bg-[#0C3A2E]/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                     >
-                      {loading ? "Sending..." : "Send Message"} <ArrowRight size={16} />
+                      {loading ? "Sending..." : "Send Message"} <ArrowRight size={15} />
                     </button>
                   </form>
                 )}

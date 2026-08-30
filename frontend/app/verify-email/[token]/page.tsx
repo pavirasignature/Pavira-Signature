@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -37,7 +37,7 @@ export default function VerifyEmailPage() {
 
   return (
     <main className="min-h-screen w-full flex bg-[#07241D] text-white">
-      <div className="hidden lg:flex w-[60%] relative overflow-hidden items-center justify-center bg-[#0B3B2E]">
+      <div className="hidden lg:flex w-[60%] relative overflow-hidden items-center justify-center bg-[#0C3A2E]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.15)_0%,rgba(11,59,46,1)_100%)] z-0" />
         <motion.div animate={{ rotate: 360 }} transition={{ duration: 120, repeat: Infinity, ease: "linear" }} className="absolute w-[150%] h-[150%] opacity-20 pointer-events-none z-0">
           <PremiumMandala />
@@ -71,7 +71,7 @@ export default function VerifyEmailPage() {
                 <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-6">
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 200, damping: 12, delay: 0.1 }} className="w-20 h-20 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center"><CheckCircle className="text-emerald-400" size={40} /></motion.div>
                   <div><h2 className="text-2xl font-serif font-bold text-[#F5F0E6] mb-3">Email Verified!</h2><p className="text-[#F5F0E6]/70 text-sm leading-relaxed mb-2">{message}</p><p className="text-[#D4AF37]/70 text-xs">Welcome to Pavira Signature.</p></div>
-                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }} onClick={() => router.push("/login")} className="w-full px-6 py-4 bg-[#D4AF37] text-[#0B3B2E] font-bold uppercase tracking-widest text-sm rounded-xl hover:bg-[#E6C78B] transition-all duration-300">Sign In to Your Account</motion.button>
+                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }} onClick={() => router.push("/login")} className="w-full px-6 py-4 bg-[#0C3A2E] text-white font-bold uppercase tracking-widest text-xs rounded-sm hover:bg-[#0C3A2E]/90 transition-all duration-300">Sign In to Your Account</motion.button>
                 </motion.div>
               )}
               {status === "error" && (
@@ -79,7 +79,7 @@ export default function VerifyEmailPage() {
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 200, damping: 12, delay: 0.1 }} className="w-20 h-20 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center"><XCircle className="text-red-400" size={40} /></motion.div>
                   <div><h2 className="text-2xl font-serif font-bold text-[#F5F0E6] mb-3">Verification Failed</h2><p className="text-[#F5F0E6]/70 text-sm leading-relaxed">{message}</p></div>
                   <div className="flex flex-col gap-3 w-full">
-                    <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }} onClick={() => router.push("/login")} className="w-full px-6 py-4 bg-[#D4AF37] text-[#0B3B2E] font-bold uppercase tracking-widest text-sm rounded-xl hover:bg-[#E6C78B] transition-all duration-300">Go to Login</motion.button>
+                    <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }} onClick={() => router.push("/login")} className="w-full px-6 py-4 bg-[#0C3A2E] text-white font-bold uppercase tracking-widest text-xs rounded-sm hover:bg-[#0C3A2E]/90 transition-all duration-300">Go to Login</motion.button>
                     <Link href="/signup" className="w-full px-6 py-3.5 border border-[#D4AF37]/30 text-[#D4AF37] font-semibold text-sm rounded-xl hover:bg-[#D4AF37]/10 transition-all text-center">Create a New Account</Link>
                   </div>
                 </motion.div>

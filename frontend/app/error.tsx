@@ -19,34 +19,36 @@ export default function Error({
       style={{
         position: "relative",
         minHeight: "100vh",
-        backgroundColor: "#0B3B2E",
-        color: "#F8F7F3",
+        backgroundColor: "#F9F6F0",
+        color: "#1A1A1A",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "1rem",
+        padding: "1.5rem",
         fontFamily: "system-ui, sans-serif",
       }}
     >
       <div style={{ textAlign: "center", maxWidth: "28rem" }}>
-        <h2 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "1rem" }}>
+        <h2 style={{ fontSize: "2rem", fontWeight: "600", marginBottom: "1rem", color: "#1A1A1A" }}>
           Something went wrong
         </h2>
-        <p style={{ color: "rgba(248,247,243,0.6)", marginBottom: "2.5rem", fontSize: "1.125rem" }}>
-          An unexpected error occurred. Please try again.
+        <p style={{ color: "#666", marginBottom: "2rem", fontSize: "1rem", lineHeight: "1.5" }}>
+          An unexpected error occurred while loading this page. Please try again.
         </p>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem" }}>
           <button
             onClick={reset}
             style={{
-              padding: "1rem 2rem",
-              backgroundColor: "#D4B06A",
-              color: "#0B3B2E",
+              padding: "0.875rem 2rem",
+              backgroundColor: "#0C3A2E",
+              color: "#FFFFFF",
               fontWeight: "600",
               border: "none",
               cursor: "pointer",
               borderRadius: "2px",
-              fontSize: "1rem",
+              fontSize: "0.875rem",
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
             }}
           >
             Try Again
@@ -54,16 +56,18 @@ export default function Error({
           <Link
             href="/"
             style={{
-              padding: "1rem 2rem",
-              border: "1px solid rgba(248,247,243,0.2)",
-              color: "#F8F7F3",
+              padding: "0.875rem 2rem",
+              border: "1px solid #0C3A2E",
+              color: "#0C3A2E",
               fontWeight: "600",
-              borderRadius: "2px",
               textDecoration: "none",
-              fontSize: "1rem",
+              borderRadius: "2px",
+              fontSize: "0.875rem",
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
             }}
           >
-            Go Home
+            Back to Home
           </Link>
         </div>
       </div>
