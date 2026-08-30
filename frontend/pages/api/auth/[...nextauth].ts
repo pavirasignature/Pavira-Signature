@@ -304,8 +304,8 @@ function patchNextAuthUrl(req: NextApiRequest): string | null {
 
   const currentNextAuthUrl = process.env.NEXTAUTH_URL || "";
 
-  // Only patch if the host doesn't match the current NEXTAUTH_URL
-  if (currentNextAuthUrl && currentNextAuthUrl.includes(hostWithoutPort)) {
+  // Only patch if the URL doesn't EXACTLY match the derived URL
+  if (currentNextAuthUrl === derivedUrl) {
     return null; // Already correct
   }
 

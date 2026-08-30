@@ -237,6 +237,11 @@ export default function CheckoutPage() {
           theme: {
             color: "#0B3B2E",
           },
+          config: {
+            display: {
+              hide: [{ method: "card" }],
+            },
+          },
           modal: {
             ondismiss: () => {
               setLoading(false);
