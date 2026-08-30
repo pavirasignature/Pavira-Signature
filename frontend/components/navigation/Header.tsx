@@ -130,12 +130,12 @@ export default function Header() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
         style={{
-          backgroundColor: isScrolled ? "rgba(11,59,46,0.75)" : "rgba(11,59,46,0)",
-          backdropFilter: isScrolled ? "blur(24px)" : "blur(0px)",
-          borderBottomColor: isScrolled ? "rgba(212,175,55,0.08)" : "rgba(212,175,55,0)",
+          backgroundColor: isScrolled ? "rgba(247,245,240,0.85)" : "transparent",
+          backdropFilter: isScrolled ? "blur(16px)" : "blur(0px)",
+          borderBottomColor: isScrolled ? "rgba(0,0,0,0.1)" : "transparent",
           borderBottomWidth: "1px",
           borderBottomStyle: "solid",
-          boxShadow: isScrolled ? "0px 10px 30px rgba(0,0,0,0.3)" : "0px 0px 0px rgba(0,0,0,0)",
+          boxShadow: isScrolled ? "0px 10px 30px rgba(0,0,0,0.05)" : "none",
         }}
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
       >
@@ -153,7 +153,7 @@ export default function Header() {
               />
             </div>
             <div className="flex flex-col items-start justify-center">
-              <span className="brand-name text-lg md:text-xl font-brand font-normal text-[#D4AF37] group-hover:drop-shadow-[0_0_8px_rgba(212,175,55,0.8)] transition-all duration-300 tracking-wide leading-tight uppercase">
+              <span className="brand-name text-lg md:text-xl font-brand font-normal text-foreground transition-all duration-300 tracking-wide leading-tight uppercase">
                 Pavira Signature
               </span>
             </div>
@@ -169,17 +169,17 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-sm tracking-wide transition-all duration-300 relative group font-light ${
+                  className={`text-sm tracking-wide transition-all duration-300 relative group font-medium uppercase ${
                     isActive
-                      ? "text-[#D4AF37] font-medium"
-                      : "text-[#F5F0E6]/80 hover:text-[#D4AF37]"
+                      ? "text-accent"
+                      : "text-foreground/80 hover:text-accent"
                   }`}
                 >
                   {link.label}
                   <span
-                    className={`absolute -bottom-2 left-1/2 -translate-x-1/2 h-[1px] transition-all duration-300 bg-[#D4AF37] ${
+                    className={`absolute -bottom-2 left-1/2 -translate-x-1/2 h-[1px] transition-all duration-300 bg-accent ${
                       isActive
-                        ? "w-1/2 shadow-[0_0_8px_rgba(212,175,55,0.6)]"
+                        ? "w-1/2"
                         : "w-0 group-hover:w-full"
                     }`}
                   />
@@ -194,11 +194,11 @@ export default function Header() {
 
             <Link
               href="/wishlist"
-              className="relative p-2 text-[#F5F0E6]/90 hover:text-[#D4AF37] transition group flex items-center justify-center"
+              className="relative p-2 text-foreground/90 hover:text-accent transition group flex items-center justify-center"
             >
               <Heart size={22} strokeWidth={1.5} />
               {wishlistCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 text-[10px] font-bold bg-[#D4AF37] text-[#0B3B2E] rounded-full shadow-[0_0_10px_rgba(212,175,55,0.5)] border border-[#0B3B2E]">
+                <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 text-[10px] font-bold bg-accent text-white rounded-full">
                   {wishlistCount}
                 </span>
               )}
@@ -206,17 +206,17 @@ export default function Header() {
 
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative p-2 text-[#F5F0E6]/90 hover:text-[#D4AF37] transition group flex items-center justify-center"
+              className="relative p-2 text-foreground/90 hover:text-accent transition group flex items-center justify-center"
             >
               <ShoppingBag size={22} strokeWidth={1.5} />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 text-[10px] font-bold bg-[#D4AF37] text-[#0B3B2E] rounded-full shadow-[0_0_10px_rgba(212,175,55,0.5)] border border-[#0B3B2E]">
+                <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 text-[10px] font-bold bg-accent text-white rounded-full">
                   {cartCount}
                 </span>
               )}
             </button>
 
-            <div className="w-[1px] h-6 bg-[#D4AF37]/20 mx-2" />
+            <div className="w-[1px] h-6 bg-border mx-2" />
 
             <AccountMenu
               isLoggedIn={isLoggedIn}
@@ -232,17 +232,17 @@ export default function Header() {
 
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative p-2 text-[#F5F0E6]/90 hover:text-[#D4AF37] transition"
+              className="relative p-2 text-foreground/90 hover:text-accent transition"
             >
               <ShoppingBag size={22} strokeWidth={1.5} />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 text-[10px] font-bold bg-[#D4AF37] text-[#0B3B2E] rounded-full shadow-[0_0_10px_rgba(212,175,55,0.5)] border border-[#0B3B2E]">
+                <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 text-[10px] font-bold bg-accent text-white rounded-full">
                   {cartCount}
                 </span>
               )}
             </button>
             <button
-              className="p-2 text-[#F5F0E6]/90 hover:text-[#D4AF37] transition"
+              className="p-2 text-foreground/90 hover:text-accent transition"
               onClick={() => setIsMobileMenuOpen(true)}
             >
               <Menu size={24} strokeWidth={1.5} />

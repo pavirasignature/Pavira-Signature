@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { X } from "lucide-react";
-import { PremiumMandala } from "@/components/PremiumVisuals";
 
 interface MobileNavProps {
   isOpen: boolean;
@@ -65,14 +64,10 @@ export default function MobileNav({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[200] bg-[#0B3B2E] flex flex-col"
+          className="fixed inset-0 z-[200] bg-background flex flex-col"
         >
-          {/* Animated Watermark */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150vw] h-[150vw] opacity-[0.03] pointer-events-none mix-blend-screen animate-[spin_120s_linear_infinite]">
-            <PremiumMandala />
-          </div>
 
-          <div className="relative z-10 p-6 flex justify-between items-center border-b border-[#D4AF37]/10">
+          <div className="relative z-10 p-6 flex justify-between items-center border-b border-border">
             <Link
               href="/"
               className="group flex items-center gap-3"
@@ -89,14 +84,14 @@ export default function MobileNav({
                 />
               </div>
               <div className="flex flex-col items-start justify-center">
-                <span className="brand-name text-lg md:text-xl font-brand font-normal text-[#D4AF37] group-hover:drop-shadow-[0_0_8px_rgba(212,175,55,0.8)] transition-all duration-300 tracking-wide leading-tight uppercase">
+                <span className="brand-name text-lg md:text-xl font-brand font-normal text-foreground transition-all duration-300 tracking-wide leading-tight uppercase">
                   Pavira Signature
                 </span>
               </div>
             </Link>
             <button
               onClick={onClose}
-              className="p-2 text-[#F5F0E6]/60 hover:text-[#D4AF37] hover:rotate-90 transition-all duration-300"
+              className="p-2 text-muted-foreground hover:text-accent hover:rotate-90 transition-all duration-300"
             >
               <X size={28} strokeWidth={1.5} />
             </button>
@@ -115,10 +110,10 @@ export default function MobileNav({
                   <Link
                     href={link.href}
                     onClick={onClose}
-                    className="text-3xl md:text-5xl font-serif text-[#F5F0E6] hover:text-[#D4AF37] transition-colors relative group block"
+                    className="text-3xl md:text-5xl font-brand text-foreground hover:text-accent transition-colors relative group block uppercase"
                   >
                     {link.label}
-                    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-[#D4AF37] group-hover:w-full transition-all duration-500 ease-out" />
+                    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-accent group-hover:w-full transition-all duration-500 ease-out" />
                   </Link>
                 </motion.div>
               ))}
@@ -133,10 +128,10 @@ export default function MobileNav({
                       : "/login"
                   }
                   onClick={onClose}
-                  className="text-3xl md:text-5xl font-serif text-[#D4AF37] hover:text-[#F5F0E6] transition-colors relative group block mt-4"
+                  className="text-3xl md:text-5xl font-brand text-accent hover:text-foreground transition-colors relative group block mt-4 uppercase"
                 >
                   {isLoggedIn ? "Dashboard" : "Sign In"}
-                  <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-[#F5F0E6] group-hover:w-full transition-all duration-500 ease-out" />
+                  <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-foreground group-hover:w-full transition-all duration-500 ease-out" />
                 </Link>
               </motion.div>
 
@@ -147,7 +142,7 @@ export default function MobileNav({
                       handleLogout();
                       onClose();
                     }}
-                    className="text-xl md:text-3xl font-serif text-[#F5F0E6]/60 hover:text-red-400 transition-colors relative group block mt-2"
+                    className="text-xl md:text-3xl font-brand text-red-500/60 hover:text-red-500 transition-colors relative group block mt-2 uppercase"
                   >
                     Logout
                   </button>
@@ -156,11 +151,11 @@ export default function MobileNav({
             </motion.nav>
           </div>
 
-          <div className="relative z-10 p-8 text-center border-t border-[#D4AF37]/10">
-            <p className="text-xs text-[#D4AF37] uppercase tracking-[0.3em] mb-2 font-bold">
+          <div className="relative z-10 p-8 text-center border-t border-border">
+            <p className="text-xs text-accent uppercase tracking-[0.3em] mb-2 font-bold">
               Discover Luxury
             </p>
-            <p className="text-[#F5F0E6]/40 text-sm">
+            <p className="text-muted-foreground text-sm font-light">
               Crafted with precision, delivered with grace.
             </p>
           </div>
