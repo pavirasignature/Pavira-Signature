@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import PublicLayout from "@/components/layout/PublicLayout";
-import { ArrowRight, Building2, Dimensions, DraftingCompass, Users } from "lucide-react";
+import { ArrowRight, Building2, DraftingCompass, Users } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "For Professionals | Pavira Signature B2B",
