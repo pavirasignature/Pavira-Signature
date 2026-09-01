@@ -7,6 +7,9 @@ export default function SmoothScroll() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
+    // Reset scroll to top on page load to prevent scroll-on-refresh issue
+    window.scrollTo(0, 0);
+
     // Initialize Lenis for premium inertia-based smooth scrolling
     const lenis = new Lenis({
       duration: 1.2,
