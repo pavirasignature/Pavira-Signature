@@ -72,7 +72,7 @@ export default function CartPage() {
 
   if (cart.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#1B2D20] text-[#F5F0E6] relative overflow-hidden">
+      <div className="min-h-screen flex flex-col bg-[#1B2D20] text-[#F9F6F0] relative overflow-hidden">
         {/* Full Page Fixed Background Gradient */}
         <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,61,44,0.4)_0%,rgba(27,45,32,1)_100%)] z-0 pointer-events-none" />
         <Header />
@@ -80,7 +80,7 @@ export default function CartPage() {
           <div className="container mx-auto px-4 text-center">
             <ShoppingBag size={64} className="mx-auto mb-4 text-[#D4AF37]/40" />
             <h2 className="text-2xl font-bold mb-4 font-serif text-[#D4AF37]">Your cart is empty</h2>
-            <p className="text-[#F5F0E6]/60 mb-8 font-light">
+            <p className="text-[#F9F6F0]/60 mb-8 font-light">
               Add some products to get started
             </p>
             <button
@@ -97,13 +97,13 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#1B2D20] text-[#F5F0E6] relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-[#1B2D20] text-[#F9F6F0] relative overflow-hidden">
       <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,61,44,0.4)_0%,rgba(27,45,32,1)_100%)] z-0 pointer-events-none" />
       <Header />
 
       <main className="flex-grow pt-24 pb-12 relative z-10">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-8 font-serif text-[#F5F0E6]">Shopping Cart</h1>
+          <h1 className="text-3xl font-bold mb-8 font-serif text-[#F9F6F0]">Shopping Cart</h1>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Cart Items */}
@@ -127,7 +127,7 @@ export default function CartPage() {
 
                     {/* Product Info */}
                     <div className="flex-1">
-                      <h3 className="font-semibold mb-1 text-[#F5F0E6]">{item.name}</h3>
+                      <h3 className="font-semibold mb-1 text-[#F9F6F0]">{item.name}</h3>
                       <p className="text-[#D4AF37] font-bold mb-2">
                         ₹{item.price.toLocaleString()}
                       </p>
@@ -147,11 +147,11 @@ export default function CartPage() {
                               )
                             }
                             disabled={syncing}
-                            className="w-8 h-8 bg-[#111E16] rounded flex items-center justify-center hover:bg-[#D4AF37]/20 hover:text-[#D4AF37] transition-colors border border-[#D4AF37]/20 disabled:opacity-50 text-[#F5F0E6]"
+                            className="w-8 h-8 bg-[#111E16] rounded flex items-center justify-center hover:bg-[#D4AF37]/20 hover:text-[#D4AF37] transition-colors border border-[#D4AF37]/20 disabled:opacity-50 text-[#F9F6F0]"
                           >
                             <Minus size={16} />
                           </button>
-                          <span className="w-8 text-center text-[#F5F0E6]">{item.quantity}</span>
+                          <span className="w-8 text-center text-[#F9F6F0]">{item.quantity}</span>
                           <button
                             onClick={() =>
                               handleUpdateQuantity(
@@ -160,7 +160,7 @@ export default function CartPage() {
                               )
                             }
                             disabled={syncing || item.quantity >= (item.stock || 9999)}
-                            className="w-8 h-8 bg-[#111E16] rounded flex items-center justify-center hover:bg-[#D4AF37]/20 hover:text-[#D4AF37] transition-colors border border-[#D4AF37]/20 disabled:opacity-50 text-[#F5F0E6]"
+                            className="w-8 h-8 bg-[#111E16] rounded flex items-center justify-center hover:bg-[#D4AF37]/20 hover:text-[#D4AF37] transition-colors border border-[#D4AF37]/20 disabled:opacity-50 text-[#F9F6F0]"
                           >
                             <Plus size={16} />
                           </button>
@@ -184,23 +184,23 @@ export default function CartPage() {
             {/* Order Summary */}
             <div className="lg:col-span-1">
               <div className="bg-[#1A2E20]/90 rounded-lg p-6 border border-[#D4AF37]/20 sticky top-24">
-                <h2 className="text-xl font-bold mb-4 text-[#F5F0E6]">Order Summary</h2>
+                <h2 className="text-xl font-bold mb-4 text-[#F9F6F0]">Order Summary</h2>
 
                 <div className="space-y-3 mb-6 font-light">
                   <div className="flex justify-between">
-                    <span className="text-[#F5F0E6]/60">Subtotal</span>
-                    <span className="text-[#F5F0E6]">₹{itemsPrice.toLocaleString()}</span>
+                    <span className="text-[#F9F6F0]/60">Subtotal</span>
+                    <span className="text-[#F9F6F0]">₹{itemsPrice.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-[#F5F0E6]/60">Shipping</span>
-                    <span className="text-[#F5F0E6]">
+                    <span className="text-[#F9F6F0]/60">Shipping</span>
+                    <span className="text-[#F9F6F0]">
                       {shippingPrice === 0 ? "Free" : `₹${shippingPrice}`}
                     </span>
                   </div>
 
                   <div className="border-t border-[#D4AF37]/20 pt-3">
                     <div className="flex justify-between font-bold text-lg">
-                      <span className="text-[#F5F0E6]">Total</span>
+                      <span className="text-[#F9F6F0]">Total</span>
                       <span className="text-[#D4AF37]">
                         ₹{totalPrice.toLocaleString()}
                       </span>
@@ -229,7 +229,7 @@ export default function CartPage() {
                   </p>
                 )}
 
-                <p className="text-xs text-[#F5F0E6]/40 text-center mt-4">
+                <p className="text-xs text-[#F9F6F0]/40 text-center mt-4">
                   Free shipping on orders above ₹999
                 </p>
               </div>

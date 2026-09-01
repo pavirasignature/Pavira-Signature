@@ -67,7 +67,7 @@ export default function ResetPasswordPage() {
             <div className="absolute top-0 left-1/4 w-1/2 h-1 bg-[#D4AF37] blur-md opacity-50" />
 
             <div className="mb-8 text-center">
-              <h1 className="text-3xl font-serif font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-[#F5F0E6] via-[#D4AF37] to-[#F5F0E6]">
+              <h1 className="text-3xl font-serif font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-[#F9F6F0] via-[#D4AF37] to-[#F9F6F0]">
                 Reset Credentials
               </h1>
               <p className="text-[#D4AF37]/80 text-sm leading-relaxed">
@@ -79,7 +79,7 @@ export default function ResetPasswordPage() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* New Password */}
                 <div>
-                  <label className="block text-xs font-semibold mb-2 text-[#F5F0E6]/70 uppercase tracking-widest">
+                  <label className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
                     New Password
                   </label>
                   <div className="relative group">
@@ -92,7 +92,7 @@ export default function ResetPasswordPage() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="w-full pl-12 pr-12 py-3.5 bg-[#111E16]/80 border border-[#2A4734] focus:border-[#D4AF37] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D4AF37]/50 transition-all text-[#F5F0E6] placeholder-[#F5F0E6]/20"
+                      className="w-full pl-12 pr-12 py-3.5 bg-[#111E16]/80 border border-[#2A4734] focus:border-[#D4AF37] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D4AF37]/50 transition-all text-[#F9F6F0] placeholder-[#F9F6F0]/20"
                       placeholder="Enter Your Password"
                     />
                     <button
@@ -107,7 +107,7 @@ export default function ResetPasswordPage() {
 
                 {/* Confirm New Password */}
                 <div>
-                  <label className="block text-xs font-semibold mb-2 text-[#F5F0E6]/70 uppercase tracking-widest">
+                  <label className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
                     Confirm New Password
                   </label>
                   <div className="relative group">
@@ -120,7 +120,7 @@ export default function ResetPasswordPage() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
-                      className="w-full pl-12 pr-4 py-3.5 bg-[#111E16]/80 border border-[#2A4734] focus:border-[#D4AF37] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D4AF37]/50 transition-all text-[#F5F0E6] placeholder-[#F5F0E6]/20"
+                      className="w-full pl-12 pr-4 py-3.5 bg-[#111E16]/80 border border-[#2A4734] focus:border-[#D4AF37] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D4AF37]/50 transition-all text-[#F9F6F0] placeholder-[#F9F6F0]/20"
                       placeholder="Enter Your Password"
                     />
                   </div>
@@ -155,7 +155,7 @@ export default function ResetPasswordPage() {
                 <div className="w-16 h-16 bg-green-500/10 border border-green-500/30 rounded-full flex items-center justify-center mx-auto text-green-400 animate-pulse">
                   <CheckCircle size={32} />
                 </div>
-                <h3 className="text-xl font-bold text-[#F5F0E6]">Password Updated!</h3>
+                <h3 className="text-xl font-bold text-[#F9F6F0]">Password Updated!</h3>
                 <p className="text-gray-400 text-sm">
                   Your credentials have been successfully updated. We are redirecting you to the home page...
                 </p>

@@ -167,7 +167,7 @@ export default function OrderDetailsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#1B2D20] text-[#F5F0E6] flex items-center justify-center relative overflow-hidden">
+      <div className="min-h-screen bg-[#1B2D20] text-[#F9F6F0] flex items-center justify-center relative overflow-hidden">
         {/* Full Page Fixed Background Gradient */}
         <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,61,44,0.4)_0%,rgba(27,45,32,1)_100%)] z-0 pointer-events-none" />
         <div className="flex flex-col items-center gap-3 relative z-10">
@@ -180,7 +180,7 @@ export default function OrderDetailsPage() {
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-[#1B2D20] text-[#F5F0E6] flex items-center justify-center relative overflow-hidden">
+      <div className="min-h-screen bg-[#1B2D20] text-[#F9F6F0] flex items-center justify-center relative overflow-hidden">
         {/* Full Page Fixed Background Gradient */}
         <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,61,44,0.4)_0%,rgba(27,45,32,1)_100%)] z-0 pointer-events-none" />
         <div className="text-center relative z-10">
@@ -210,7 +210,7 @@ export default function OrderDetailsPage() {
   const total = order.totalPrice || subtotal + tax + shipping - discount;
 
   return (
-    <div className="min-h-screen bg-[#1B2D20] text-[#F5F0E6] relative overflow-hidden">
+    <div className="min-h-screen bg-[#1B2D20] text-[#F9F6F0] relative overflow-hidden">
       {/* Full Page Fixed Background Gradient */}
       <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,61,44,0.4)_0%,rgba(27,45,32,1)_100%)] z-0 pointer-events-none" />
 
@@ -222,7 +222,7 @@ export default function OrderDetailsPage() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
             <Link
               href="/dashboard/orders"
-              className="inline-flex items-center text-[#D4AF37] hover:text-[#F5F0E6] transition-colors group"
+              className="inline-flex items-center text-[#D4AF37] hover:text-[#F9F6F0] transition-colors group"
             >
               <ArrowLeft
                 size={18}
@@ -247,7 +247,7 @@ export default function OrderDetailsPage() {
               <div className="bg-[#1A2E20]/90 border border-[#D4AF37]/10 rounded-xl p-6 shadow-2xl backdrop-blur-md">
                 <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
                   <div>
-                    <h1 className="text-xl font-bold text-[#F5F0E6] mb-1">
+                    <h1 className="text-xl font-bold text-[#F9F6F0] mb-1">
                       Order #
                       {order.orderNumber ||
                         (order.id || order._id || "").substring(0, 8).toUpperCase()}
@@ -353,7 +353,7 @@ export default function OrderDetailsPage() {
 
               {/* Items Ordered */}
               <div className="bg-[#1A2E20]/90 border border-[#D4AF37]/10 rounded-xl p-6 shadow-2xl backdrop-blur-md">
-                <h3 className="font-semibold text-lg mb-6 border-b border-[#D4AF37]/10 pb-4 text-[#F5F0E6]">
+                <h3 className="font-semibold text-lg mb-6 border-b border-[#D4AF37]/10 pb-4 text-[#F9F6F0]">
                   Items in Order
                 </h3>
 
@@ -370,7 +370,7 @@ export default function OrderDetailsPage() {
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-[#F5F0E6] line-clamp-1 mb-1">
+                        <h4 className="font-semibold text-[#F9F6F0] line-clamp-1 mb-1">
                           {item.name}
                         </h4>
                         <p className="text-sm text-[#D4AF37] font-bold">

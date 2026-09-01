@@ -19,20 +19,20 @@ export const metadata: Metadata = {
 
 export default function TermsOfServicePage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#07241D] text-[#F5F0E6] relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-[#07241D] text-[#F9F6F0] relative overflow-hidden">
       {/* Background Gradient */}
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.1)_0%,rgba(11,59,46,1)_100%)] z-0 pointer-events-none" />
       <Header />
       <main className="flex-grow pt-32 pb-24 relative z-10">
         <div className="container mx-auto px-6 max-w-4xl">
-          <h1 className="text-4xl md:text-5xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-[#F5F0E6] via-[#D4AF37] to-[#F5F0E6] mb-4 text-center">
+          <h1 className="text-4xl md:text-5xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-[#F9F6F0] via-[#D4AF37] to-[#F9F6F0] mb-4 text-center">
             Terms of Service
           </h1>
           <p className="text-center text-[#D4AF37]/80 text-sm tracking-widest uppercase mb-12">
             Pavira Signature — The Art of Luxury
           </p>
 
-          <div className="bg-[#112F24]/70 border border-[#D4AF37]/15 rounded-3xl p-8 md:p-12 backdrop-blur-2xl shadow-2xl space-y-8 font-light leading-relaxed text-[#F5F0E6]/90">
+          <div className="bg-[#112F24]/70 border border-[#D4AF37]/15 rounded-3xl p-8 md:p-12 backdrop-blur-2xl shadow-2xl space-y-8 font-light leading-relaxed text-[#F9F6F0]/90">
             <p>
               This website is operated by <strong className="text-[#D4AF37]">Pavira Signature</strong>. Throughout the site, the terms &quot;we&quot;, &quot;us&quot;, and &quot;our&quot; refer to Pavira Signature. Pavira Signature offers this website, including all information, tools, products, and services available from this site to you, the user, conditioned upon your acceptance of all terms, conditions, policies, and notices stated here.
             </p>
@@ -119,7 +119,7 @@ export default function TermsOfServicePage() {
               </p>
             </div>
 
-            <div className="bg-[#0B3B2E]/40 border border-yellow-500/20 p-6 rounded-xl">
+            <div className="bg-[#0C3A2E]/40 border border-yellow-500/20 p-6 rounded-xl">
               <h2 className="text-xl font-serif text-[#D4AF37] mb-3">SECTION 12 - DISCLAIMER & INSTALLATION</h2>
               <p className="mb-3">
                 We do not guarantee that your use of our website or service will be uninterrupted, timely, secure, or error-free. Pavira Signature shall not be liable for any direct, indirect, incidental, special, or consequential damages.
@@ -173,9 +173,9 @@ export default function TermsOfServicePage() {
 
             <hr className="border-[#D4AF37]/20" />
 
-            <div className="bg-[#0B3B2E]/50 border border-[#D4AF37]/10 p-6 rounded-2xl text-sm">
+            <div className="bg-[#0C3A2E]/50 border border-[#D4AF37]/10 p-6 rounded-2xl text-sm">
               <h2 className="text-xl font-serif text-[#D4AF37] mb-4">SECTION 19 - CONTACT INFORMATION</h2>
-              <div className="space-y-1 font-normal text-[#F5F0E6]/80">
+              <div className="space-y-1 font-normal text-[#F9F6F0]/80">
                 <p><strong>Email:</strong> <a href="mailto:connect@pavirasignature.in" className="hover:text-[#D4AF37] underline transition-colors">connect@pavirasignature.in</a></p>
                 <p><strong>Location:</strong> Ahmedabad, Gujarat, India</p>
               </div>

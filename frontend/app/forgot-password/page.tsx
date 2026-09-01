@@ -50,7 +50,7 @@ export default function ForgotPasswordPage() {
             <div className="absolute top-0 left-1/4 w-1/2 h-1 bg-[#D4AF37] blur-md opacity-50" />
 
             <div className="mb-8 text-center">
-              <h1 className="text-3xl font-extrabold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-[#F5F0E6] via-[#D4AF37] to-[#F5F0E6]">
+              <h1 className="text-3xl font-extrabold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-[#F9F6F0] via-[#D4AF37] to-[#F9F6F0]">
                 Recover Password
               </h1>
               <p className="text-gray-400 text-sm leading-relaxed">
@@ -110,7 +110,7 @@ export default function ForgotPasswordPage() {
                 <div className="w-16 h-16 bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded-full flex items-center justify-center mx-auto text-[#D4AF37]">
                   <Mail size={32} />
                 </div>
-                <h3 className="text-xl font-bold text-[#F5F0E6]">Check Your Inbox</h3>
+                <h3 className="text-xl font-bold text-[#F9F6F0]">Check Your Inbox</h3>
                 <p className="text-gray-400 text-sm">
                   We&apos;ve sent password reset instructions to <strong className="text-[#D4AF37]">{email}</strong>.
                 </p>

@@ -47,7 +47,12 @@ function AuthSync() {
     };
 
     if (typeof window !== "undefined") {
-      sessionStorage.setItem("showAccessGrantedAlert", "true");
+      // Only show the "Access Granted" popup on a fresh login, not on every page refresh.
+      // If the token is already stored, the user is resuming an existing session.
+      const existingToken = sessionStorage.getItem("token");
+      if (!existingToken || existingToken !== backendToken) {
+        sessionStorage.setItem("showAccessGrantedAlert", "true");
+      }
       sessionStorage.setItem("loginMethod", "google");
     }
     setToken(backendToken);

@@ -148,13 +148,13 @@ export default function SignupPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <h1 className="text-5xl lg:text-6xl font-serif font-bold mb-6 text-[#F5F0E6] drop-shadow-lg">
+            <h1 className="text-5xl lg:text-6xl font-serif font-bold mb-6 text-[#F9F6F0] drop-shadow-lg">
               Begin Your<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#F5F0E6]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#F9F6F0]">
                 Artistic Journey
               </span>
             </h1>
-            <p className="text-xl text-[#F5F0E6]/80 leading-relaxed font-light">
+            <p className="text-xl text-[#F9F6F0]/80 leading-relaxed font-light">
               Join an exclusive community of connoisseurs. Discover curated pieces that transform ordinary spaces into extraordinary sanctuaries.
             </p>
           </motion.div>
@@ -165,7 +165,7 @@ export default function SignupPage() {
       <div className="w-full lg:w-[40%] flex flex-col relative min-h-screen bg-gradient-to-br from-[#112F24] to-[#07241D] overflow-y-auto">
         {/* Back Button */}
         <div className="pt-6 px-6 md:pt-8 md:px-12 w-full z-20">
-          <Link href="/" className="inline-flex items-center gap-2 text-[#D4AF37] hover:text-[#F5F0E6] transition-colors text-xs md:text-sm font-semibold tracking-wider uppercase bg-[#111E16]/80 px-4 py-2.5 rounded-full border border-[#D4AF37]/30 hover:border-[#D4AF37] shadow-lg w-fit backdrop-blur-md">
+          <Link href="/" className="inline-flex items-center gap-2 text-[#D4AF37] hover:text-[#F9F6F0] transition-colors text-xs md:text-sm font-semibold tracking-wider uppercase bg-[#111E16]/80 px-4 py-2.5 rounded-full border border-[#D4AF37]/30 hover:border-[#D4AF37] shadow-lg w-fit backdrop-blur-md">
             <ArrowLeft size={16} />
             <span className="text-yellow-500">Back to Gallery</span>
           </Link>
@@ -181,7 +181,7 @@ export default function SignupPage() {
           >
             <div className="bg-[#112F24]/70 border border-[#D4AF37]/15 rounded-3xl p-8 sm:p-10 backdrop-blur-2xl shadow-2xl">
               <div className="mb-8 text-center">
-                <h2 className="text-3xl font-serif font-bold mb-3 text-[#F5F0E6]">Create Account</h2>
+                <h2 className="text-3xl font-serif font-bold mb-3 text-[#F9F6F0]">Create Account</h2>
                 <p className="text-[#D4AF37]/80 text-sm tracking-wide">
                   Join <span className="font-brand">Pavira Signature</span> today
                 </p>
@@ -205,7 +205,7 @@ export default function SignupPage() {
 
                 {/* First Name Field */}
                 <motion.div variants={itemVariants}>
-                  <label className="block text-xs font-semibold mb-2 text-[#F5F0E6]/70 uppercase tracking-widest">
+                  <label className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
                     First Name
                   </label>
                   <div className="relative group">
@@ -219,7 +219,7 @@ export default function SignupPage() {
                       value={formData.firstName}
                       onChange={handleChange}
                       required
-                      className="w-full pl-12 pr-4 py-3.5 bg-[#111E16]/80 border border-[#2A4734] focus:border-[#D4AF37] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D4AF37]/50 transition-all text-[#F5F0E6] placeholder-[#F5F0E6]/20"
+                      className="w-full pl-12 pr-4 py-3.5 bg-[#111E16]/80 border border-[#2A4734] focus:border-[#D4AF37] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D4AF37]/50 transition-all text-[#F9F6F0] placeholder-[#F9F6F0]/20"
                       placeholder="First Name"
                     />
                   </div>
@@ -227,7 +227,7 @@ export default function SignupPage() {
 
                 {/* Last Name Field */}
                 <motion.div variants={itemVariants}>
-                  <label className="block text-xs font-semibold mb-2 text-[#F5F0E6]/70 uppercase tracking-widest">
+                  <label className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
                     Last Name
                   </label>
                   <div className="relative group">
@@ -240,7 +240,7 @@ export default function SignupPage() {
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleChange}
-                      className="w-full pl-12 pr-4 py-3.5 bg-[#111E16]/80 border border-[#2A4734] focus:border-[#D4AF37] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D4AF37]/50 transition-all text-[#F5F0E6] placeholder-[#F5F0E6]/20"
+                      className="w-full pl-12 pr-4 py-3.5 bg-[#111E16]/80 border border-[#2A4734] focus:border-[#D4AF37] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D4AF37]/50 transition-all text-[#F9F6F0] placeholder-[#F9F6F0]/20"
                       placeholder="Last Name (optional)"
                     />
                   </div>
@@ -248,7 +248,7 @@ export default function SignupPage() {
 
                 {/* Email Field */}
                 <motion.div variants={itemVariants}>
-                  <label className="block text-xs font-semibold mb-2 text-[#F5F0E6]/70 uppercase tracking-widest">
+                  <label className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
                     Email Address
                   </label>
                   <div className="relative group">
@@ -262,7 +262,7 @@ export default function SignupPage() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full pl-12 pr-4 py-3.5 bg-[#111E16]/80 border border-[#2A4734] focus:border-[#D4AF37] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D4AF37]/50 transition-all text-[#F5F0E6] placeholder-[#F5F0E6]/20"
+                      className="w-full pl-12 pr-4 py-3.5 bg-[#111E16]/80 border border-[#2A4734] focus:border-[#D4AF37] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D4AF37]/50 transition-all text-[#F9F6F0] placeholder-[#F9F6F0]/20"
                       placeholder="your@email.com"
                     />
                   </div>
@@ -270,7 +270,7 @@ export default function SignupPage() {
 
                 {/* Password Field */}
                 <motion.div variants={itemVariants}>
-                  <label className="block text-xs font-semibold mb-2 text-[#F5F0E6]/70 uppercase tracking-widest">
+                  <label className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
                     Password
                   </label>
                   <div className="relative group">
@@ -284,7 +284,7 @@ export default function SignupPage() {
                       value={formData.password}
                       onChange={handleChange}
                       required
-                      className="w-full pl-12 pr-12 py-3.5 bg-[#111E16]/80 border border-[#2A4734] focus:border-[#D4AF37] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D4AF37]/50 transition-all text-[#F5F0E6] placeholder-[#F5F0E6]/20"
+                      className="w-full pl-12 pr-12 py-3.5 bg-[#111E16]/80 border border-[#2A4734] focus:border-[#D4AF37] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D4AF37]/50 transition-all text-[#F9F6F0] placeholder-[#F9F6F0]/20"
                       placeholder="Enter Your Password"
                     />
                     <button
@@ -299,7 +299,7 @@ export default function SignupPage() {
 
                 {/* Confirm Password Field */}
                 <motion.div variants={itemVariants}>
-                  <label className="block text-xs font-semibold mb-2 text-[#F5F0E6]/70 uppercase tracking-widest">
+                  <label className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
                     Confirm Password
                   </label>
                   <div className="relative group">
@@ -313,7 +313,7 @@ export default function SignupPage() {
                       value={formData.confirmPassword}
                       onChange={handleChange}
                       required
-                      className="w-full pl-12 pr-4 py-3.5 bg-[#111E16]/80 border border-[#2A4734] focus:border-[#D4AF37] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D4AF37]/50 transition-all text-[#F5F0E6] placeholder-[#F5F0E6]/20"
+                      className="w-full pl-12 pr-4 py-3.5 bg-[#111E16]/80 border border-[#2A4734] focus:border-[#D4AF37] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D4AF37]/50 transition-all text-[#F9F6F0] placeholder-[#F9F6F0]/20"
                       placeholder="Enter Your Password"
                     />
                   </div>
@@ -331,9 +331,9 @@ export default function SignupPage() {
                       />
                       <div className="w-2.5 h-2.5 rounded-sm bg-[#D4AF37] scale-0 peer-checked:scale-100 transition-transform" />
                     </div>
-                    <span className="text-[#F5F0E6]/70 leading-relaxed group-hover:text-[#F5F0E6] transition-colors">
+                    <span className="text-[#F9F6F0]/70 leading-relaxed group-hover:text-[#F9F6F0] transition-colors">
                       I agree to the{" "}
-                      <Link href="#" className="text-[#D4AF37] font-semibold hover:text-[#F5F0E6] underline underline-offset-2">
+                      <Link href="#" className="text-[#D4AF37] font-semibold hover:text-[#F9F6F0] underline underline-offset-2">
                         Terms & Conditions
                       </Link>
                     </span>
@@ -355,11 +355,11 @@ export default function SignupPage() {
               </motion.form>
 
               {/* Login Link */}
-              <p className="mt-8 text-center text-[#F5F0E6]/60 text-sm">
+              <p className="mt-8 text-center text-[#F9F6F0]/60 text-sm">
                 Already have an account?{" "}
                 <Link
                   href="/login"
-                  className="text-[#D4AF37] hover:text-[#F5F0E6] transition-colors font-bold underline underline-offset-4"
+                  className="text-[#D4AF37] hover:text-[#F9F6F0] transition-colors font-bold underline underline-offset-4"
                 >
                   Sign in here
                 </Link>

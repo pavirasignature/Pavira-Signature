@@ -11,7 +11,7 @@ export default function RegisterRedirect() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-[#1B2D20] text-[#F5F0E6] flex items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen bg-[#1B2D20] text-[#F9F6F0] flex items-center justify-center relative overflow-hidden">
       {/* Full Page Fixed Background Gradient */}
       <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,61,44,0.4)_0%,rgba(27,45,32,1)_100%)] z-0 pointer-events-none" />
 

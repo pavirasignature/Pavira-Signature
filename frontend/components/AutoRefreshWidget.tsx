@@ -108,7 +108,7 @@ export default function AutoRefreshWidget() {
               Updating Experience
             </h2>
             
-            <p className="text-[#F5F0E6]/70 font-light text-sm md:text-base max-w-md mx-auto leading-relaxed">
+            <p className="text-[#F9F6F0]/70 font-light text-sm md:text-base max-w-md mx-auto leading-relaxed">
               We are seamlessly applying the latest bespoke enhancements to your website. 
               <br className="hidden md:block" />
               Thank you for your patience.

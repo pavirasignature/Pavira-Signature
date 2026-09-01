@@ -428,7 +428,7 @@ function CardPaymentContent() {
 // ─── Page wrapper ───
 export default function CardPaymentPage() {
   return (
-    <div className="min-h-screen bg-[#1B2D20] text-[#F5F0E6] relative overflow-hidden">
+    <div className="min-h-screen bg-[#1B2D20] text-[#F9F6F0] relative overflow-hidden">
       <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,61,44,0.4)_0%,rgba(27,45,32,1)_100%)] z-0 pointer-events-none" />
       <Header />
       <main className="pt-28 pb-20 px-4 relative z-10">

@@ -19,20 +19,20 @@ export const metadata: Metadata = {
 
 export default function ShippingPolicyPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#07241D] text-[#F5F0E6] relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-[#07241D] text-[#F9F6F0] relative overflow-hidden">
       {/* Background Gradient */}
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.1)_0%,rgba(11,59,46,1)_100%)] z-0 pointer-events-none" />
       <Header />
       <main className="flex-grow pt-32 pb-24 relative z-10">
         <div className="container mx-auto px-6 max-w-4xl">
-          <h1 className="text-4xl md:text-5xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-[#F5F0E6] via-[#D4AF37] to-[#F5F0E6] mb-4 text-center">
+          <h1 className="text-4xl md:text-5xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-[#F9F6F0] via-[#D4AF37] to-[#F9F6F0] mb-4 text-center">
             Shipping Policy
           </h1>
           <p className="text-center text-[#D4AF37]/80 text-sm tracking-widest uppercase mb-12">
             Pavira Signature — The Art of Luxury
           </p>
 
-          <div className="bg-[#112F24]/70 border border-[#D4AF37]/15 rounded-3xl p-8 md:p-12 backdrop-blur-2xl shadow-2xl space-y-8 font-light leading-relaxed text-[#F5F0E6]/90">
+          <div className="bg-[#112F24]/70 border border-[#D4AF37]/15 rounded-3xl p-8 md:p-12 backdrop-blur-2xl shadow-2xl space-y-8 font-light leading-relaxed text-[#F9F6F0]/90">
             <p>
               Welcome to <strong className="text-[#D4AF37]">Pavira Signature</strong>!
             </p>
@@ -96,10 +96,10 @@ export default function ShippingPolicyPage() {
 
             <hr className="border-[#D4AF37]/20" />
 
-            <div className="bg-[#0B3B2E]/50 border border-[#D4AF37]/10 p-6 rounded-2xl">
+            <div className="bg-[#0C3A2E]/50 border border-[#D4AF37]/10 p-6 rounded-2xl">
               <h2 className="text-xl font-serif text-[#D4AF37] mb-4">Shipping Support</h2>
               <p className="mb-2">For any shipping-related query, please contact us:</p>
-              <div className="space-y-1 text-sm text-[#F5F0E6]/80 font-normal">
+              <div className="space-y-1 text-sm text-[#F9F6F0]/80 font-normal">
                 <p><strong>Email:</strong> <a href="mailto:connect@pavirasignature.in" className="hover:text-[#D4AF37] underline transition-colors">connect@pavirasignature.in</a></p>
                 <p><strong>WhatsApp:</strong> <a href="https://wa.me/918487816296" className="hover:text-[#D4AF37] underline transition-colors">+91 8487816296</a></p>
                 <p><strong>Location:</strong> Ahmedabad, Gujarat, India</p>

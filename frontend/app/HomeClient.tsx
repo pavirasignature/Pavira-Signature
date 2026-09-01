@@ -192,7 +192,61 @@ export default function HomeClient() {
   return (
     <div className="bg-background text-foreground overflow-hidden">
       {/* 1. HERO SECTION */}
-      <section className="relative min-h-[92vh] flex flex-col items-center justify-center pt-28 pb-20 px-6 bg-gradient-to-b from-[#EDE8DF] via-[#F4F0E8] to-background text-center border-b border-border/40">
+      <section className="relative min-h-[92vh] flex flex-col items-center justify-center pt-28 pb-20 px-6 bg-gradient-to-b from-[#EDE8DF] via-[#F4F0E8] to-background text-center border-b border-border/40 overflow-hidden">
+        {/* Mandala Geometry Background */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
+          <svg
+            viewBox="0 0 800 800"
+            className="w-[600px] h-[600px] md:w-[800px] md:h-[800px] lg:w-[1000px] lg:h-[1000px] opacity-[0.06]"
+            style={{ animation: "spin-slow 120s linear infinite" }}
+          >
+            {/* Outer ring of petals */}
+            {[...Array(16)].map((_, i) => (
+              <g key={`outer-${i}`} transform={`rotate(${i * 22.5} 400 400)`}>
+                <ellipse cx="400" cy="160" rx="28" ry="80" fill="none" stroke="#D4AF37" strokeWidth="1.2" />
+              </g>
+            ))}
+            {/* Second ring */}
+            {[...Array(12)].map((_, i) => (
+              <g key={`mid-${i}`} transform={`rotate(${i * 30} 400 400)`}>
+                <ellipse cx="400" cy="220" rx="20" ry="60" fill="none" stroke="#D4AF37" strokeWidth="1" />
+              </g>
+            ))}
+            {/* Inner ring of petals */}
+            {[...Array(8)].map((_, i) => (
+              <g key={`inner-${i}`} transform={`rotate(${i * 45} 400 400)`}>
+                <ellipse cx="400" cy="290" rx="16" ry="45" fill="none" stroke="#D4AF37" strokeWidth="0.8" />
+              </g>
+            ))}
+            {/* Concentric circles */}
+            <circle cx="400" cy="400" r="350" fill="none" stroke="#D4AF37" strokeWidth="0.6" />
+            <circle cx="400" cy="400" r="280" fill="none" stroke="#D4AF37" strokeWidth="0.5" />
+            <circle cx="400" cy="400" r="200" fill="none" stroke="#D4AF37" strokeWidth="0.5" />
+            <circle cx="400" cy="400" r="120" fill="none" stroke="#D4AF37" strokeWidth="0.4" />
+            {/* Innermost decorative circle */}
+            <circle cx="400" cy="400" r="50" fill="none" stroke="#D4AF37" strokeWidth="0.8" />
+            {/* Diamond points on outer ring */}
+            {[...Array(8)].map((_, i) => (
+              <g key={`diamond-${i}`} transform={`rotate(${i * 45} 400 400)`}>
+                <polygon points="400,55 406,75 400,95 394,75" fill="none" stroke="#D4AF37" strokeWidth="0.8" />
+              </g>
+            ))}
+            {/* Radiating lines */}
+            {[...Array(24)].map((_, i) => (
+              <line
+                key={`line-${i}`}
+                x1="400"
+                y1="130"
+                x2="400"
+                y2="50"
+                stroke="#D4AF37"
+                strokeWidth="0.3"
+                transform={`rotate(${i * 15} 400 400)`}
+              />
+            ))}
+          </svg>
+        </div>
+
         <div className="max-w-4xl mx-auto flex flex-col items-center relative z-10">
           <p className="text-xs md:text-sm uppercase tracking-[0.35em] mb-5 font-semibold text-[#0C3A2E]">
             THE ART OF LUXURY

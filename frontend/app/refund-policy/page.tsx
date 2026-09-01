@@ -19,20 +19,20 @@ export const metadata: Metadata = {
 
 export default function RefundPolicyPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#07241D] text-[#F5F0E6] relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-[#07241D] text-[#F9F6F0] relative overflow-hidden">
       {/* Background Gradient */}
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.1)_0%,rgba(11,59,46,1)_100%)] z-0 pointer-events-none" />
       <Header />
       <main className="flex-grow pt-32 pb-24 relative z-10">
         <div className="container mx-auto px-6 max-w-4xl">
-          <h1 className="text-4xl md:text-5xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-[#F5F0E6] via-[#D4AF37] to-[#F5F0E6] mb-4 text-center">
+          <h1 className="text-4xl md:text-5xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-[#F9F6F0] via-[#D4AF37] to-[#F9F6F0] mb-4 text-center">
             Return & Refund Policy
           </h1>
           <p className="text-center text-[#D4AF37]/80 text-sm tracking-widest uppercase mb-12">
             Pavira Signature — The Art of Luxury
           </p>
 
-          <div className="bg-[#112F24]/70 border border-[#D4AF37]/15 rounded-3xl p-8 md:p-12 backdrop-blur-2xl shadow-2xl space-y-8 font-light leading-relaxed text-[#F5F0E6]/90">
+          <div className="bg-[#112F24]/70 border border-[#D4AF37]/15 rounded-3xl p-8 md:p-12 backdrop-blur-2xl shadow-2xl space-y-8 font-light leading-relaxed text-[#F9F6F0]/90">
             <p>
               At <strong className="text-[#D4AF37]">Pavira Signature</strong>, we strive to provide high-quality wall décor products to our customers. However, if your online purchase is not quite right, we are here to help.
             </p>
@@ -47,7 +47,7 @@ export default function RefundPolicyPage() {
               <p className="mb-4">
                 You can request a return or replacement within <strong className="text-[#D4AF37]">48 hours</strong> of receiving your order. The product must be unused, undamaged, and in its original packaging with all tags, accessories, fittings, invoice, and other items intact.
               </p>
-              <div className="bg-[#0B3B2E]/40 border border-yellow-500/20 p-4 rounded-xl mb-4">
+              <div className="bg-[#0C3A2E]/40 border border-yellow-500/20 p-4 rounded-xl mb-4">
                 <p className="text-sm text-yellow-500 font-semibold mb-1">Important Requirement:</p>
                 <p className="text-sm">You must provide a <strong>clear unboxing video</strong> and <strong>clear images</strong> of the received product to process your return or replacement request.</p>
               </div>
@@ -134,9 +134,9 @@ export default function RefundPolicyPage() {
 
             <hr className="border-[#D4AF37]/20" />
 
-            <div className="bg-[#0B3B2E]/50 border border-[#D4AF37]/10 p-6 rounded-2xl text-sm">
+            <div className="bg-[#0C3A2E]/50 border border-[#D4AF37]/10 p-6 rounded-2xl text-sm">
               <h2 className="text-xl font-serif text-[#D4AF37] mb-4">Support & Inquiries</h2>
-              <div className="space-y-1 font-normal text-[#F5F0E6]/80">
+              <div className="space-y-1 font-normal text-[#F9F6F0]/80">
                 <p><strong>Email:</strong> <a href="mailto:connect@pavirasignature.in" className="hover:text-[#D4AF37] underline transition-colors">connect@pavirasignature.in</a></p>
                 <p><strong>WhatsApp:</strong> <a href="https://wa.me/918487816296" className="hover:text-[#D4AF37] underline transition-colors">+91 8487816296</a></p>
                 <p><strong>Location:</strong> Ahmedabad, Gujarat, India</p>

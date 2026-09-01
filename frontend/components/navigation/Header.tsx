@@ -269,7 +269,7 @@ export default function Header() {
             animate={{ opacity: 1, x: 0, y: 0 }}
             exit={{ opacity: 0, x: 100, transition: { duration: 0.3 } }}
             transition={{ type: "spring", damping: 15 }}
-            className="fixed right-8 bottom-8 z-[9999] w-80 bg-[#0B3B2E] border-2 border-[#D4AF37] rounded-2xl p-6 shadow-[0_0_50px_rgba(212,175,55,0.3)] backdrop-blur-md"
+            className="fixed right-8 bottom-8 z-[9999] w-80 bg-[#0C3A2E] border-2 border-[#D4AF37] rounded-2xl p-6 shadow-[0_0_50px_rgba(212,175,55,0.3)] backdrop-blur-md"
           >
             <div className="flex flex-col items-center text-center gap-4">
               <div className="w-16 h-16 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37] flex items-center justify-center animate-pulse">
@@ -277,7 +277,7 @@ export default function Header() {
               </div>
               <div>
                 <h3 className="text-xl font-serif font-bold text-[#D4AF37] tracking-widest uppercase mb-1">Access Granted</h3>
-                <p className="text-[#F5F0E6]/80 text-xs leading-relaxed">
+                <p className="text-[#F9F6F0]/80 text-xs leading-relaxed">
                   Welcome to Pavira Signature.<br />Secure session successfully verified.
                 </p>
               </div>
