@@ -192,12 +192,12 @@ export default function HomeClient() {
   return (
     <div className="bg-background text-foreground overflow-hidden">
       {/* 1. HERO SECTION */}
-      <section className="relative min-h-[92vh] flex flex-col items-center justify-center pt-28 pb-20 px-6 bg-gradient-to-b from-[#EDE8DF] via-[#F4F0E8] to-background text-center overflow-hidden">
+      <section className="relative min-h-[92vh] flex flex-col items-center justify-center pt-28 pb-20 px-6 bg-gradient-to-b from-[#EDE8DF] via-[#F4F0E8] to-background text-center">
         {/* Mandala Geometry Background */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
           <svg
             viewBox="0 0 800 800"
-            className="w-[80vw] h-[80vw] md:w-[70vw] md:h-[70vw] lg:w-[60vw] lg:h-[60vw] max-w-[1200px] max-h-[1200px] opacity-[0.15]"
+            className="w-[85vw] h-[85vw] md:w-[75vw] md:h-[75vw] lg:w-[65vw] lg:h-[65vw] max-w-[1300px] max-h-[1300px] opacity-[0.15]"
             style={{ animation: "spin-slow 120s linear infinite" }}
           >
             {/* Outer ring of petals */}
