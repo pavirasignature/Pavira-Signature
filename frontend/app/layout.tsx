@@ -3,8 +3,10 @@ import { Nunito } from "next/font/google";
 import Script from "next/script";
 // @ts-ignore - CSS import
 import "./globals.css";
+import "@/styles/scroll-restoration.css";
 import ClientBody from "@/components/ClientBody";
 import AutoRefreshWidget from "@/components/AutoRefreshWidget";
+import ScrollRestoration from "@/components/ScrollRestoration";
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -145,6 +147,7 @@ export default function RootLayout({
         className="bg-background text-foreground font-sans antialiased overflow-x-hidden selection:bg-accent selection:text-accent-foreground"
         suppressHydrationWarning
       >
+        <ScrollRestoration />
         <ClientBody>{children}</ClientBody>
         <AutoRefreshWidget />
         <Script

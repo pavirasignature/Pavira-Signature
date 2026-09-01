@@ -127,3 +127,27 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+/* Scroll Restoration Enhancements */
+/* Ensure images don't cause layout shifts */
+img:not([width]):not([height]) {
+  height: auto;
+  max-width: 100%;
+}
+
+/* Disable smooth scroll during restoration */
+html.restoring-scroll {
+  scroll-behavior: auto !important;
+}
+
+html.restoring-scroll * {
+  scroll-behavior: auto !important;
+}
+
+/* Content visibility for better performance */
+.product-card,
+.collection-card,
+article {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 400px;
+}
