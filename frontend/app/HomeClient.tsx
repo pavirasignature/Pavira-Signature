@@ -196,52 +196,52 @@ export default function HomeClient() {
         {/* Mandala Geometry Background */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
           <svg
-            viewBox="0 0 800 800"
+            viewBox="0 0 1000 1000"
             className="w-[85vw] h-[85vw] md:w-[75vw] md:h-[75vw] lg:w-[65vw] lg:h-[65vw] max-w-[1300px] max-h-[1300px] opacity-[0.15]"
             style={{ animation: "spin-slow 120s linear infinite" }}
           >
             {/* Outer ring of petals */}
             {[...Array(16)].map((_, i) => (
-              <g key={`outer-${i}`} transform={`rotate(${i * 22.5} 400 400)`}>
-                <ellipse cx="400" cy="150" rx="30" ry="90" fill="none" stroke="#0C3A2E" strokeWidth="1.5" />
+              <g key={`outer-${i}`} transform={`rotate(${i * 22.5} 500 500)`}>
+                <ellipse cx="500" cy="150" rx="30" ry="90" fill="none" stroke="#0C3A2E" strokeWidth="1.5" />
               </g>
             ))}
             {/* Second ring */}
             {[...Array(12)].map((_, i) => (
-              <g key={`mid-${i}`} transform={`rotate(${i * 30} 400 400)`}>
-                <ellipse cx="400" cy="215" rx="22" ry="65" fill="none" stroke="#0C3A2E" strokeWidth="1.2" />
+              <g key={`mid-${i}`} transform={`rotate(${i * 30} 500 500)`}>
+                <ellipse cx="500" cy="215" rx="22" ry="65" fill="none" stroke="#0C3A2E" strokeWidth="1.2" />
               </g>
             ))}
             {/* Inner ring of petals */}
             {[...Array(8)].map((_, i) => (
-              <g key={`inner-${i}`} transform={`rotate(${i * 45} 400 400)`}>
-                <ellipse cx="400" cy="285" rx="18" ry="50" fill="none" stroke="#0C3A2E" strokeWidth="1" />
+              <g key={`inner-${i}`} transform={`rotate(${i * 45} 500 500)`}>
+                <ellipse cx="500" cy="285" rx="18" ry="50" fill="none" stroke="#0C3A2E" strokeWidth="1" />
               </g>
             ))}
             {/* Concentric circles */}
-            <circle cx="400" cy="400" r="360" fill="none" stroke="#0C3A2E" strokeWidth="1" />
-            <circle cx="400" cy="400" r="280" fill="none" stroke="#0C3A2E" strokeWidth="0.8" />
-            <circle cx="400" cy="400" r="200" fill="none" stroke="#0C3A2E" strokeWidth="0.8" />
-            <circle cx="400" cy="400" r="120" fill="none" stroke="#0C3A2E" strokeWidth="0.6" />
+            <circle cx="500" cy="500" r="360" fill="none" stroke="#0C3A2E" strokeWidth="1" />
+            <circle cx="500" cy="500" r="280" fill="none" stroke="#0C3A2E" strokeWidth="0.8" />
+            <circle cx="500" cy="500" r="200" fill="none" stroke="#0C3A2E" strokeWidth="0.8" />
+            <circle cx="500" cy="500" r="120" fill="none" stroke="#0C3A2E" strokeWidth="0.6" />
             {/* Innermost decorative circle */}
-            <circle cx="400" cy="400" r="50" fill="none" stroke="#0C3A2E" strokeWidth="1.2" />
+            <circle cx="500" cy="500" r="50" fill="none" stroke="#0C3A2E" strokeWidth="1.2" />
             {/* Diamond points on outer ring */}
             {[...Array(8)].map((_, i) => (
-              <g key={`diamond-${i}`} transform={`rotate(${i * 45} 400 400)`}>
-                <polygon points="400,45 408,75 400,105 392,75" fill="none" stroke="#0C3A2E" strokeWidth="1" />
+              <g key={`diamond-${i}`} transform={`rotate(${i * 45} 500 500)`}>
+                <polygon points="500,45 508,75 500,105 492,75" fill="none" stroke="#0C3A2E" strokeWidth="1" />
               </g>
             ))}
             {/* Radiating lines */}
             {[...Array(24)].map((_, i) => (
               <line
                 key={`line-${i}`}
-                x1="400"
+                x1="500"
                 y1="120"
-                x2="400"
+                x2="500"
                 y2="40"
                 stroke="#0C3A2E"
                 strokeWidth="0.6"
-                transform={`rotate(${i * 15} 400 400)`}
+                transform={`rotate(${i * 15} 500 500)`}
               />
             ))}
           </svg>
