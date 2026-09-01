@@ -197,38 +197,38 @@ export default function HomeClient() {
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
           <svg
             viewBox="0 0 800 800"
-            className="w-[600px] h-[600px] md:w-[800px] md:h-[800px] lg:w-[1000px] lg:h-[1000px] opacity-[0.06]"
+            className="w-[600px] h-[600px] md:w-[850px] md:h-[850px] lg:w-[1050px] lg:h-[1050px] opacity-[0.15]"
             style={{ animation: "spin-slow 120s linear infinite" }}
           >
             {/* Outer ring of petals */}
             {[...Array(16)].map((_, i) => (
               <g key={`outer-${i}`} transform={`rotate(${i * 22.5} 400 400)`}>
-                <ellipse cx="400" cy="160" rx="28" ry="80" fill="none" stroke="#D4AF37" strokeWidth="1.2" />
+                <ellipse cx="400" cy="150" rx="30" ry="90" fill="none" stroke="#0C3A2E" strokeWidth="1.5" />
               </g>
             ))}
             {/* Second ring */}
             {[...Array(12)].map((_, i) => (
               <g key={`mid-${i}`} transform={`rotate(${i * 30} 400 400)`}>
-                <ellipse cx="400" cy="220" rx="20" ry="60" fill="none" stroke="#D4AF37" strokeWidth="1" />
+                <ellipse cx="400" cy="215" rx="22" ry="65" fill="none" stroke="#0C3A2E" strokeWidth="1.2" />
               </g>
             ))}
             {/* Inner ring of petals */}
             {[...Array(8)].map((_, i) => (
               <g key={`inner-${i}`} transform={`rotate(${i * 45} 400 400)`}>
-                <ellipse cx="400" cy="290" rx="16" ry="45" fill="none" stroke="#D4AF37" strokeWidth="0.8" />
+                <ellipse cx="400" cy="285" rx="18" ry="50" fill="none" stroke="#0C3A2E" strokeWidth="1" />
               </g>
             ))}
             {/* Concentric circles */}
-            <circle cx="400" cy="400" r="350" fill="none" stroke="#D4AF37" strokeWidth="0.6" />
-            <circle cx="400" cy="400" r="280" fill="none" stroke="#D4AF37" strokeWidth="0.5" />
-            <circle cx="400" cy="400" r="200" fill="none" stroke="#D4AF37" strokeWidth="0.5" />
-            <circle cx="400" cy="400" r="120" fill="none" stroke="#D4AF37" strokeWidth="0.4" />
+            <circle cx="400" cy="400" r="360" fill="none" stroke="#0C3A2E" strokeWidth="1" />
+            <circle cx="400" cy="400" r="280" fill="none" stroke="#0C3A2E" strokeWidth="0.8" />
+            <circle cx="400" cy="400" r="200" fill="none" stroke="#0C3A2E" strokeWidth="0.8" />
+            <circle cx="400" cy="400" r="120" fill="none" stroke="#0C3A2E" strokeWidth="0.6" />
             {/* Innermost decorative circle */}
-            <circle cx="400" cy="400" r="50" fill="none" stroke="#D4AF37" strokeWidth="0.8" />
+            <circle cx="400" cy="400" r="50" fill="none" stroke="#0C3A2E" strokeWidth="1.2" />
             {/* Diamond points on outer ring */}
             {[...Array(8)].map((_, i) => (
               <g key={`diamond-${i}`} transform={`rotate(${i * 45} 400 400)`}>
-                <polygon points="400,55 406,75 400,95 394,75" fill="none" stroke="#D4AF37" strokeWidth="0.8" />
+                <polygon points="400,45 408,75 400,105 392,75" fill="none" stroke="#0C3A2E" strokeWidth="1" />
               </g>
             ))}
             {/* Radiating lines */}
@@ -236,11 +236,11 @@ export default function HomeClient() {
               <line
                 key={`line-${i}`}
                 x1="400"
-                y1="130"
+                y1="120"
                 x2="400"
-                y2="50"
-                stroke="#D4AF37"
-                strokeWidth="0.3"
+                y2="40"
+                stroke="#0C3A2E"
+                strokeWidth="0.6"
                 transform={`rotate(${i * 15} 400 400)`}
               />
             ))}
