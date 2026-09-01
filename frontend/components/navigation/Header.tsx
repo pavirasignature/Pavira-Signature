@@ -264,22 +264,71 @@ export default function Header() {
       <AnimatePresence>
         {showAccessGranted && (
           <motion.div
-            initial={{ opacity: 0, x: 100, y: 0 }}
-            animate={{ opacity: 1, x: 0, y: 0 }}
-            exit={{ opacity: 0, x: 100, transition: { duration: 0.3 } }}
-            transition={{ type: "spring", damping: 15 }}
-            className="fixed right-8 bottom-8 z-[9999] w-80 bg-[#0C3A2E] border-2 border-[#D4AF37] rounded-2xl p-6 shadow-[0_0_50px_rgba(212,175,55,0.3)] backdrop-blur-md"
+            initial={{ opacity: 0, x: 120, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
+            exit={{ opacity: 0, x: 120, scale: 0.95, transition: { duration: 0.4 } }}
+            transition={{ type: "spring", damping: 12, stiffness: 120 }}
+            className="fixed right-6 bottom-6 z-[9999] w-96 md:w-[420px] bg-gradient-to-br from-[#0B3B2E] to-[#07271F] border-2 border-[#D4AF37]/40 rounded-3xl p-8 shadow-[0_0_60px_rgba(212,175,55,0.25)] backdrop-blur-2xl overflow-hidden"
           >
-            <div className="flex flex-col items-center text-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37] flex items-center justify-center animate-pulse">
-                <Lock className="text-[#D4AF37]" size={28} />
-              </div>
-              <div>
-                <h3 className="text-xl font-serif font-bold text-[#D4AF37] tracking-widest uppercase mb-1">Access Granted</h3>
-                <p className="text-[#F9F6F0]/80 text-xs leading-relaxed">
-                  Welcome to Pavira Signature.<br />Secure session successfully verified.
+            {/* Decorative corner accent */}
+            <div className="absolute -top-1 -right-1 w-32 h-32 bg-[#D4AF37]/5 rounded-full blur-3xl" />
+            <div className="absolute -bottom-1 -left-1 w-24 h-24 bg-[#D4AF37]/5 rounded-full blur-3xl" />
+
+            {/* Content */}
+            <div className="relative z-10 flex flex-col items-center text-center gap-5">
+              {/* Icon with enhanced animation */}
+              <motion.div
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: "spring", damping: 12, delay: 0.1 }}
+                className="relative"
+              >
+                <div className="absolute inset-0 w-20 h-20 bg-[#D4AF37]/20 rounded-full blur-xl animate-pulse" />
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#D4AF37]/20 to-[#D4AF37]/5 border-2 border-[#D4AF37]/40 flex items-center justify-center relative z-10">
+                  <Lock className="text-[#D4AF37] drop-shadow-lg" size={32} strokeWidth={1.5} />
+                </div>
+              </motion.div>
+
+              {/* Main heading */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15, duration: 0.5 }}
+              >
+                <h3 className="text-2xl md:text-3xl font-serif font-bold text-[#D4AF37] tracking-[0.15em] uppercase mb-2 drop-shadow-lg">
+                  Access Granted
+                </h3>
+                <div className="w-12 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mx-auto" />
+              </motion.div>
+
+              {/* User greeting */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="space-y-2"
+              >
+                <p className="text-[#F5F0E6] font-serif text-lg font-medium">
+                  Welcome{userName ? `, ${userName}` : " back"}
                 </p>
-              </div>
+                <p className="text-[#F5F0E6]/70 text-sm leading-relaxed font-light">
+                  Your secure session has been successfully verified. Enjoy browsing our exclusive collection.
+                </p>
+              </motion.div>
+
+              {/* Footer info */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.25, duration: 0.5 }}
+                className="flex items-center justify-center gap-2 pt-2 border-t border-[#D4AF37]/20 w-full"
+              >
+                <div className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
+                <span className="text-xs text-[#F5F0E6]/60 tracking-wide uppercase font-medium">
+                  Pavira Signature
+                </span>
+                <div className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
+              </motion.div>
             </div>
           </motion.div>
         )}

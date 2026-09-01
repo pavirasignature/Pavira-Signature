@@ -152,48 +152,45 @@ export default function CategoriesSection() {
     },
   };
 
-  const categoryColors = [
-    "from-primary to-accent",
-    "from-[#0C3A2E] to-[#D4AF37]",
-    "from-[#0C3A2E] to-[#D4AF37]",
-    "from-[#0C3A2E] to-[#D4AF37]",
-    "from-[#0C3A2E] to-[#D4AF37]",
-    "from-primary to-accent",
-  ];
-
   return (
-    <section className="relative min-h-screen py-20 bg-transparent overflow-hidden">
+    <section className="relative py-24 bg-gradient-to-b from-[#0B3B2E] via-[#07271F] to-[#0B3B2E] overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 right-10 w-72 h-72 bg-accent/10 rounded-full blur-3xl animate-pulse animation-delay-2000" />
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-[#0C3A2E]/10 rounded-full blur-3xl animate-pulse animation-delay-4000" />
+        <div className="absolute top-20 left-10 w-96 h-96 bg-[#D4AF37]/5 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#D4AF37]/3 rounded-full blur-3xl animate-pulse delay-2000" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#D4AF37]/2 rounded-full blur-3xl animate-pulse delay-4000" />
       </div>
 
       <div className="relative z-10 container mx-auto px-4">
         {/* Header */}
         <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
+          className="text-center mb-20"
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true, amount: 0.1 }}
         >
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Sparkles className="text-accent" size={24} />
-            <span className="text-[#D4B06A] font-semibold uppercase tracking-widest text-sm">
-              Explore Collections
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+            className="flex items-center justify-center gap-3 mb-6 px-4 py-2 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/20 w-fit mx-auto"
+          >
+            <Sparkles className="text-[#D4AF37]" size={20} strokeWidth={1.5} />
+            <span className="text-[#D4AF37] font-semibold uppercase tracking-widest text-xs">
+              Premium Collections
             </span>
-            <Sparkles className="text-accent" size={24} />
-          </div>
-          <h2 className="text-5xl md:text-6xl font-bold text-[#1A1A1A] mb-4 leading-tight">
-            Premium{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-[#0C3A2E]">
+            <Sparkles className="text-[#D4AF37]" size={20} strokeWidth={1.5} />
+          </motion.div>
+
+          <h2 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-[#F5F0E6] mb-6 leading-tight">
+            Luxury{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] via-[#D4AF37] to-[#D4AF37]/80">
               Categories
             </span>
           </h2>
-          <p className="text-[#1A1A1A]/70 max-w-2xl mx-auto text-lg">
-            Discover our curated collection of luxury home decor products
+          <p className="text-[#F5F0E6]/70 max-w-2xl mx-auto text-lg font-light">
+            Explore our exquisite collection of handcrafted luxury home decor products
           </p>
         </motion.div>
 
@@ -203,7 +200,7 @@ export default function CategoriesSection() {
             {[...Array(6)].map((_, i) => (
               <div
                 key={i}
-                className="h-64 bg-gray-800 rounded-xl animate-pulse"
+                className="h-72 bg-[#112F24]/40 backdrop-blur rounded-2xl border border-[#D4AF37]/10 animate-pulse"
               />
             ))}
           </div>
@@ -225,11 +222,11 @@ export default function CategoriesSection() {
                 <motion.div
                   key={category._id}
                   variants={itemVariants}
-                  whileHover={{ y: -8 }}
+                  whileHover={{ y: -10 }}
                   className="group cursor-pointer relative"
                 >
                   <Link href={`/products?category=${category.slug}`}>
-                    <div className="relative h-72 rounded-2xl overflow-hidden bg-black/40 border border-white/10 hover:border-accent shadow-xl transition-all duration-500 ease-out">
+                    <div className="relative h-72 rounded-2xl overflow-hidden bg-[#0B3B2E] border border-[#D4AF37]/20 hover:border-[#D4AF37]/50 shadow-2xl transition-all duration-500 ease-out">
                       {/* Premium Background Image */}
                       <div className="absolute inset-0 z-0">
                         <Image
@@ -237,46 +234,57 @@ export default function CategoriesSection() {
                           alt={category.name}
                           fill
                           sizes="(max-width: 768px) 100vw, 33vw"
-                          className="object-cover scale-100 group-hover:scale-110 transition-transform duration-700 ease-out opacity-40 group-hover:opacity-50"
+                          className="object-cover scale-100 group-hover:scale-120 transition-transform duration-700 ease-out opacity-30 group-hover:opacity-40"
                         />
                       </div>
 
                       {/* Luxury Dark Gradient Glow Layer */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 group-hover:from-black/95 group-hover:via-black/60 group-hover:to-black/20 z-10 transition-all duration-500" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0B3B2E]/95 via-[#0B3B2E]/60 to-[#0B3B2E]/20 group-hover:from-[#0B3B2E]/98 group-hover:via-[#0B3B2E]/70 group-hover:to-[#0B3B2E]/30 z-10 transition-all duration-500" />
 
-                      {/* Hover Colored Accent Glow Layer */}
-                      <div
-                        className={`absolute inset-0 bg-gradient-to-br ${categoryColors[index % categoryColors.length]} opacity-0 group-hover:opacity-10 z-20 transition-opacity duration-500`}
-                      />
+                      {/* Gold Accent Glow Layer */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/0 via-[#D4AF37]/0 to-[#D4AF37]/0 group-hover:from-[#D4AF37]/5 group-hover:via-[#D4AF37]/2 group-hover:to-[#D4AF37]/5 z-20 transition-all duration-500" />
 
                       {/* Content Panel */}
                       <div className="absolute inset-0 flex flex-col items-center justify-center p-6 z-30 transition-all duration-500">
                         {/* Floating Icon Circular Glow Frame */}
-                        <div className="w-20 h-20 rounded-full bg-secondary/80 border border-white/10 group-hover:border-accent/50 shadow-lg flex items-center justify-center mb-5 transform scale-100 group-hover:scale-110 group-hover:translate-y-[-4px] transition-all duration-500 ease-out">
-                          <span className="text-3xl filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
+                        <motion.div
+                          whileHover={{ scale: 1.15, rotate: 10 }}
+                          className="w-24 h-24 rounded-full bg-gradient-to-br from-[#D4AF37]/20 to-[#D4AF37]/5 border-2 border-[#D4AF37]/40 group-hover:border-[#D4AF37]/70 shadow-xl flex items-center justify-center mb-6 transition-all duration-500 ease-out group-hover:shadow-[0_0_30px_rgba(212,175,55,0.3)]"
+                        >
+                          <span className="text-5xl drop-shadow-lg filter brightness-110">
                             {categoryIcon}
                           </span>
-                        </div>
+                        </motion.div>
 
                         {/* Category Name */}
-                        <h3 className="text-2xl font-bold font-[family-name:var(--font-space-grotesk)] text-foreground text-center mb-1 group-hover:text-accent tracking-tight transition-colors duration-300">
+                        <h3 className="text-3xl font-serif font-bold text-[#F5F0E6] text-center mb-2 group-hover:text-[#D4AF37] tracking-tight transition-colors duration-300">
                           {category.name}
                         </h3>
 
                         {/* Product Count Badge */}
-                        <p className="text-white/70 text-xs font-[family-name:var(--font-inter)] tracking-widest uppercase mb-6 group-hover:text-accent/90 transition-colors duration-300">
+                        <motion.p
+                          initial={{ opacity: 0.7 }}
+                          whileHover={{ opacity: 1 }}
+                          className="text-[#D4AF37]/80 text-xs font-semibold tracking-widest uppercase mb-8 group-hover:text-[#D4AF37] transition-colors duration-300"
+                        >
                           {category.productCount || "Multiple"} Masterpieces
-                        </p>
+                        </motion.p>
 
                         {/* Premium "Explore Collection" Button */}
-                        <div className="flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-accent text-primary-foreground font-semibold rounded-lg opacity-0 translate-y-[10px] group-hover:opacity-100 group-hover:translate-y-0 shadow-lg transition-all duration-500 transform ease-out font-[family-name:var(--font-inter)] text-sm">
-                          Explore Collection
-                          <ChevronRight size={14} className="stroke-[3]" />
-                        </div>
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#D4AF37]/80 hover:from-[#D4AF37]/90 hover:to-[#D4AF37]/70 text-[#0B3B2E] font-bold rounded-full shadow-lg transition-all duration-300 transform uppercase text-sm tracking-wide group-hover:shadow-[0_0_20px_rgba(212,175,55,0.4)]"
+                        >
+                          Explore
+                          <ChevronRight size={16} strokeWidth={2.5} />
+                        </motion.div>
                       </div>
 
-                      {/* Thin Gold Laser Frame Highlight */}
-                      <div className="absolute inset-0 rounded-2xl border border-transparent group-hover:border-accent/30 pointer-events-none z-40 transition-all duration-500" />
+                      {/* Premium Gold Frame Highlight */}
+                      <div className="absolute inset-0 rounded-2xl border border-transparent group-hover:border-[#D4AF37]/30 pointer-events-none z-40 transition-all duration-500" />
                     </div>
                   </Link>
                 </motion.div>
@@ -287,17 +295,19 @@ export default function CategoriesSection() {
 
         {error && !loading && (
           <motion.div
-            className="text-center py-12"
+            className="text-center py-16"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <p className="text-gray-400 mb-4">{error}</p>
-            <button
+            <p className="text-[#F5F0E6]/60 mb-6 text-lg">{error}</p>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => window.location.reload()}
-              className="px-6 py-2 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-accent transition"
+              className="px-8 py-3 bg-[#D4AF37] text-[#0B3B2E] font-semibold rounded-full hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all duration-300 uppercase tracking-wide"
             >
               Try Again
-            </button>
+            </motion.button>
           </motion.div>
         )}
       </div>
