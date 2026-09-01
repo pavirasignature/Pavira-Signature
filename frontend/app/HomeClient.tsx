@@ -192,7 +192,7 @@ export default function HomeClient() {
   return (
     <div className="bg-background text-foreground overflow-hidden">
       {/* 1. HERO SECTION */}
-      <section className="relative min-h-[92vh] flex flex-col items-center justify-center pt-28 pb-20 px-6 bg-gradient-to-b from-[#EDE8DF] via-[#F4F0E8] to-background text-center border-b border-border/40 overflow-hidden">
+      <section className="relative min-h-[92vh] flex flex-col items-center justify-center pt-28 pb-20 px-6 bg-gradient-to-b from-[#EDE8DF] via-[#F4F0E8] to-background text-center overflow-hidden">
         {/* Mandala Geometry Background */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
           <svg
