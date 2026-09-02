@@ -106,7 +106,7 @@ export default function WishlistPage() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col bg-secondary text-foreground">
+    <div className="min-h-screen flex flex-col bg-[#F9F6F0] text-[#1A1A1A] selection:bg-[#0C3A2E] selection:text-white">
       <Header />
 
       {/* Toast Notification */}
@@ -115,121 +115,121 @@ export default function WishlistPage() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          className={`fixed top-24 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-lg font-semibold ${
+          className={`fixed top-24 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-none font-semibold shadow-lg text-sm tracking-wide ${
             toast.type === "success"
-              ? "bg-green-500/20 border border-green-500 text-green-300"
-              : "bg-red-500/20 border border-red-500 text-red-300"
+              ? "bg-[#2A7D6B] text-white"
+              : "bg-[#A85751] text-white"
           }`}
         >
           {toast.message}
         </motion.div>
       )}
 
-      <main className="flex-grow pt-24 pb-12">
-        <div className="container mx-auto px-4">
+      <main className="flex-grow pt-32 pb-24">
+        <div className="container mx-auto px-6 max-w-7xl">
           {/* Header */}
           <motion.div
-            className="mb-8"
+            className="mb-12 border-b border-[#1A1A1A]/10 pb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">
-              <Heart className="text-accent" size={28} />
+            <h1 className="text-4xl md:text-5xl font-brand mb-3 text-[#1A1A1A]">
               My Wishlist
             </h1>
-            <p className="text-gray-400">
+            <p className="text-[#1A1A1A]/60 font-light text-sm uppercase tracking-[0.2em]">
               {wishlistItems.length}{" "}
-              {wishlistItems.length === 1 ? "item" : "items"} saved
+              {wishlistItems.length === 1 ? "Item" : "Items"} saved
             </p>
           </motion.div>
  
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[...Array(6)].map((_, i) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {[...Array(4)].map((_, i) => (
                 <div
                   key={i}
-                  className="h-80 bg-secondary/60 border border-primary/20 rounded-lg animate-pulse"
+                  className="h-96 bg-white border border-[#1A1A1A]/5 animate-pulse"
                 />
               ))}
             </div>
           ) : wishlistItems.length === 0 ? (
             <motion.div
-              className="text-center py-20"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
+              className="text-center py-32 bg-white border border-[#1A1A1A]/10"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
             >
-              <Heart size={64} className="mx-auto mb-4 text-gray-600" />
-              <h2 className="text-2xl font-bold mb-4">Your wishlist is empty</h2>
-              <p className="text-gray-400 mb-8">
-                Explore our collections and add your favorite products to your wishlist
+              <Heart size={48} strokeWidth={1} className="mx-auto mb-6 text-[#1A1A1A]/20" />
+              <h2 className="text-2xl font-brand mb-4 text-[#1A1A1A]">Your wishlist is empty</h2>
+              <p className="text-[#1A1A1A]/60 mb-10 font-light max-w-md mx-auto">
+                Explore our collections and add your favorite pieces to curate your personal gallery.
               </p>
               <button
                 onClick={() => router.push("/products")}
-                className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:bg-accent transition-colors"
+                className="bg-[#0C3A2E] text-white px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.2em] hover:bg-[#0C3A2E]/90 transition-colors"
               >
                 Continue Shopping
               </button>
             </motion.div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-16">
               {wishlistItems.map((item, index) => (
                 <motion.div
                   key={item.product._id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="group bg-[#1A2E20]/90 rounded-xl overflow-hidden border border-[#D4AF37]/10 hover:border-[#D4AF37] transition-all duration-300 backdrop-blur-md relative z-10"
+                  className="group bg-white border border-[#1A1A1A]/10 hover:border-[#0C3A2E] transition-all duration-300 relative flex flex-col"
                 >
-                  {/* Product Image */}
-                  <div className="relative h-64 bg-[#111E16]/60 flex items-center justify-center overflow-hidden border-b border-[#D4AF37]/10">
-                    <div className="text-6xl opacity-20 group-hover:scale-110 transition-transform duration-300">
+                  {/* Product Image Placeholder/Icon */}
+                  <div className="relative h-72 bg-[#F9F6F0] flex items-center justify-center overflow-hidden border-b border-[#1A1A1A]/5">
+                    <div className="text-6xl opacity-20 group-hover:scale-105 transition-transform duration-700">
                       🎨
                     </div>
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => handleRemove(item.product._id)}
-                      className="absolute top-4 right-4 p-2 bg-red-500/20 hover:bg-red-500 text-red-300 hover:text-white rounded-lg transition"
-                    >
-                      <Trash2 size={20} />
-                    </motion.button>
+                    
+                    {/* Hover Actions */}
+                    <div className="absolute inset-0 bg-[#0C3A2E]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-start justify-end p-4">
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => handleRemove(item.product._id)}
+                        className="p-2.5 bg-white text-[#A85751] shadow-sm hover:bg-[#A85751] hover:text-white transition-colors"
+                        title="Remove from wishlist"
+                      >
+                        <Trash2 size={16} />
+                      </motion.button>
+                    </div>
                   </div>
 
                   {/* Product Info */}
-                  <div className="p-6">
-                    <h3 className="font-bold text-lg mb-2 line-clamp-2">
-                      {item.product.name}
-                    </h3>
-                    <p className="text-gray-400 text-sm mb-4 capitalize">
+                  <div className="p-6 flex flex-col flex-grow">
+                    <p className="text-[#1A1A1A]/50 text-xs uppercase tracking-[0.2em] mb-2 line-clamp-1">
                       {typeof item.product.category === 'object' && item.product.category ? (item.product.category as any).name : item.product.category || "Decor"}
                     </p>
-
-                    {/* Rating */}
-                    {item.product.rating && (
-                      <div className="flex items-center gap-2 mb-4">
-                        <span className="text-yellow-400 text-sm">
-                          ⭐ {item.product.rating.toFixed(1)}
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Price */}
-                    <div className="mb-4 pb-4 border-b border-[#2A4734]">
-                      <p className="text-2xl font-bold text-[#D4AF37]">
+                    <h3 className="font-brand text-lg mb-3 line-clamp-2 text-[#1A1A1A] group-hover:text-[#0C3A2E] transition-colors leading-snug">
+                      {item.product.name}
+                    </h3>
+                    
+                    <div className="mt-auto pt-4 flex items-center justify-between">
+                      <p className="text-lg font-semibold text-[#1A1A1A]">
                         ₹{item.product.price?.toLocaleString("en-IN")}
                       </p>
+                      {item.product.rating && (
+                        <div className="flex items-center gap-1.5 bg-[#F9F6F0] px-2 py-1">
+                          <span className="text-[#D4AF37] text-xs">★</span>
+                          <span className="text-xs font-semibold text-[#1A1A1A]">{item.product.rating.toFixed(1)}</span>
+                        </div>
+                      )}
                     </div>
-
-                    {/* Action Button */}
-                    <button
-                      onClick={() => handleAddToCart(item.product)}
-                      className="w-full px-4 py-2.5 bg-[#0C3A2E] text-white font-semibold uppercase tracking-widest text-xs hover:bg-[#0C3A2E]/90 transition flex items-center justify-center gap-2"
-                    >
-                      <ShoppingCart size={15} />
-                      Add to Cart
-                    </button>
                   </div>
+
+                  {/* Add to Cart Footer */}
+                  <button
+                    onClick={() => handleAddToCart(item.product)}
+                    className="w-full py-4 border-t border-[#1A1A1A]/10 text-xs font-semibold uppercase tracking-[0.2em] text-[#0C3A2E] hover:bg-[#0C3A2E] hover:text-white transition-colors flex items-center justify-center gap-2"
+                  >
+                    <ShoppingCart size={14} />
+                    Add to Cart
+                  </button>
                 </motion.div>
               ))}
             </div>
@@ -242,17 +242,17 @@ export default function WishlistPage() {
               transition={{ delay: 0.3 }}
             >
               {/* Total Price Card */}
-              <div className="bg-[#1A2E20]/90 border border-[#D4AF37]/10 rounded-xl p-6 backdrop-blur-md relative z-10">
-                <p className="text-gray-400 mb-2">Total Value</p>
-                <p className="text-3xl font-bold text-[#D4AF37]">
+              <div className="bg-white border border-[#1A1A1A]/10 p-8 flex flex-col justify-center">
+                <p className="text-xs uppercase tracking-[0.2em] text-[#1A1A1A]/50 mb-3">Total Value</p>
+                <p className="text-3xl font-brand text-[#1A1A1A]">
                   ₹{totalPrice.toLocaleString("en-IN")}
                 </p>
               </div>
  
               {/* Items Card */}
-              <div className="bg-[#1A2E20]/90 border border-[#D4AF37]/10 rounded-xl p-6 backdrop-blur-md relative z-10">
-                <p className="text-gray-400 mb-2">Total Items</p>
-                <p className="text-3xl font-bold text-[#D4AF37]">
+              <div className="bg-white border border-[#1A1A1A]/10 p-8 flex flex-col justify-center">
+                <p className="text-xs uppercase tracking-[0.2em] text-[#1A1A1A]/50 mb-3">Total Items</p>
+                <p className="text-3xl font-brand text-[#1A1A1A]">
                   {wishlistItems.length}
                 </p>
               </div>
@@ -260,9 +260,10 @@ export default function WishlistPage() {
               {/* Clear Button */}
               <button
                 onClick={handleClearWishlist}
-                className="bg-[#A85751]/10 border border-[#A85751]/20 hover:border-[#A85751] rounded-xl p-6 text-[#A85751] hover:text-[#A85751]/80 font-bold transition text-center relative z-10"
+                className="bg-white border border-[#A85751]/30 p-8 text-[#A85751] hover:bg-[#A85751] hover:text-white transition-colors flex flex-col justify-center items-center gap-2 group"
               >
-                Clear Wishlist
+                <Trash2 size={24} className="group-hover:scale-110 transition-transform" />
+                <span className="text-xs uppercase tracking-[0.2em] font-semibold">Clear Wishlist</span>
               </button>
             </motion.div>
           </>

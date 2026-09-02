@@ -710,7 +710,7 @@ export default function AdminDashboard() {
   if (!activeUser || activeUser.role !== "admin") return null;
 
   return (
-    <div className="min-h-screen bg-[#1B2D20] text-foreground flex flex-col relative">
+    <div className="min-h-screen bg-[#F9F6F0] text-[#1A1A1A] flex flex-col relative">
       {/* Full Page Fixed Background Gradient */}
       <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,61,44,0.4)_0%,rgba(27,45,32,1)_100%)] z-0 pointer-events-none" />
       <Header />
@@ -723,14 +723,14 @@ export default function AdminDashboard() {
               <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
                 Admin Operations Panel
               </h1>
-              <p className="text-gray-400 text-sm mt-1">
+              <p className="text-[#1A1A1A]/60 text-sm mt-1">
                 Manage product catalog, order fulfillments, tracking, &
                 promotions
               </p>
             </div>
 
             <div className="flex items-center gap-3">
-              <span className="text-xs bg-primary/10 text-[#E6C280] border border-primary/20 px-3 py-1.5 rounded-full font-bold uppercase tracking-wider">
+              <span className="text-xs bg-[#0C3A2E]/10 text-[#E6C280] border border-primary/20 px-3 py-1.5 rounded-none font-bold uppercase tracking-wider">
                 System Administrator
               </span>
               <button
@@ -749,7 +749,7 @@ export default function AdminDashboard() {
                   }
                 }}
                 disabled={isRefreshing}
-                className="p-2 bg-secondary/60 hover:bg-secondary/80 disabled:bg-secondary border border-white/10 rounded-lg text-gray-400 hover:text-white disabled:opacity-50 transition-all"
+                className="p-2 bg-secondary/60 hover:bg-secondary/80 disabled:bg-secondary border border-white/10 rounded-none text-[#1A1A1A]/60 hover:text-[#1A1A1A] disabled:opacity-50 transition-all"
                 title="Refresh current data"
               >
                 <RefreshCw
@@ -761,7 +761,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Navigation Tabs */}
-          <div className="flex flex-wrap gap-2 mb-8 bg-secondary/40 p-1.5 rounded-xl border border-white/5">
+          <div className="flex flex-wrap gap-2 mb-8 bg-secondary/40 p-1.5 rounded-none border border-white/5">
             {[
               { id: "overview", label: "Dashboard Overview", icon: BarChart3 },
               { id: "products", label: "Product Catalog", icon: Package },
@@ -773,10 +773,10 @@ export default function AdminDashboard() {
                 <button
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id as ActiveTab)}
-                  className={`flex items-center gap-2 px-5 py-3 rounded-lg font-semibold text-sm transition-all duration-300 ${
+                  className={`flex items-center gap-2 px-5 py-3 rounded-none font-semibold text-sm transition-all duration-300 ${
                     activeTab === tab.id
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/10"
-                      : "text-gray-400 hover:text-white hover:bg-white/5"
+                      ? "bg-[#0C3A2E] text-white shadow-lg shadow-primary/10"
+                      : "text-[#1A1A1A]/60 hover:text-[#1A1A1A] hover:bg-white/5"
                   }`}
                 >
                   <Icon size={16} />
@@ -786,7 +786,7 @@ export default function AdminDashboard() {
             })}
             <button
               onClick={downloadOrdersExcel}
-              className="flex items-center gap-2 px-5 py-3 rounded-lg font-semibold text-sm transition-all duration-300 text-[#E6C280] border border-[#E6C280]/20 hover:bg-[#E6C280]/10 hover:text-white ml-auto"
+              className="flex items-center gap-2 px-5 py-3 rounded-none font-semibold text-sm transition-all duration-300 text-[#E6C280] border border-[#E6C280]/20 hover:bg-[#E6C280]/10 hover:text-[#1A1A1A] ml-auto"
               title="Download orders of the current month as Excel"
             >
               <Download size={16} />
@@ -802,7 +802,7 @@ export default function AdminDashboard() {
                 {loadingAnalytics ? (
                   <div className="flex flex-col items-center justify-center py-20">
                     <Loader2 className="w-10 h-10 text-primary animate-spin mb-4" />
-                    <p className="text-gray-400">Loading aggregate stats...</p>
+                    <p className="text-[#1A1A1A]/60">Loading aggregate stats...</p>
                   </div>
                 ) : (
                   <>
@@ -814,7 +814,7 @@ export default function AdminDashboard() {
                           value: `₹${(analytics?.totalSales || 0).toLocaleString()}`,
                           color: "text-primary",
                           icon: IndianRupee,
-                          bg: "bg-primary/5",
+                          bg: "bg-[#0C3A2E]/5",
                         },
                         {
                           label: "Total Orders",
@@ -845,10 +845,10 @@ export default function AdminDashboard() {
                             initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.05 }}
-                            className={`bg-[#1B2D20]/80 border border-primary/10 rounded-xl p-6 flex items-center justify-between shadow-xl backdrop-blur-md ${card.bg}`}
+                            className={`bg-[#F9F6F0]/80 border border-primary/10 rounded-none p-6 flex items-center justify-between shadow-xl backdrop-blur-md ${card.bg}`}
                           >
                             <div>
-                              <p className="text-gray-400 text-xs uppercase tracking-wider font-semibold mb-1">
+                              <p className="text-[#1A1A1A]/60 text-xs uppercase tracking-wider font-semibold mb-1">
                                 {card.label}
                               </p>
                               <p
@@ -858,7 +858,7 @@ export default function AdminDashboard() {
                               </p>
                             </div>
                             <div
-                              className={`w-12 h-12 rounded-xl flex items-center justify-center bg-secondary/60 border border-white/5`}
+                              className={`w-12 h-12 rounded-none flex items-center justify-center bg-secondary/60 border border-white/5`}
                             >
                               <Icon className={card.color} size={22} />
                             </div>
@@ -870,8 +870,8 @@ export default function AdminDashboard() {
                     {/* Chart / Report Visualization & Alert Columns */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                       {/* CSS-Based Monthly Revenue Visualization */}
-                      <div className="lg:col-span-2 bg-[#1B2D20]/80 border border-primary/10 rounded-xl p-6 shadow-2xl backdrop-blur-md flex flex-col">
-                        <h3 className="font-bold text-lg mb-6 text-white flex items-center gap-2">
+                      <div className="lg:col-span-2 bg-[#F9F6F0]/80 border border-primary/10 rounded-none p-6 shadow-2xl backdrop-blur-md flex flex-col">
+                        <h3 className="font-bold text-lg mb-6 text-[#1A1A1A] flex items-center gap-2">
                           <BarChart3 size={18} className="text-primary" />
                           Monthly Revenue Trend
                         </h3>
@@ -915,11 +915,11 @@ export default function AdminDashboard() {
                                     className="flex-1 flex flex-col items-center group relative"
                                   >
                                     {/* Tooltip on Hover */}
-                                    <div className="absolute bottom-full mb-2 bg-black/95 text-white border border-primary/30 text-xs px-2.5 py-1 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 whitespace-nowrap">
+                                    <div className="absolute bottom-full mb-2 bg-black/95 text-[#1A1A1A] border border-primary/30 text-xs px-2.5 py-1 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 whitespace-nowrap">
                                       <p className="font-bold text-primary">
                                         ₹{item.revenue.toLocaleString()}
                                       </p>
-                                      <p className="text-[10px] text-gray-400">
+                                      <p className="text-[10px] text-[#1A1A1A]/60">
                                         {item.orders} Orders
                                       </p>
                                     </div>
@@ -929,7 +929,7 @@ export default function AdminDashboard() {
                                       className="w-full max-w-[28px] rounded-t bg-gradient-to-t from-primary to-accent group-hover:brightness-125 transition-all cursor-pointer shadow-lg shadow-primary/10"
                                       style={{ height: `${heightPct}%` }}
                                     />
-                                    <span className="text-[10px] text-gray-500 mt-2 whitespace-nowrap transform -rotate-12 md:rotate-0">
+                                    <span className="text-[10px] text-[#1A1A1A]/40 mt-2 whitespace-nowrap transform -rotate-12 md:rotate-0">
                                       {label}
                                     </span>
                                   </div>
@@ -938,7 +938,7 @@ export default function AdminDashboard() {
                           </div>
                         ) : (
                           <div className="flex-grow flex items-center justify-center py-10">
-                            <p className="text-gray-500 text-sm">
+                            <p className="text-[#1A1A1A]/40 text-sm">
                               No monthly transaction data available yet
                             </p>
                           </div>
@@ -946,8 +946,8 @@ export default function AdminDashboard() {
                       </div>
 
                       {/* Stock Alerts Widget */}
-                      <div className="bg-[#1B2D20]/80 border border-primary/10 rounded-xl p-6 shadow-2xl backdrop-blur-md flex flex-col">
-                        <h3 className="font-bold text-lg mb-6 text-white flex items-center gap-2">
+                      <div className="bg-[#F9F6F0]/80 border border-primary/10 rounded-none p-6 shadow-2xl backdrop-blur-md flex flex-col">
+                        <h3 className="font-bold text-lg mb-6 text-[#1A1A1A] flex items-center gap-2">
                           <AlertCircle size={18} className="text-red-500" />
                           Low Stock Alerts
                         </h3>
@@ -957,13 +957,13 @@ export default function AdminDashboard() {
                             lowStock.map((prod) => (
                               <div
                                 key={prod.id || prod._id}
-                                className="flex items-center justify-between gap-3 p-3 bg-secondary/60 border border-red-500/10 rounded-lg hover:border-red-500/30 transition-all"
+                                className="flex items-center justify-between gap-3 p-3 bg-secondary/60 border border-red-500/10 rounded-none hover:border-red-500/30 transition-all"
                               >
                                 <div className="min-w-0">
                                   <p className="font-semibold text-sm text-gray-200 truncate">
                                     {prod.name}
                                   </p>
-                                  <p className="text-xs text-gray-500">
+                                  <p className="text-xs text-[#1A1A1A]/40">
                                     Threshold: {prod.lowStockThreshold || 5}
                                   </p>
                                 </div>
@@ -974,7 +974,7 @@ export default function AdminDashboard() {
                             ))
                           ) : (
                             <div className="h-full flex items-center justify-center py-10">
-                              <p className="text-gray-500 text-sm text-center">
+                              <p className="text-[#1A1A1A]/40 text-sm text-center">
                                 All product stocks are within healthy
                                 thresholds.
                               </p>
@@ -985,9 +985,9 @@ export default function AdminDashboard() {
                     </div>
 
                     {/* Recent Orders List Table */}
-                    <div className="bg-[#1B2D20]/80 border border-primary/10 rounded-xl p-6 shadow-2xl backdrop-blur-md">
+                    <div className="bg-[#F9F6F0]/80 border border-primary/10 rounded-none p-6 shadow-2xl backdrop-blur-md">
                       <div className="flex justify-between items-center mb-6">
-                        <h3 className="font-bold text-lg text-white">
+                        <h3 className="font-bold text-lg text-[#1A1A1A]">
                           Recent Transactions
                         </h3>
                         <button
@@ -1002,7 +1002,7 @@ export default function AdminDashboard() {
                       <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                           <thead>
-                            <tr className="border-b border-primary/10 text-gray-400 text-xs font-bold uppercase tracking-wider">
+                            <tr className="border-b border-primary/10 text-[#1A1A1A]/60 text-xs font-bold uppercase tracking-wider">
                               <th className="py-3 px-4">Order ID</th>
                               <th className="py-3 px-4">Customer</th>
                               <th className="py-3 px-4">Total Price</th>
@@ -1026,32 +1026,32 @@ export default function AdminDashboard() {
                                     #{orderIdDisplay}
                                   </td>
                                   <td className="py-3.5 px-4">
-                                    <p className="font-semibold text-white">
+                                    <p className="font-semibold text-[#1A1A1A]">
                                       {userName}
                                     </p>
-                                    <p className="text-xs text-gray-500">
+                                    <p className="text-xs text-[#1A1A1A]/40">
                                       {ord.user?.email || "Guest"}
                                     </p>
                                   </td>
-                                  <td className="py-3.5 px-4 font-bold text-white">
+                                  <td className="py-3.5 px-4 font-bold text-[#1A1A1A]">
                                     ₹{(ord.totalPrice || 0).toLocaleString()}
                                   </td>
                                   <td className="py-3.5 px-4">
                                     <span
-                                      className={`px-2.5 py-0.5 rounded-full text-xs font-bold capitalize border ${
+                                      className={`px-2.5 py-0.5 rounded-none text-xs font-bold capitalize border ${
                                         ord.orderStatus === "delivered"
                                           ? "bg-green-500/10 text-green-500 border-green-500/20"
                                           : ord.orderStatus === "cancelled"
                                             ? "bg-red-500/10 text-red-500 border-red-500/20"
                                             : ord.orderStatus === "shipped"
                                               ? "bg-blue-500/10 text-blue-500 border-blue-500/20"
-                                              : "bg-[#D4AF37]/10 text-[#D4AF37] border-[#D4AF37]/20"
+                                              : "bg-[#D4AF37]/10 text-[#D4AF37] border-[#1A1A1A]/20"
                                       }`}
                                     >
                                       {ord.orderStatus || 'pending'}
                                     </span>
                                   </td>
-                                  <td className="py-3.5 px-4 uppercase text-xs font-semibold text-gray-300">
+                                  <td className="py-3.5 px-4 uppercase text-xs font-semibold text-[#1A1A1A]/70">
                                     {ord.paymentMethod || 'N/A'} •{" "}
                                     <span
                                       className={
@@ -1067,7 +1067,7 @@ export default function AdminDashboard() {
                                         "pending"}
                                     </span>
                                   </td>
-                                  <td className="py-3.5 px-4 text-xs text-gray-400">
+                                  <td className="py-3.5 px-4 text-xs text-[#1A1A1A]/60">
                                     {new Date(
                                       ord.created_at || ord.createdAt,
                                     ).toLocaleDateString()}
@@ -1078,7 +1078,7 @@ export default function AdminDashboard() {
                               <tr>
                                 <td
                                   colSpan={6}
-                                  className="py-8 text-center text-gray-500"
+                                  className="py-8 text-center text-[#1A1A1A]/40"
                                 >
                                   No orders logged in system
                                 </td>
@@ -1097,12 +1097,12 @@ export default function AdminDashboard() {
             {activeTab === "products" && (
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
-                  <h3 className="font-bold text-xl text-white">
+                  <h3 className="font-bold text-xl text-[#1A1A1A]">
                     Active Product Catalog ({products.length})
                   </h3>
                   <button
                     onClick={openAddProductModal}
-                    className="bg-primary hover:bg-accent text-primary-foreground px-4 py-2.5 rounded-lg font-bold text-sm flex items-center gap-1.5 shadow-lg shadow-primary/10 transition-all duration-300"
+                    className="bg-[#0C3A2E] hover:bg-accent text-white px-4 py-2.5 rounded-none font-bold text-sm flex items-center gap-1.5 shadow-lg shadow-primary/10 transition-all duration-300"
                   >
                     <Plus size={16} />
                     Add Product Item
@@ -1112,16 +1112,16 @@ export default function AdminDashboard() {
                 {loadingProducts ? (
                   <div className="flex flex-col items-center justify-center py-20">
                     <Loader2 className="w-10 h-10 text-primary animate-spin mb-4" />
-                    <p className="text-gray-400">
+                    <p className="text-[#1A1A1A]/60">
                       Fetching live catalog items...
                     </p>
                   </div>
                 ) : (
-                                  <div className="bg-[#1B2D20]/80 border border-primary/10 rounded-xl overflow-hidden shadow-2xl backdrop-blur-md">
+                                  <div className="bg-[#F9F6F0]/80 border border-primary/10 rounded-none overflow-hidden shadow-2xl backdrop-blur-md">
                                     <div className="overflow-x-auto">
                                       <table className="w-full text-left border-collapse">
                                         <thead>
-                                          <tr className="border-b border-primary/10 text-gray-400 text-xs font-bold uppercase tracking-wider bg-secondary/40">
+                                          <tr className="border-b border-primary/10 text-[#1A1A1A]/60 text-xs font-bold uppercase tracking-wider bg-secondary/40">
                                             <th className="py-4 px-6">Product details</th>
                                             <th className="py-4 px-6">Category</th>
                                             <th className="py-4 px-6">Price</th>
@@ -1150,12 +1150,12 @@ export default function AdminDashboard() {
                                       />
                                     </div>
                                     <div className="min-w-0">
-                                      <p className="font-bold text-white truncate">
+                                      <p className="font-bold text-[#1A1A1A] truncate">
                                         {prod.name}
                                       </p>
                                       <div className="flex gap-2.5 mt-0.5">
                                         {prod.featured && (
-                                          <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded font-bold uppercase">
+                                          <span className="text-[10px] bg-[#0C3A2E]/10 text-primary px-1.5 py-0.5 rounded font-bold uppercase">
                                             Featured
                                           </span>
                                         )}
@@ -1173,7 +1173,7 @@ export default function AdminDashboard() {
                                     </div>
                                   </div>
                                 </td>
-                                <td className="py-4 px-6 text-gray-300 font-semibold">
+                                <td className="py-4 px-6 text-[#1A1A1A]/70 font-semibold">
                                   {prod.category?.name || "Uncategorized"}
                                 </td>
                                 <td className="py-4 px-6">
@@ -1181,14 +1181,14 @@ export default function AdminDashboard() {
                                     ₹{prod.price.toLocaleString()}
                                   </p>
                                   {prod.compareAtPrice && (
-                                    <p className="text-xs text-gray-500 line-through">
+                                    <p className="text-xs text-[#1A1A1A]/40 line-through">
                                       ₹{prod.compareAtPrice.toLocaleString()}
                                     </p>
                                   )}
                                 </td>
                                 <td className="py-4 px-6">
                                   <span
-                                    className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                                    className={`px-2.5 py-0.5 rounded-none text-xs font-bold border ${
                                       prod.stock <=
                                       (prod.lowStockThreshold || 5)
                                         ? "bg-red-500/10 text-red-500 border-red-500/20"
@@ -1202,7 +1202,7 @@ export default function AdminDashboard() {
                                   <div className="flex items-center justify-end gap-2">
                                     <button
                                       onClick={() => openEditProductModal(prod)}
-                                      className="p-2 bg-blue-500/10 hover:bg-blue-500 text-blue-400 hover:text-white rounded border border-blue-500/20 hover:border-transparent transition-all"
+                                      className="p-2 bg-blue-500/10 hover:bg-blue-500 text-blue-400 hover:text-[#1A1A1A] rounded border border-blue-500/20 hover:border-transparent transition-all"
                                       title="Edit Product Info"
                                     >
                                       <Edit size={14} />
@@ -1211,7 +1211,7 @@ export default function AdminDashboard() {
                                       onClick={() =>
                                         handleDeleteProduct(prod.id || prod._id, prod.name)
                                       }
-                                      className="p-2 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white rounded border border-red-500/20 hover:border-transparent transition-all"
+                                      className="p-2 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-[#1A1A1A] rounded border border-red-500/20 hover:border-transparent transition-all"
                                       title="Delete Product"
                                     >
                                       <Trash2 size={14} />
@@ -1224,7 +1224,7 @@ export default function AdminDashboard() {
                             <tr>
                               <td
                                 colSpan={5}
-                                className="py-8 text-center text-gray-500"
+                                className="py-8 text-center text-[#1A1A1A]/40"
                               >
                                 No products configured in database
                               </td>
@@ -1242,7 +1242,7 @@ export default function AdminDashboard() {
             {activeTab === "orders" && (
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
-                  <h3 className="font-bold text-xl text-white">
+                  <h3 className="font-bold text-xl text-[#1A1A1A]">
                     Order Fulfillments
                   </h3>
                 </div>
@@ -1250,14 +1250,14 @@ export default function AdminDashboard() {
                 {loadingOrders ? (
                   <div className="flex flex-col items-center justify-center py-20">
                     <Loader2 className="w-10 h-10 text-[#D4AF37] animate-spin mb-4" />
-                    <p className="text-gray-400">Loading order queue...</p>
+                    <p className="text-[#1A1A1A]/60">Loading order queue...</p>
                   </div>
                 ) : (
-                  <div className="bg-[#1B2D20]/80 border border-primary/10 rounded-xl overflow-hidden shadow-2xl backdrop-blur-md">
+                  <div className="bg-[#F9F6F0]/80 border border-primary/10 rounded-none overflow-hidden shadow-2xl backdrop-blur-md">
                     <div className="overflow-x-auto">
                       <table className="w-full text-left border-collapse">
                         <thead>
-                          <tr className="border-b border-primary/10 text-gray-400 text-xs font-bold uppercase tracking-wider bg-secondary/40">
+                          <tr className="border-b border-primary/10 text-[#1A1A1A]/60 text-xs font-bold uppercase tracking-wider bg-secondary/40">
                             <th className="py-4 px-6">Order ID</th>
                             <th className="py-4 px-6">Customer</th>
                             <th className="py-4 px-6">Items</th>
@@ -1284,44 +1284,44 @@ export default function AdminDashboard() {
                                   #{orderIdDisplay}
                                 </td>
                                 <td className="py-4 px-6">
-                                  <p className="font-bold text-white">
+                                  <p className="font-bold text-[#1A1A1A]">
                                     {userName}
                                   </p>
-                                  <p className="text-xs text-gray-400">
+                                  <p className="text-xs text-[#1A1A1A]/60">
                                     {ord.shippingAddress?.city},{" "}
                                     {ord.shippingAddress?.state}
                                   </p>
                                 </td>
                                 <td className="py-4 px-6">
-                                  <p className="text-gray-300 font-semibold">
+                                  <p className="text-[#1A1A1A]/70 font-semibold">
                                     {ord.items?.length || 0} unique items
                                   </p>
-                                  <p className="text-xs text-gray-500 truncate max-w-[150px]">
+                                  <p className="text-xs text-[#1A1A1A]/40 truncate max-w-[150px]">
                                     {(ord.items || [])
                                       .map((item: any) => item.name)
                                       .join(", ")}
                                   </p>
                                 </td>
-                                <td className="py-4 px-6 font-bold text-white">
+                                <td className="py-4 px-6 font-bold text-[#1A1A1A]">
                                   ₹{(ord.totalPrice || 0).toLocaleString()}
                                 </td>
                                 <td className="py-4 px-6">
                                   <span
-                                    className={`px-2.5 py-0.5 rounded-full text-xs font-bold border capitalize ${
+                                    className={`px-2.5 py-0.5 rounded-none text-xs font-bold border capitalize ${
                                       ord.orderStatus === "delivered"
                                         ? "bg-green-500/10 text-green-500 border-green-500/20"
                                         : ord.orderStatus === "cancelled"
                                           ? "bg-red-500/10 text-red-500 border-red-500/20"
                                           : ord.orderStatus === "shipped"
                                             ? "bg-blue-500/10 text-blue-500 border-blue-500/20"
-                                            : "bg-[#D4AF37]/10 text-[#D4AF37] border-[#D4AF37]/20"
+                                            : "bg-[#D4AF37]/10 text-[#D4AF37] border-[#1A1A1A]/20"
                                     }`}
                                   >
                                     {ord.orderStatus || 'pending'}
                                   </span>
                                 </td>
                                 <td className="py-4 px-6 text-xs">
-                                  <p className="uppercase font-semibold text-gray-300">
+                                  <p className="uppercase font-semibold text-[#1A1A1A]/70">
                                     {ord.paymentMethod || 'N/A'}
                                   </p>
                                   <p
@@ -1342,21 +1342,21 @@ export default function AdminDashboard() {
                                   <div className="flex items-center justify-end gap-2">
                                     <button
                                       onClick={() => openOrderActionModal(ord)}
-                                      className="p-2 bg-[#D4AF37]/10 hover:bg-[#D4AF37] text-[#D4AF37] hover:text-black rounded border border-[#D4AF37]/20 hover:border-transparent transition-all"
+                                      className="p-2 bg-[#D4AF37]/10 hover:bg-[#D4AF37] text-[#D4AF37] hover:text-black rounded border border-[#1A1A1A]/20 hover:border-transparent transition-all"
                                       title="Fulfill and Update Order"
                                     >
                                       <Truck size={14} />
                                     </button>
                                     <Link
                                       href={`/dashboard/orders/${orderId}`}
-                                      className="p-2 bg-white/5 hover:bg-white/20 text-gray-300 hover:text-white rounded border border-white/10 transition-all"
+                                      className="p-2 bg-white/5 hover:bg-white/20 text-[#1A1A1A]/70 hover:text-[#1A1A1A] rounded border border-white/10 transition-all"
                                       title="View Detailed Order Invoice & Tracking"
                                     >
                                       <Eye size={14} />
                                     </Link>
                                     <button
                                       onClick={() => handleDeleteOrder(orderId, ord.orderNumber)}
-                                      className="p-2 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white rounded border border-red-500/20 hover:border-transparent transition-all"
+                                      className="p-2 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-[#1A1A1A] rounded border border-red-500/20 hover:border-transparent transition-all"
                                       title="Delete Order Permanently"
                                     >
                                       <Trash2 size={14} />
@@ -1369,7 +1369,7 @@ export default function AdminDashboard() {
                             <tr>
                               <td
                                 colSpan={7}
-                                className="py-8 text-center text-gray-500"
+                                className="py-8 text-center text-[#1A1A1A]/40"
                               >
                                 No orders logged in queue
                               </td>
@@ -1387,7 +1387,7 @@ export default function AdminDashboard() {
             {activeTab === "coupons" && (
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
-                  <h3 className="font-bold text-xl text-white">
+                  <h3 className="font-bold text-xl text-[#1A1A1A]">
                     Promotional Coupon Campaigns
                   </h3>
                   <button
@@ -1403,7 +1403,7 @@ export default function AdminDashboard() {
                       });
                       setCouponModalOpen(true);
                     }}
-                    className="bg-[#D4AF37] hover:bg-[#C29E30] text-black px-4 py-2.5 rounded-lg font-bold text-sm flex items-center gap-1.5 shadow-lg shadow-[#D4AF37]/10 transition-all duration-300"
+                    className="bg-[#D4AF37] hover:bg-[#C29E30] text-black px-4 py-2.5 rounded-none font-bold text-sm flex items-center gap-1.5 shadow-lg shadow-[#D4AF37]/10 transition-all duration-300"
                   >
                     <Plus size={16} />
                     Create Promo Coupon
@@ -1413,7 +1413,7 @@ export default function AdminDashboard() {
                 {loadingCoupons ? (
                   <div className="flex flex-col items-center justify-center py-20">
                     <Loader2 className="w-10 h-10 text-[#D4AF37] animate-spin mb-4" />
-                    <p className="text-gray-400">Loading coupons...</p>
+                    <p className="text-[#1A1A1A]/60">Loading coupons...</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1421,41 +1421,41 @@ export default function AdminDashboard() {
                       coupons.map((coupon) => (
                         <div
                           key={coupon.id || coupon._id}
-                          className="bg-[#1B2D20]/80 border border-primary/10 hover:border-primary/30 rounded-xl p-6 shadow-xl backdrop-blur-md flex flex-col justify-between relative group transition-all duration-300"
+                          className="bg-[#F9F6F0]/80 border border-primary/10 hover:border-primary/30 rounded-none p-6 shadow-xl backdrop-blur-md flex flex-col justify-between relative group transition-all duration-300"
                         >
                           <button
                             onClick={() =>
                               handleDeleteCoupon(coupon.id || coupon._id, coupon.code)
                             }
-                            className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition-colors p-1"
+                            className="absolute top-4 right-4 text-[#1A1A1A]/40 hover:text-red-500 transition-colors p-1"
                             title="Remove Promo Coupon"
                           >
                             <Trash2 size={16} />
                           </button>
 
                           <div>
-                            <span className="bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 px-3 py-1 rounded font-mono font-bold text-sm tracking-widest">
+                            <span className="bg-[#D4AF37]/10 text-[#D4AF37] border border-[#1A1A1A]/20 px-3 py-1 rounded font-mono font-bold text-sm tracking-widest">
                               {coupon.code}
                             </span>
-                            <div className="mt-4 space-y-2 text-sm text-gray-300">
-                              <p className="text-2xl font-black text-white">
+                            <div className="mt-4 space-y-2 text-sm text-[#1A1A1A]/70">
+                              <p className="text-2xl font-black text-[#1A1A1A]">
                                 {coupon.discountType === "percentage"
                                   ? `${coupon.discountAmount}% OFF`
                                   : `₹${coupon.discountAmount} OFF`}
                               </p>
-                              <p className="text-xs text-gray-400">
+                              <p className="text-xs text-[#1A1A1A]/60">
                                 Min Purchase Required: ₹
                                 {coupon.minPurchase || 0}
                               </p>
                               {coupon.maxDiscount && (
-                                <p className="text-xs text-gray-400">
+                                <p className="text-xs text-[#1A1A1A]/60">
                                   Max Discount Limit: ₹{coupon.maxDiscount}
                                 </p>
                               )}
                             </div>
                           </div>
 
-                          <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-gray-400">
+                          <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-[#1A1A1A]/60">
                             <span className="flex items-center gap-1">
                               <Calendar size={12} />
                               Expires:{" "}
@@ -1473,12 +1473,12 @@ export default function AdminDashboard() {
                         </div>
                       ))
                     ) : (
-                                          <div className="md:col-span-2 lg:col-span-3 py-16 text-center bg-[#1B2D20]/60 border border-primary/10 rounded-xl">
+                                          <div className="md:col-span-2 lg:col-span-3 py-16 text-center bg-[#F9F6F0]/60 border border-primary/10 rounded-none">
                                             <Tag className="mx-auto text-gray-600 mb-3" size={48} />
-                        <h4 className="font-bold text-lg text-white mb-1">
+                        <h4 className="font-bold text-lg text-[#1A1A1A] mb-1">
                           No coupons available
                         </h4>
-                        <p className="text-xs text-gray-400">
+                        <p className="text-xs text-[#1A1A1A]/60">
                           Create a promotional campaign coupon to incentivize
                           conversion
                         </p>
@@ -1502,11 +1502,11 @@ export default function AdminDashboard() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-[#1B2D20] border border-primary/30 rounded-xl overflow-hidden shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col"
+              className="bg-[#F9F6F0] border border-primary/30 rounded-none overflow-hidden shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col"
             >
               {/* Header */}
-              <div className="p-6 border-b border-[#D4AF37]/10 flex justify-between items-center bg-black/10">
-                <h3 className="font-bold text-lg text-white">
+              <div className="p-6 border-b border-[#1A1A1A]/10 flex justify-between items-center bg-black/10">
+                <h3 className="font-bold text-lg text-[#1A1A1A]">
                   {editingProduct
                     ? "Edit Catalog Product"
                     : "Add New Catalog Product"}
@@ -1516,7 +1516,7 @@ export default function AdminDashboard() {
                     setProductModalOpen(false);
                     setUploadedDeviceImages([]);
                   }}
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-[#1A1A1A]/60 hover:text-[#1A1A1A] transition-colors"
                 >
                   <X size={20} />
                 </button>
@@ -1530,7 +1530,7 @@ export default function AdminDashboard() {
               >
                 {/* Product Name */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
                     Product Name *
                   </label>
                   <input
@@ -1539,7 +1539,7 @@ export default function AdminDashboard() {
                     onChange={(e) =>
                       setProductForm({ ...productForm, name: e.target.value })
                     }
-                    className="w-full bg-secondary border border-primary/20 rounded-lg px-4 py-2.5 focus:outline-none focus:border-accent text-foreground"
+                    className="w-full bg-secondary border border-primary/20 rounded-none px-4 py-2.5 focus:outline-none focus:border-accent text-[#1A1A1A]"
                     placeholder="Premium MDF Wall Art - Royal Gold"
                     required
                   />
@@ -1547,7 +1547,7 @@ export default function AdminDashboard() {
 
                 {/* Description */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
                     Product Description *
                   </label>
                   <textarea
@@ -1558,7 +1558,7 @@ export default function AdminDashboard() {
                         description: e.target.value,
                       })
                     }
-                    className="w-full bg-secondary border border-primary/20 rounded-lg px-4 py-2.5 focus:outline-none focus:border-accent text-foreground h-24 resize-none"
+                    className="w-full bg-secondary border border-primary/20 rounded-none px-4 py-2.5 focus:outline-none focus:border-accent text-[#1A1A1A] h-24 resize-none"
                     placeholder="Describe the product material, design, and aesthetic values in detail..."
                     required
                   />
@@ -1567,7 +1567,7 @@ export default function AdminDashboard() {
                 {/* Pricing & Stock Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
                       Price (₹) *
                     </label>
                     <input
@@ -1579,13 +1579,13 @@ export default function AdminDashboard() {
                           price: e.target.value,
                         })
                       }
-                      className="w-full bg-secondary border border-primary/20 rounded-lg px-4 py-2.5 focus:outline-none focus:border-accent text-foreground font-bold"
+                      className="w-full bg-secondary border border-primary/20 rounded-none px-4 py-2.5 focus:outline-none focus:border-accent text-[#1A1A1A] font-bold"
                       placeholder="e.g. 1999"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
                       Compare At Price (₹)
                     </label>
                     <input
@@ -1597,12 +1597,12 @@ export default function AdminDashboard() {
                           compareAtPrice: e.target.value,
                         })
                       }
-                      className="w-full bg-secondary border border-primary/20 rounded-lg px-4 py-2.5 focus:outline-none focus:border-accent text-foreground placeholder-gray-500"
+                      className="w-full bg-secondary border border-primary/20 rounded-none px-4 py-2.5 focus:outline-none focus:border-accent text-[#1A1A1A] placeholder-gray-500"
                       placeholder="e.g. 2999"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
                       Stock Inventory *
                     </label>
                     <input
@@ -1614,13 +1614,13 @@ export default function AdminDashboard() {
                           stock: e.target.value,
                         })
                       }
-                      className="w-full bg-secondary border border-primary/20 rounded-lg px-4 py-2.5 focus:outline-none focus:border-accent text-foreground"
+                      className="w-full bg-secondary border border-primary/20 rounded-none px-4 py-2.5 focus:outline-none focus:border-accent text-[#1A1A1A]"
                       placeholder="e.g. 25"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
                       Product Category *
                     </label>
                     <select
@@ -1631,7 +1631,7 @@ export default function AdminDashboard() {
                           category: e.target.value,
                         })
                       }
-                      className="w-full bg-secondary border border-primary/20 rounded-lg px-4 py-2.5 focus:outline-none focus:border-accent text-foreground"
+                      className="w-full bg-secondary border border-primary/20 rounded-none px-4 py-2.5 focus:outline-none focus:border-accent text-[#1A1A1A]"
                       required
                     >
                       <option value="" disabled>
@@ -1648,7 +1648,7 @@ export default function AdminDashboard() {
 
                 {/* Unsplash/Cloudinary Images */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
                     Product Images *
                   </label>
                   {productForm.images.map((url, index) => (
@@ -1657,7 +1657,7 @@ export default function AdminDashboard() {
                         url.startsWith("http://") ||
                         url.startsWith("https://")) &&
                       url.trim() !== "" ? (
-                        <div className="relative w-24 h-24 rounded-lg overflow-hidden border border-[#D4AF37]/20">
+                        <div className="relative w-24 h-24 rounded-none overflow-hidden border border-[#1A1A1A]/20">
                           <Image
                             src={url}
                             alt="Uploaded"
@@ -1675,7 +1675,7 @@ export default function AdminDashboard() {
                           newImages[index] = e.target.value;
                           setProductForm({ ...productForm, images: newImages });
                         }}
-                        className="flex-1 bg-secondary/80 border border-primary/20 rounded-lg px-4 py-2 focus:outline-none focus:border-accent text-white text-xs"
+                        className="flex-1 bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A] text-xs"
                         placeholder="https://... (Do not paste local D:\ paths here)"
                       />
                       {productForm.images.length > 1 && (
@@ -1690,7 +1690,7 @@ export default function AdminDashboard() {
                               images: newImages,
                             });
                           }}
-                          className="p-2 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded border border-red-500/20"
+                          className="p-2 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-[#1A1A1A] rounded border border-red-500/20"
                         >
                           <X size={16} />
                         </button>
@@ -1750,7 +1750,7 @@ export default function AdminDashboard() {
                       }
                       className="accent-[#D4AF37] w-4 h-4"
                     />
-                    <span className="text-sm text-gray-300">
+                    <span className="text-sm text-[#1A1A1A]/70">
                       Featured Home Decor
                     </span>
                   </label>
@@ -1767,7 +1767,7 @@ export default function AdminDashboard() {
                       }
                       className="accent-[#D4AF37] w-4 h-4"
                     />
-                    <span className="text-sm text-gray-300">
+                    <span className="text-sm text-[#1A1A1A]/70">
                       Trending Section
                     </span>
                   </label>
@@ -1784,7 +1784,7 @@ export default function AdminDashboard() {
                       }
                       className="accent-[#D4AF37] w-4 h-4"
                     />
-                    <span className="text-sm text-gray-300">
+                    <span className="text-sm text-[#1A1A1A]/70">
                       Best Seller Decor
                     </span>
                   </label>
@@ -1792,7 +1792,7 @@ export default function AdminDashboard() {
 
                 {/* Technical Specifications */}
                 <div className="border-t border-white/5 pt-6">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
                     Technical Specifications
                   </label>
                   {productForm.specifications.map((spec, index) => (
@@ -1808,7 +1808,7 @@ export default function AdminDashboard() {
                             specifications: newSpecs,
                           });
                         }}
-                        className="w-1/3 bg-secondary/80 border border-primary/20 rounded-lg px-4 py-2 focus:outline-none focus:border-accent text-white text-xs"
+                        className="w-1/3 bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A] text-xs"
                         placeholder="e.g. Dimensions"
                       />
                       <input
@@ -1822,7 +1822,7 @@ export default function AdminDashboard() {
                             specifications: newSpecs,
                           });
                         }}
-                        className="w-2/3 bg-secondary/80 border border-primary/20 rounded-lg px-4 py-2 focus:outline-none focus:border-accent text-white text-xs"
+                        className="w-2/3 bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A] text-xs"
                         placeholder="e.g. 24 x 24 inches"
                       />
                       {productForm.specifications.length > 1 && (
@@ -1837,7 +1837,7 @@ export default function AdminDashboard() {
                               specifications: newSpecs,
                             });
                           }}
-                          className="p-2 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded border border-red-500/20"
+                          className="p-2 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-[#1A1A1A] rounded border border-red-500/20"
                         >
                           <X size={16} />
                         </button>
@@ -1863,20 +1863,20 @@ export default function AdminDashboard() {
               </form>
 
               {/* Actions Footer */}
-              <div className="p-6 border-t border-[#D4AF37]/10 flex justify-end gap-3 bg-black/10">
+              <div className="p-6 border-t border-[#1A1A1A]/10 flex justify-end gap-3 bg-black/10">
                 <button
                   type="button"
                   onClick={() => {
                     setProductModalOpen(false);
                     setUploadedDeviceImages([]);
                   }}
-                  className="bg-transparent hover:bg-white/5 border border-white/10 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all"
+                  className="bg-transparent hover:bg-white/5 border border-white/10 text-[#1A1A1A] px-5 py-2.5 rounded-none text-sm font-semibold transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleProductSubmit}
-                  className="bg-[#D4AF37] hover:bg-[#C29E30] text-black px-6 py-2.5 rounded-lg text-sm font-bold shadow-lg shadow-[#D4AF37]/10 transition-all duration-300"
+                  className="bg-[#D4AF37] hover:bg-[#C29E30] text-black px-6 py-2.5 rounded-none text-sm font-bold shadow-lg shadow-[#D4AF37]/10 transition-all duration-300"
                 >
                   Save Product Item
                 </button>
@@ -1894,12 +1894,12 @@ export default function AdminDashboard() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-[#1B2D20] border border-primary/30 rounded-xl overflow-hidden shadow-2xl w-full max-w-xl max-h-[85vh] flex flex-col"
+              className="bg-[#F9F6F0] border border-primary/30 rounded-none overflow-hidden shadow-2xl w-full max-w-xl max-h-[85vh] flex flex-col"
             >
               {/* Header */}
-              <div className="p-6 border-b border-[#D4AF37]/10 flex justify-between items-center bg-black/10">
+              <div className="p-6 border-b border-[#1A1A1A]/10 flex justify-between items-center bg-black/10">
                 <div>
-                  <h3 className="font-bold text-lg text-white">
+                  <h3 className="font-bold text-lg text-[#1A1A1A]">
                     Order Fulfillments & Shipping
                   </h3>
                   <p className="text-xs text-[#D4AF37] mt-0.5">
@@ -1910,7 +1910,7 @@ export default function AdminDashboard() {
                 </div>
                 <button
                   onClick={() => setOrderModalOpen(false)}
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-[#1A1A1A]/60 hover:text-[#1A1A1A] transition-colors"
                 >
                   <X size={20} />
                 </button>
@@ -1925,7 +1925,7 @@ export default function AdminDashboard() {
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs text-gray-400 mb-1.5">
+                      <label className="block text-xs text-[#1A1A1A]/60 mb-1.5">
                         New Status
                       </label>
                       <select
@@ -1936,7 +1936,7 @@ export default function AdminDashboard() {
                             status: e.target.value,
                           })
                         }
-                        className="w-full bg-secondary/80 border border-primary/20 rounded-lg px-4 py-2 focus:outline-none focus:border-accent text-white"
+                        className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A]"
                       >
                         <option value="pending">Pending</option>
                         <option value="confirmed">Confirmed</option>
@@ -1947,7 +1947,7 @@ export default function AdminDashboard() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs text-gray-400 mb-1.5">
+                      <label className="block text-xs text-[#1A1A1A]/60 mb-1.5">
                         Status Note
                       </label>
                       <input
@@ -1959,7 +1959,7 @@ export default function AdminDashboard() {
                             note: e.target.value,
                           })
                         }
-                        className="w-full bg-secondary/80 border border-primary/20 rounded-lg px-4 py-2 focus:outline-none focus:border-accent text-white"
+                        className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A]"
                         placeholder="e.g. Consignment created"
                       />
                     </div>
@@ -1983,7 +1983,7 @@ export default function AdminDashboard() {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-xs text-gray-400 mb-1.5">
+                      <label className="block text-xs text-[#1A1A1A]/60 mb-1.5">
                         Carrier Partner
                       </label>
                       <select
@@ -1994,7 +1994,7 @@ export default function AdminDashboard() {
                             carrier: e.target.value,
                           })
                         }
-                        className="w-full bg-secondary/80 border border-primary/20 rounded-lg px-4 py-2 focus:outline-none focus:border-accent text-white text-xs"
+                        className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A] text-xs"
                       >
                         <option value="Delhivery">Delhivery Express</option>
                         <option value="Shiprocket">Shiprocket Economy</option>
@@ -2003,7 +2003,7 @@ export default function AdminDashboard() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs text-gray-400 mb-1.5">
+                      <label className="block text-xs text-[#1A1A1A]/60 mb-1.5">
                         Tracking AWB ID
                       </label>
                       <input
@@ -2015,13 +2015,13 @@ export default function AdminDashboard() {
                             trackingNumber: e.target.value,
                           })
                         }
-                        className="w-full bg-secondary/80 border border-primary/20 rounded-lg px-4 py-2 focus:outline-none focus:border-accent text-white text-xs"
+                        className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A] text-xs"
                         placeholder="AWB100234598"
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-xs text-gray-400 mb-1.5">
+                      <label className="block text-xs text-[#1A1A1A]/60 mb-1.5">
                         Est. Delivery Date
                       </label>
                       <input
@@ -2033,7 +2033,7 @@ export default function AdminDashboard() {
                             estimatedDelivery: e.target.value,
                           })
                         }
-                        className="w-full bg-secondary/80 border border-primary/20 rounded-lg px-4 py-2 focus:outline-none focus:border-accent text-white text-xs"
+                        className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A] text-xs"
                       />
                     </div>
                   </div>
@@ -2048,11 +2048,11 @@ export default function AdminDashboard() {
               </div>
 
               {/* Close Footer */}
-              <div className="p-6 border-t border-[#D4AF37]/10 flex justify-end bg-black/10">
+              <div className="p-6 border-t border-[#1A1A1A]/10 flex justify-end bg-black/10">
                 <button
                   type="button"
                   onClick={() => setOrderModalOpen(false)}
-                  className="bg-secondary/80 hover:bg-white/5 border border-white/10 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all"
+                  className="bg-secondary/80 hover:bg-white/5 border border-white/10 text-[#1A1A1A] px-5 py-2.5 rounded-none text-sm font-semibold transition-all"
                 >
                   Close Manager
                 </button>
@@ -2070,16 +2070,16 @@ export default function AdminDashboard() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-[#1B2D20] border border-primary/30 rounded-xl overflow-hidden shadow-2xl w-full max-w-md max-h-[85vh] flex flex-col"
+              className="bg-[#F9F6F0] border border-primary/30 rounded-none overflow-hidden shadow-2xl w-full max-w-md max-h-[85vh] flex flex-col"
             >
               {/* Header */}
-              <div className="p-6 border-b border-[#D4AF37]/10 flex justify-between items-center bg-black/10">
-                <h3 className="font-bold text-lg text-white">
+              <div className="p-6 border-b border-[#1A1A1A]/10 flex justify-between items-center bg-black/10">
+                <h3 className="font-bold text-lg text-[#1A1A1A]">
                   Create Promotion Coupon
                 </h3>
                 <button
                   onClick={() => setCouponModalOpen(false)}
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-[#1A1A1A]/60 hover:text-[#1A1A1A] transition-colors"
                 >
                   <X size={20} />
                 </button>
@@ -2092,7 +2092,7 @@ export default function AdminDashboard() {
                 data-lenis-prevent="true"
               >
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
                     Coupon Promo Code *
                   </label>
                   <input
@@ -2101,7 +2101,7 @@ export default function AdminDashboard() {
                     onChange={(e) =>
                       setCouponForm({ ...couponForm, code: e.target.value })
                     }
-                    className="w-full bg-secondary/80 border border-primary/20 rounded-lg px-4 py-2 focus:outline-none focus:border-accent text-white font-mono font-bold uppercase tracking-wider"
+                    className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A] font-mono font-bold uppercase tracking-wider"
                     placeholder="e.g. LUXURY20"
                     required
                   />
@@ -2109,7 +2109,7 @@ export default function AdminDashboard() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
                       Discount Type
                     </label>
                     <select
@@ -2120,14 +2120,14 @@ export default function AdminDashboard() {
                           discountType: e.target.value,
                         })
                       }
-                      className="w-full bg-secondary/80 border border-primary/20 rounded-lg px-4 py-2 focus:outline-none focus:border-accent text-white"
+                      className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A]"
                     >
                       <option value="percentage">Percentage (%)</option>
                       <option value="fixed">Fixed Amount (₹)</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
                       Discount Value *
                     </label>
                     <input
@@ -2139,7 +2139,7 @@ export default function AdminDashboard() {
                           discountAmount: e.target.value,
                         })
                       }
-                      className="w-full bg-secondary/80 border border-primary/20 rounded-lg px-4 py-2 focus:outline-none focus:border-accent text-white"
+                      className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A]"
                       placeholder="e.g. 20"
                       required
                     />
@@ -2148,7 +2148,7 @@ export default function AdminDashboard() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
                       Min Purchase (₹)
                     </label>
                     <input
@@ -2160,12 +2160,12 @@ export default function AdminDashboard() {
                           minPurchase: e.target.value,
                         })
                       }
-                      className="w-full bg-secondary/80 border border-primary/20 rounded-lg px-4 py-2 focus:outline-none focus:border-accent text-white"
+                      className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A]"
                       placeholder="e.g. 999"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
                       Expiry Date
                     </label>
                     <input
@@ -2177,14 +2177,14 @@ export default function AdminDashboard() {
                           expiryDate: e.target.value,
                         })
                       }
-                      className="w-full bg-secondary/80 border border-primary/20 rounded-lg px-4 py-2 focus:outline-none focus:border-accent text-white"
+                      className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A]"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
                       Max Discount (₹)
                     </label>
                     <input
@@ -2196,12 +2196,12 @@ export default function AdminDashboard() {
                           maxDiscount: e.target.value,
                         })
                       }
-                      className="w-full bg-secondary/80 border border-primary/20 rounded-lg px-4 py-2 focus:outline-none focus:border-accent text-white"
+                      className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A]"
                       placeholder="e.g. 500"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
                       Usage Limit
                     </label>
                     <input
@@ -2213,7 +2213,7 @@ export default function AdminDashboard() {
                           usageLimit: e.target.value,
                         })
                       }
-                      className="w-full bg-secondary/80 border border-primary/20 rounded-lg px-4 py-2 focus:outline-none focus:border-accent text-white"
+                      className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A]"
                       placeholder="e.g. 100"
                     />
                   </div>
@@ -2221,17 +2221,17 @@ export default function AdminDashboard() {
               </form>
 
               {/* Actions Footer */}
-              <div className="p-6 border-t border-[#D4AF37]/10 flex justify-end gap-3 bg-black/10">
+              <div className="p-6 border-t border-[#1A1A1A]/10 flex justify-end gap-3 bg-black/10">
                 <button
                   type="button"
                   onClick={() => setCouponModalOpen(false)}
-                  className="bg-transparent hover:bg-white/5 border border-white/10 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all"
+                  className="bg-transparent hover:bg-white/5 border border-white/10 text-[#1A1A1A] px-5 py-2.5 rounded-none text-sm font-semibold transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleCouponSubmit}
-                  className="bg-[#D4AF37] hover:bg-[#C29E30] text-black px-6 py-2.5 rounded-lg text-sm font-bold shadow-lg shadow-[#D4AF37]/10 transition-all duration-300"
+                  className="bg-[#D4AF37] hover:bg-[#C29E30] text-black px-6 py-2.5 rounded-none text-sm font-bold shadow-lg shadow-[#D4AF37]/10 transition-all duration-300"
                 >
                   Save Coupon
                 </button>
