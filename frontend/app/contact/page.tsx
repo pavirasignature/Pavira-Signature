@@ -39,7 +39,7 @@ export default function ContactPage() {
       name: "Pavira Signature",
       image: "https://pavirasignature.in/logo.png",
       telephone: "+91-84878-16296",
-      email: "connect@pavirasignature.in",
+      email: "care@pavirasignature.in",
       address: {
         "@type": "PostalAddress",
         streetAddress: "A-47, Nilkanth Arcade Estate, G.I.D.C., Road No.15, Kathwada, Odhav",
