@@ -188,7 +188,7 @@ const customerUser = {
   firstName: "Adit",
   lastName: "Panchal",
   name: "Adit Panchal",
-  email: "user@pavira-signature.com",
+  email: "user@gmail.com",
   password: "User@123456",
   phone: "+91-9876543210",
   role: "customer",
