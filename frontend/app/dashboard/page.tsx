@@ -485,44 +485,52 @@ export default function DashboardPage() {
                     </div>
 
                     {/* Editorial Customer Card */}
-                    <div className="bg-[#0C3A2E] text-white p-8 border border-[#D4AF37]/20 shadow-md">
-                      <div className="flex justify-between items-center mb-6 pb-4 border-b border-white/10">
-                        <h3 className="font-brand text-xl text-white font-normal">Patron Profile</h3>
-                        <span className="text-[10px] uppercase tracking-[0.2em] text-[#D4AF37] border border-[#D4AF37]/40 px-3 py-1 font-semibold">
+                    <div className="bg-[#F9F6F0] border border-[#1A1A1A]/10 p-6 md:p-8">
+                      <div className="flex justify-between items-center mb-6 pb-4 border-b border-[#1A1A1A]/10">
+                        <h3 className="font-brand text-2xl text-[#1A1A1A] font-normal">Patron Profile</h3>
+                        <span className="text-[10px] uppercase tracking-[0.2em] text-[#0C3A2E] border border-[#0C3A2E]/30 bg-[#0C3A2E]/5 px-3 py-1 font-semibold">
                           Verified Member
                         </span>
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                        <div className="flex items-center gap-3.5 bg-white/5 border border-white/10 p-4">
-                          <User size={18} className="text-[#D4AF37] shrink-0" />
-                          <div className="min-w-0">
-                            <span className="block text-[9px] text-white/50 uppercase tracking-widest font-semibold">Account Name</span>
-                            <span className="font-medium text-white text-xs truncate block">{userDisplayName}</span>
+                        <div className="flex items-center gap-4 bg-white border border-[#1A1A1A]/10 p-4.5 shadow-sm">
+                          <div className="w-9 h-9 bg-[#F9F6F0] border border-[#1A1A1A]/10 flex items-center justify-center shrink-0">
+                            <User size={18} className="text-[#0C3A2E]" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <span className="block text-[9px] text-[#1A1A1A]/50 uppercase tracking-widest font-bold mb-0.5">Account Name</span>
+                            <span className="font-semibold text-[#1A1A1A] text-xs sm:text-sm truncate block">{userDisplayName}</span>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-3.5 bg-white/5 border border-white/10 p-4">
-                          <Mail size={18} className="text-[#D4AF37] shrink-0" />
-                          <div className="min-w-0">
-                            <span className="block text-[9px] text-white/50 uppercase tracking-widest font-semibold">Email Address</span>
-                            <span className="font-medium text-white text-xs truncate block">{activeUser.email}</span>
+                        <div className="flex items-center gap-4 bg-white border border-[#1A1A1A]/10 p-4.5 shadow-sm">
+                          <div className="w-9 h-9 bg-[#F9F6F0] border border-[#1A1A1A]/10 flex items-center justify-center shrink-0">
+                            <Mail size={18} className="text-[#0C3A2E]" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <span className="block text-[9px] text-[#1A1A1A]/50 uppercase tracking-widest font-bold mb-0.5">Email Address</span>
+                            <span className="font-semibold text-[#1A1A1A] text-xs sm:text-sm truncate block">{activeUser.email}</span>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-3.5 bg-white/5 border border-white/10 p-4">
-                          <Phone size={18} className="text-[#D4AF37] shrink-0" />
-                          <div className="min-w-0">
-                            <span className="block text-[9px] text-white/50 uppercase tracking-widest font-semibold">Contact Phone</span>
-                            <span className="font-medium text-white text-xs truncate block">{activeUser.phone || 'Not provided'}</span>
+                        <div className="flex items-center gap-4 bg-white border border-[#1A1A1A]/10 p-4.5 shadow-sm">
+                          <div className="w-9 h-9 bg-[#F9F6F0] border border-[#1A1A1A]/10 flex items-center justify-center shrink-0">
+                            <Phone size={18} className="text-[#0C3A2E]" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <span className="block text-[9px] text-[#1A1A1A]/50 uppercase tracking-widest font-bold mb-0.5">Contact Phone</span>
+                            <span className="font-semibold text-[#1A1A1A] text-xs sm:text-sm truncate block">{activeUser.phone || 'Not provided'}</span>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-3.5 bg-white/5 border border-white/10 p-4">
-                          <Home size={18} className="text-[#D4AF37] shrink-0" />
-                          <div className="min-w-0">
-                            <span className="block text-[9px] text-white/50 uppercase tracking-widest font-semibold">Primary Address</span>
-                            <span className="font-medium text-white text-xs truncate block">
+                        <div className="flex items-center gap-4 bg-white border border-[#1A1A1A]/10 p-4.5 shadow-sm">
+                          <div className="w-9 h-9 bg-[#F9F6F0] border border-[#1A1A1A]/10 flex items-center justify-center shrink-0">
+                            <Home size={18} className="text-[#0C3A2E]" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <span className="block text-[9px] text-[#1A1A1A]/50 uppercase tracking-widest font-bold mb-0.5">Primary Address</span>
+                            <span className="font-semibold text-[#1A1A1A] text-xs sm:text-sm truncate block">
                               {addresses.find(a => a.isDefault)?.addressLine1 || 'No default location set'}
                             </span>
                           </div>
