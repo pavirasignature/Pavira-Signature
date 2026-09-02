@@ -386,24 +386,10 @@ export default function AdminDashboard() {
       }
     } catch (error: any) {
       console.error("Upload error:", error);
-      console.error("Error response:", error.response?.data);
-      console.error("Error status:", error.response?.status);
       toast.error(error.response?.data?.message || error.message || "Failed to upload images");
     } finally {
       setIsUploadingImages(false);
       e.target.value = "";
-    }
-  };
-
-  // Remove device uploaded image
-  const removeDeviceImage = (index: number) => {
-    setUploadedDeviceImages((prev) => prev.filter((_, i) => i !== index));
-    const deviceImageIndices = productForm.images
-      .map((img, i) => (uploadedDeviceImages.includes(img) ? i : -1))
-      .filter((i) => i !== -1);
-    if (deviceImageIndices.includes(index)) {
-      const newImages = productForm.images.filter((_, i) => i !== index);
-      setProductForm({ ...productForm, images: newImages });
     }
   };
 
@@ -580,7 +566,6 @@ export default function AdminDashboard() {
   const downloadOrdersExcel = async () => {
     const toastId = toast.loading("Preparing Excel file...");
     try {
-      // Fetch a large page of orders to ensure we capture all orders
       const ordRes = await orderService.getMyOrders({ limit: 1000 });
       const allOrders = ordRes.data || [];
 
@@ -589,10 +574,9 @@ export default function AdminDashboard() {
         return;
       }
 
-      // Filter orders for the current month
       const now = new Date();
       const currentYear = now.getFullYear();
-      const currentMonth = now.getMonth(); // 0-indexed
+      const currentMonth = now.getMonth();
 
       let targetOrders = allOrders.filter((order: any) => {
         const dateStr = order.createdAt || order.created_at;
@@ -607,16 +591,13 @@ export default function AdminDashboard() {
 
       let isFallbackAll = false;
       if (targetOrders.length === 0) {
-        // Fallback: download all orders if no orders match the current month
         targetOrders = allOrders;
         isFallbackAll = true;
       }
 
-      // Dynamically import xlsx to optimize initial bundle size with ESM/CJS compatibility
       const xlsxModule = await import("xlsx");
       const XLSX = xlsxModule.utils ? xlsxModule : (xlsxModule as any).default || xlsxModule;
 
-      // Format the data for Excel sheet
       const formattedData = targetOrders.map((order: any, index: number) => {
         const orderId = order.id || order._id || "";
         const orderNumber = order.orderNumber || (typeof orderId === 'string' && orderId.length >= 8 ? orderId.substring(0, 8).toUpperCase() : String(orderId));
@@ -658,12 +639,10 @@ export default function AdminDashboard() {
         };
       });
 
-      // Create a worksheet and workbook
       const worksheet = XLSX.utils.json_to_sheet(formattedData);
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, isFallbackAll ? "All Orders" : "Current Month Orders");
 
-      // Auto-fit column widths
       const maxColWidths = Object.keys(formattedData[0] || {}).map((key) => {
         let maxLen = key.length;
         formattedData.forEach((row: any) => {
@@ -710,27 +689,25 @@ export default function AdminDashboard() {
   if (!activeUser || activeUser.role !== "admin") return null;
 
   return (
-    <div className="min-h-screen bg-[#F9F6F0] text-[#1A1A1A] flex flex-col relative">
-      {/* Full Page Fixed Background Gradient */}
-      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,61,44,0.4)_0%,rgba(27,45,32,1)_100%)] z-0 pointer-events-none" />
+    <div className="min-h-screen bg-[#F9F6F0] text-[#1A1A1A] flex flex-col font-sans selection:bg-[#0C3A2E] selection:text-white">
       <Header />
 
-      <main className="flex-grow pt-28 pb-20 relative z-10">
+      <main className="flex-grow pt-32 pb-24 relative z-10">
         <div className="container mx-auto px-4 max-w-7xl">
-          {/* Admin Header */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10 border-b border-primary/10 pb-6">
+          
+          {/* Admin Page Header */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10 border-b border-[#1A1A1A]/10 pb-6">
             <div>
-              <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
-                Admin Operations Panel
+              <h1 className="text-3xl md:text-4xl font-brand text-[#1A1A1A] font-normal mb-1">
+                Admin Operations
               </h1>
-              <p className="text-[#1A1A1A]/60 text-sm mt-1">
-                Manage product catalog, order fulfillments, tracking, &
-                promotions
+              <p className="text-xs uppercase tracking-[0.2em] text-[#1A1A1A]/60 font-light">
+                Catalog curation, order fulfillment, tracking & promotion campaigns
               </p>
             </div>
 
             <div className="flex items-center gap-3">
-              <span className="text-xs bg-[#0C3A2E]/10 text-[#E6C280] border border-primary/20 px-3 py-1.5 rounded-none font-bold uppercase tracking-wider">
+              <span className="text-[10px] bg-[#0C3A2E] text-[#D4AF37] border border-[#D4AF37]/30 px-3.5 py-1.5 font-bold uppercase tracking-widest shadow-sm">
                 System Administrator
               </span>
               <button
@@ -749,19 +726,19 @@ export default function AdminDashboard() {
                   }
                 }}
                 disabled={isRefreshing}
-                className="p-2 bg-secondary/60 hover:bg-secondary/80 disabled:bg-secondary border border-white/10 rounded-none text-[#1A1A1A]/60 hover:text-[#1A1A1A] disabled:opacity-50 transition-all"
+                className="p-2.5 bg-white hover:bg-[#F9F6F0] border border-[#1A1A1A]/15 text-[#1A1A1A] disabled:opacity-50 transition-all shadow-sm"
                 title="Refresh current data"
               >
                 <RefreshCw
-                  size={18}
-                  className={isRefreshing ? "animate-spin" : ""}
+                  size={16}
+                  className={isRefreshing ? "animate-spin text-[#0C3A2E]" : "text-[#1A1A1A]"}
                 />
               </button>
             </div>
           </div>
 
           {/* Navigation Tabs */}
-          <div className="flex flex-wrap gap-2 mb-8 bg-secondary/40 p-1.5 rounded-none border border-white/5">
+          <div className="flex flex-wrap items-center gap-2 mb-8 bg-white p-2 border border-[#1A1A1A]/10 shadow-sm">
             {[
               { id: "overview", label: "Dashboard Overview", icon: BarChart3 },
               { id: "products", label: "Product Catalog", icon: Package },
@@ -773,36 +750,36 @@ export default function AdminDashboard() {
                 <button
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id as ActiveTab)}
-                  className={`flex items-center gap-2 px-5 py-3 rounded-none font-semibold text-sm transition-all duration-300 ${
+                  className={`flex items-center gap-2.5 px-5 py-3 font-semibold text-xs tracking-wider uppercase transition-all duration-300 ${
                     activeTab === tab.id
-                      ? "bg-[#0C3A2E] text-white shadow-lg shadow-primary/10"
-                      : "text-[#1A1A1A]/60 hover:text-[#1A1A1A] hover:bg-white/5"
+                      ? "bg-[#0C3A2E] text-white shadow-sm"
+                      : "text-[#1A1A1A]/70 hover:bg-[#F9F6F0] hover:text-[#0C3A2E]"
                   }`}
                 >
-                  <Icon size={16} />
+                  <Icon size={15} className={activeTab === tab.id ? "text-[#D4AF37]" : ""} />
                   {tab.label}
                 </button>
               );
             })}
             <button
               onClick={downloadOrdersExcel}
-              className="flex items-center gap-2 px-5 py-3 rounded-none font-semibold text-sm transition-all duration-300 text-[#E6C280] border border-[#E6C280]/20 hover:bg-[#E6C280]/10 hover:text-[#1A1A1A] ml-auto"
+              className="flex items-center gap-2 px-5 py-3 font-semibold text-xs tracking-wider uppercase transition-all text-[#0C3A2E] border border-[#0C3A2E] hover:bg-[#0C3A2E] hover:text-white ml-auto"
               title="Download orders of the current month as Excel"
             >
-              <Download size={16} />
+              <Download size={15} />
               Export Orders (Excel)
             </button>
           </div>
 
           {/* Tab Views Content */}
-          <div className="min-h-[400px]">
-            {/* OVERVIEW TAB */}
+          <div className="min-h-[450px]">
+            {/* 1. OVERVIEW TAB */}
             {activeTab === "overview" && (
               <div className="space-y-8">
                 {loadingAnalytics ? (
-                  <div className="flex flex-col items-center justify-center py-20">
-                    <Loader2 className="w-10 h-10 text-primary animate-spin mb-4" />
-                    <p className="text-[#1A1A1A]/60">Loading aggregate stats...</p>
+                  <div className="flex flex-col items-center justify-center py-24 space-y-4">
+                    <Loader2 className="w-8 h-8 text-[#0C3A2E] animate-spin" />
+                    <p className="text-xs uppercase tracking-widest text-[#1A1A1A]/60 font-semibold">Loading aggregate metrics...</p>
                   </div>
                 ) : (
                   <>
@@ -811,31 +788,23 @@ export default function AdminDashboard() {
                       {[
                         {
                           label: "Total Revenue",
-                          value: `₹${(analytics?.totalSales || 0).toLocaleString()}`,
-                          color: "text-primary",
+                          value: `₹${(analytics?.totalSales || 0).toLocaleString("en-IN")}`,
                           icon: IndianRupee,
-                          bg: "bg-[#0C3A2E]/5",
                         },
                         {
                           label: "Total Orders",
                           value: String(analytics?.totalOrders || 0),
-                          color: "text-blue-400",
                           icon: ShoppingBag,
-                          bg: "bg-blue-400/5",
                         },
                         {
-                          label: "Live Products",
+                          label: "Active Products",
                           value: String(analytics?.totalProducts || 0),
-                          color: "text-purple-400",
                           icon: Package,
-                          bg: "bg-purple-400/5",
                         },
                         {
-                          label: "Registered Customers",
+                          label: "Registered Patrons",
                           value: String(analytics?.totalUsers || 0),
-                          color: "text-emerald-400",
                           icon: Users,
-                          bg: "bg-emerald-400/5",
                         },
                       ].map((card, i) => {
                         const Icon = card.icon;
@@ -845,22 +814,18 @@ export default function AdminDashboard() {
                             initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.05 }}
-                            className={`bg-[#F9F6F0]/80 border border-primary/10 rounded-none p-6 flex items-center justify-between shadow-xl backdrop-blur-md ${card.bg}`}
+                            className="bg-white border border-[#1A1A1A]/10 p-6 flex items-center justify-between shadow-sm"
                           >
                             <div>
-                              <p className="text-[#1A1A1A]/60 text-xs uppercase tracking-wider font-semibold mb-1">
+                              <p className="text-[#1A1A1A]/50 text-[10px] uppercase tracking-[0.2em] font-bold mb-1.5">
                                 {card.label}
                               </p>
-                              <p
-                                className={`text-2xl font-black ${card.color}`}
-                              >
+                              <p className="text-2xl md:text-3xl font-brand font-semibold text-[#1A1A1A]">
                                 {card.value}
                               </p>
                             </div>
-                            <div
-                              className={`w-12 h-12 rounded-none flex items-center justify-center bg-secondary/60 border border-white/5`}
-                            >
-                              <Icon className={card.color} size={22} />
+                            <div className="w-12 h-12 bg-[#F9F6F0] border border-[#1A1A1A]/10 flex items-center justify-center shrink-0">
+                              <Icon className="text-[#0C3A2E]" size={20} />
                             </div>
                           </motion.div>
                         );
@@ -869,15 +834,17 @@ export default function AdminDashboard() {
 
                     {/* Chart / Report Visualization & Alert Columns */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                      {/* CSS-Based Monthly Revenue Visualization */}
-                      <div className="lg:col-span-2 bg-[#F9F6F0]/80 border border-primary/10 rounded-none p-6 shadow-2xl backdrop-blur-md flex flex-col">
-                        <h3 className="font-bold text-lg mb-6 text-[#1A1A1A] flex items-center gap-2">
-                          <BarChart3 size={18} className="text-primary" />
-                          Monthly Revenue Trend
-                        </h3>
+                      {/* Monthly Revenue Visualization */}
+                      <div className="lg:col-span-2 bg-white border border-[#1A1A1A]/10 p-6 md:p-8 shadow-sm flex flex-col">
+                        <div className="flex justify-between items-center mb-6 pb-4 border-b border-[#1A1A1A]/10">
+                          <h3 className="font-brand text-xl text-[#1A1A1A] font-normal flex items-center gap-2">
+                            <BarChart3 size={18} className="text-[#0C3A2E]" />
+                            <span>Monthly Revenue Progression</span>
+                          </h3>
+                        </div>
 
                         {analytics?.revenueByMonth?.length > 0 ? (
-                          <div className="flex-1 flex items-end justify-between gap-2 pt-10 min-h-[220px]">
+                          <div className="flex-1 flex items-end justify-between gap-3 pt-10 min-h-[220px]">
                             {analytics.revenueByMonth
                               .slice()
                               .reverse()
@@ -915,21 +882,21 @@ export default function AdminDashboard() {
                                     className="flex-1 flex flex-col items-center group relative"
                                   >
                                     {/* Tooltip on Hover */}
-                                    <div className="absolute bottom-full mb-2 bg-black/95 text-[#1A1A1A] border border-primary/30 text-xs px-2.5 py-1 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 whitespace-nowrap">
-                                      <p className="font-bold text-primary">
-                                        ₹{item.revenue.toLocaleString()}
+                                    <div className="absolute bottom-full mb-2 bg-[#0C3A2E] text-white border border-[#D4AF37]/30 text-xs px-3 py-1.5 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 whitespace-nowrap">
+                                      <p className="font-bold text-[#D4AF37]">
+                                        ₹{item.revenue.toLocaleString("en-IN")}
                                       </p>
-                                      <p className="text-[10px] text-[#1A1A1A]/60">
+                                      <p className="text-[10px] text-white/70">
                                         {item.orders} Orders
                                       </p>
                                     </div>
 
                                     {/* Bar column */}
                                     <div
-                                      className="w-full max-w-[28px] rounded-t bg-gradient-to-t from-primary to-accent group-hover:brightness-125 transition-all cursor-pointer shadow-lg shadow-primary/10"
+                                      className="w-full max-w-[28px] bg-[#0C3A2E] group-hover:bg-[#D4AF37] transition-all cursor-pointer shadow-sm"
                                       style={{ height: `${heightPct}%` }}
                                     />
-                                    <span className="text-[10px] text-[#1A1A1A]/40 mt-2 whitespace-nowrap transform -rotate-12 md:rotate-0">
+                                    <span className="text-[10px] text-[#1A1A1A]/60 mt-2 whitespace-nowrap transform -rotate-12 md:rotate-0 font-medium">
                                       {label}
                                     </span>
                                   </div>
@@ -937,46 +904,47 @@ export default function AdminDashboard() {
                               })}
                           </div>
                         ) : (
-                          <div className="flex-grow flex items-center justify-center py-10">
-                            <p className="text-[#1A1A1A]/40 text-sm">
-                              No monthly transaction data available yet
+                          <div className="flex-grow flex items-center justify-center py-12">
+                            <p className="text-[#1A1A1A]/40 text-xs font-light uppercase tracking-wider">
+                              No monthly transaction logs recorded yet
                             </p>
                           </div>
                         )}
                       </div>
 
                       {/* Stock Alerts Widget */}
-                      <div className="bg-[#F9F6F0]/80 border border-primary/10 rounded-none p-6 shadow-2xl backdrop-blur-md flex flex-col">
-                        <h3 className="font-bold text-lg mb-6 text-[#1A1A1A] flex items-center gap-2">
-                          <AlertCircle size={18} className="text-red-500" />
-                          Low Stock Alerts
-                        </h3>
+                      <div className="bg-white border border-[#1A1A1A]/10 p-6 md:p-8 shadow-sm flex flex-col">
+                        <div className="flex justify-between items-center mb-6 pb-4 border-b border-[#1A1A1A]/10">
+                          <h3 className="font-brand text-xl text-[#1A1A1A] font-normal flex items-center gap-2">
+                            <AlertCircle size={18} className="text-[#A85751]" />
+                            <span>Low Stock Alerts</span>
+                          </h3>
+                        </div>
 
-                        <div className="flex-grow overflow-y-auto max-h-[220px] space-y-3 pr-1 admin-scrollbar" data-lenis-prevent="true">
+                        <div className="flex-grow overflow-y-auto max-h-[220px] space-y-3 pr-1">
                           {lowStock.length > 0 ? (
                             lowStock.map((prod) => (
                               <div
                                 key={prod.id || prod._id}
-                                className="flex items-center justify-between gap-3 p-3 bg-secondary/60 border border-red-500/10 rounded-none hover:border-red-500/30 transition-all"
+                                className="flex items-center justify-between gap-3 p-3.5 bg-[#F9F6F0] border border-[#1A1A1A]/10 hover:border-[#0C3A2E] transition-all"
                               >
                                 <div className="min-w-0">
-                                  <p className="font-semibold text-sm text-gray-200 truncate">
+                                  <p className="font-semibold text-xs text-[#1A1A1A] truncate">
                                     {prod.name}
                                   </p>
-                                  <p className="text-xs text-[#1A1A1A]/40">
-                                    Threshold: {prod.lowStockThreshold || 5}
+                                  <p className="text-[10px] text-[#1A1A1A]/50">
+                                    Threshold: {prod.lowStockThreshold || 5} units
                                   </p>
                                 </div>
-                                <span className="bg-red-500/10 text-red-500 border border-red-500/20 px-2.5 py-1 rounded text-xs font-bold whitespace-nowrap">
+                                <span className="bg-[#A85751]/10 text-[#A85751] border border-[#A85751]/30 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider whitespace-nowrap">
                                   Stock: {prod.stock}
                                 </span>
                               </div>
                             ))
                           ) : (
-                            <div className="h-full flex items-center justify-center py-10">
-                              <p className="text-[#1A1A1A]/40 text-sm text-center">
-                                All product stocks are within healthy
-                                thresholds.
+                            <div className="h-full flex items-center justify-center py-12">
+                              <p className="text-[#1A1A1A]/40 text-xs text-center font-light uppercase tracking-wider">
+                                All inventory levels are healthy
                               </p>
                             </div>
                           )}
@@ -985,16 +953,16 @@ export default function AdminDashboard() {
                     </div>
 
                     {/* Recent Orders List Table */}
-                    <div className="bg-[#F9F6F0]/80 border border-primary/10 rounded-none p-6 shadow-2xl backdrop-blur-md">
-                      <div className="flex justify-between items-center mb-6">
-                        <h3 className="font-bold text-lg text-[#1A1A1A]">
-                          Recent Transactions
+                    <div className="bg-white border border-[#1A1A1A]/10 p-6 md:p-8 shadow-sm">
+                      <div className="flex justify-between items-center mb-6 pb-4 border-b border-[#1A1A1A]/10">
+                        <h3 className="font-brand text-xl text-[#1A1A1A] font-normal">
+                          Recent Acquisitions
                         </h3>
                         <button
                           onClick={() => handleTabChange("orders")}
-                          className="text-primary hover:underline text-xs flex items-center gap-1"
+                          className="text-[#0C3A2E] hover:underline text-xs font-semibold uppercase tracking-wider flex items-center gap-1"
                         >
-                          View Fulfillments Page
+                          View All Orders
                           <ChevronRight size={14} />
                         </button>
                       </div>
@@ -1002,13 +970,13 @@ export default function AdminDashboard() {
                       <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                           <thead>
-                            <tr className="border-b border-primary/10 text-[#1A1A1A]/60 text-xs font-bold uppercase tracking-wider">
-                              <th className="py-3 px-4">Order ID</th>
-                              <th className="py-3 px-4">Customer</th>
-                              <th className="py-3 px-4">Total Price</th>
-                              <th className="py-3 px-4">Fulfillment Status</th>
-                              <th className="py-3 px-4">Payment</th>
-                              <th className="py-3 px-4">Date</th>
+                            <tr className="bg-[#F9F6F0] text-[#1A1A1A]/60 text-[10px] font-bold uppercase tracking-wider border-b border-[#1A1A1A]/10">
+                              <th className="py-3.5 px-4">Order ID</th>
+                              <th className="py-3.5 px-4">Customer</th>
+                              <th className="py-3.5 px-4">Total Amount</th>
+                              <th className="py-3.5 px-4">Status</th>
+                              <th className="py-3.5 px-4">Payment</th>
+                              <th className="py-3.5 px-4">Date</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -1020,57 +988,56 @@ export default function AdminDashboard() {
                                 return (
                                 <tr
                                   key={orderId}
-                                  className="border-b border-white/5 hover:bg-white/5 transition-colors text-sm"
+                                  className="border-b border-[#1A1A1A]/5 hover:bg-[#F9F6F0]/50 transition-colors text-xs text-[#1A1A1A]"
                                 >
-                                  <td className="py-3.5 px-4 font-mono font-bold text-primary">
+                                  <td className="py-3.5 px-4 font-mono font-bold text-[#0C3A2E]">
                                     #{orderIdDisplay}
                                   </td>
                                   <td className="py-3.5 px-4">
                                     <p className="font-semibold text-[#1A1A1A]">
                                       {userName}
                                     </p>
-                                    <p className="text-xs text-[#1A1A1A]/40">
+                                    <p className="text-[11px] text-[#1A1A1A]/50">
                                       {ord.user?.email || "Guest"}
                                     </p>
                                   </td>
-                                  <td className="py-3.5 px-4 font-bold text-[#1A1A1A]">
-                                    ₹{(ord.totalPrice || 0).toLocaleString()}
+                                  <td className="py-3.5 px-4 font-semibold text-[#1A1A1A]">
+                                    ₹{(ord.totalPrice || 0).toLocaleString("en-IN")}
                                   </td>
                                   <td className="py-3.5 px-4">
                                     <span
-                                      className={`px-2.5 py-0.5 rounded-none text-xs font-bold capitalize border ${
+                                      className={`px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${
                                         ord.orderStatus === "delivered"
-                                          ? "bg-green-500/10 text-green-500 border-green-500/20"
+                                          ? "bg-[#2A7D6B]/10 text-[#2A7D6B] border-[#2A7D6B]/30"
                                           : ord.orderStatus === "cancelled"
-                                            ? "bg-red-500/10 text-red-500 border-red-500/20"
+                                            ? "bg-[#A85751]/10 text-[#A85751] border-[#A85751]/30"
                                             : ord.orderStatus === "shipped"
-                                              ? "bg-blue-500/10 text-blue-500 border-blue-500/20"
-                                              : "bg-[#D4AF37]/10 text-[#D4AF37] border-[#1A1A1A]/20"
+                                              ? "bg-[#0C3A2E]/10 text-[#0C3A2E] border-[#0C3A2E]/30"
+                                              : "bg-[#D4AF37]/15 text-[#8F6F12] border-[#D4AF37]/40"
                                       }`}
                                     >
                                       {ord.orderStatus || 'pending'}
                                     </span>
                                   </td>
-                                  <td className="py-3.5 px-4 uppercase text-xs font-semibold text-[#1A1A1A]/70">
-                                    {ord.paymentMethod || 'N/A'} •{" "}
+                                  <td className="py-3.5 px-4 text-xs font-medium text-[#1A1A1A]/70 uppercase">
+                                    {ord.paymentMethod || 'Prepaid'} •{" "}
                                     <span
                                       className={
-                                        ord.paymentInfo?.paymentStatus ===
-                                          "completed" ||
-                                        ord.paymentInfo?.paymentStatus ===
-                                          "succeeded"
-                                          ? "text-green-500"
-                                          : "text-yellow-500"
+                                        ord.paymentInfo?.paymentStatus === "completed" ||
+                                        ord.paymentInfo?.paymentStatus === "succeeded" ||
+                                        ord.paymentInfo?.paymentStatus === "paid" ||
+                                        ord.isPaid
+                                          ? "text-[#2A7D6B] font-semibold"
+                                          : "text-[#D4AF37] font-semibold"
                                       }
                                     >
-                                      {ord.paymentInfo?.paymentStatus ||
-                                        "pending"}
+                                      {ord.paymentInfo?.paymentStatus || (ord.isPaid ? "Paid" : "Pending")}
                                     </span>
                                   </td>
                                   <td className="py-3.5 px-4 text-xs text-[#1A1A1A]/60">
                                     {new Date(
                                       ord.created_at || ord.createdAt,
-                                    ).toLocaleDateString()}
+                                    ).toLocaleDateString("en-IN")}
                                   </td>
                                 </tr>
                               );})
@@ -1078,9 +1045,9 @@ export default function AdminDashboard() {
                               <tr>
                                 <td
                                   colSpan={6}
-                                  className="py-8 text-center text-[#1A1A1A]/40"
+                                  className="py-12 text-center text-[#1A1A1A]/40 text-xs uppercase tracking-wider"
                                 >
-                                  No orders logged in system
+                                  No transaction history found
                                 </td>
                               </tr>
                             )}
@@ -1093,52 +1060,52 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* PRODUCTS TAB */}
+            {/* 2. PRODUCTS TAB */}
             {activeTab === "products" && (
               <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <h3 className="font-bold text-xl text-[#1A1A1A]">
-                    Active Product Catalog ({products.length})
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="font-brand text-2xl text-[#1A1A1A] font-normal">
+                    Product Catalog ({products.length})
                   </h3>
                   <button
                     onClick={openAddProductModal}
-                    className="bg-[#0C3A2E] hover:bg-accent text-white px-4 py-2.5 rounded-none font-bold text-sm flex items-center gap-1.5 shadow-lg shadow-primary/10 transition-all duration-300"
+                    className="bg-[#0C3A2E] hover:bg-[#0C3A2E]/90 text-white px-5 py-2.5 text-xs uppercase tracking-widest font-semibold flex items-center gap-2 shadow-sm transition-all"
                   >
-                    <Plus size={16} />
+                    <Plus size={14} />
                     Add Product Item
                   </button>
                 </div>
 
                 {loadingProducts ? (
-                  <div className="flex flex-col items-center justify-center py-20">
-                    <Loader2 className="w-10 h-10 text-primary animate-spin mb-4" />
-                    <p className="text-[#1A1A1A]/60">
-                      Fetching live catalog items...
+                  <div className="flex flex-col items-center justify-center py-24 space-y-4">
+                    <Loader2 className="w-8 h-8 text-[#0C3A2E] animate-spin" />
+                    <p className="text-xs uppercase tracking-widest text-[#1A1A1A]/60 font-semibold">
+                      Fetching catalog items...
                     </p>
                   </div>
                 ) : (
-                                  <div className="bg-[#F9F6F0]/80 border border-primary/10 rounded-none overflow-hidden shadow-2xl backdrop-blur-md">
-                                    <div className="overflow-x-auto">
-                                      <table className="w-full text-left border-collapse">
-                                        <thead>
-                                          <tr className="border-b border-primary/10 text-[#1A1A1A]/60 text-xs font-bold uppercase tracking-wider bg-secondary/40">
-                                            <th className="py-4 px-6">Product details</th>
-                                            <th className="py-4 px-6">Category</th>
-                                            <th className="py-4 px-6">Price</th>
-                                            <th className="py-4 px-6">Current Stock</th>
-                                            <th className="py-4 px-6 text-right">Actions</th>
-                                          </tr>
-                                        </thead>
+                  <div className="bg-white border border-[#1A1A1A]/10 shadow-sm overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="bg-[#F9F6F0] text-[#1A1A1A]/60 text-[10px] font-bold uppercase tracking-wider border-b border-[#1A1A1A]/10">
+                            <th className="py-4 px-6">Product Details</th>
+                            <th className="py-4 px-6">Category</th>
+                            <th className="py-4 px-6">Price</th>
+                            <th className="py-4 px-6">Current Stock</th>
+                            <th className="py-4 px-6 text-right">Actions</th>
+                          </tr>
+                        </thead>
                         <tbody>
                           {products.length > 0 ? (
                             products.map((prod) => (
                               <tr
                                 key={prod.id || prod._id}
-                                className="border-b border-white/5 hover:bg-white/5 transition-colors text-sm"
+                                className="border-b border-[#1A1A1A]/5 hover:bg-[#F9F6F0]/50 transition-colors text-xs text-[#1A1A1A]"
                               >
                                 <td className="py-4 px-6">
                                   <div className="flex items-center gap-4">
-                                    <div className="relative w-12 h-12 rounded bg-secondary/60 border border-primary/10 overflow-hidden flex-shrink-0">
+                                    <div className="relative w-12 h-12 bg-[#F9F6F0] border border-[#1A1A1A]/10 overflow-hidden flex-shrink-0">
                                       <Image
                                         src={getValidProductImageUrl(
                                           prod.images[0]?.url,
@@ -1150,22 +1117,22 @@ export default function AdminDashboard() {
                                       />
                                     </div>
                                     <div className="min-w-0">
-                                      <p className="font-bold text-[#1A1A1A] truncate">
+                                      <p className="font-semibold text-sm text-[#1A1A1A] truncate">
                                         {prod.name}
                                       </p>
-                                      <div className="flex gap-2.5 mt-0.5">
+                                      <div className="flex gap-2 mt-1">
                                         {prod.featured && (
-                                          <span className="text-[10px] bg-[#0C3A2E]/10 text-primary px-1.5 py-0.5 rounded font-bold uppercase">
+                                          <span className="text-[9px] bg-[#0C3A2E]/10 text-[#0C3A2E] border border-[#0C3A2E]/20 px-1.5 py-0.5 font-bold uppercase tracking-wider">
                                             Featured
                                           </span>
                                         )}
                                         {prod.trending && (
-                                          <span className="text-[10px] bg-purple-500/10 text-purple-400 px-1.5 py-0.5 rounded font-bold uppercase">
+                                          <span className="text-[9px] bg-[#D4AF37]/15 text-[#8F6F12] border border-[#D4AF37]/40 px-1.5 py-0.5 font-bold uppercase tracking-wider">
                                             Trending
                                           </span>
                                         )}
                                         {prod.bestSeller && (
-                                          <span className="text-[10px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded font-bold uppercase">
+                                          <span className="text-[9px] bg-[#2A7D6B]/10 text-[#2A7D6B] border border-[#2A7D6B]/30 px-1.5 py-0.5 font-bold uppercase tracking-wider">
                                             Bestseller
                                           </span>
                                         )}
@@ -1173,26 +1140,25 @@ export default function AdminDashboard() {
                                     </div>
                                   </div>
                                 </td>
-                                <td className="py-4 px-6 text-[#1A1A1A]/70 font-semibold">
+                                <td className="py-4 px-6 text-[#1A1A1A]/70 font-medium">
                                   {prod.category?.name || "Uncategorized"}
                                 </td>
                                 <td className="py-4 px-6">
-                                  <p className="font-bold text-primary">
-                                    ₹{prod.price.toLocaleString()}
+                                  <p className="font-semibold text-sm text-[#1A1A1A]">
+                                    ₹{prod.price?.toLocaleString("en-IN")}
                                   </p>
                                   {prod.compareAtPrice && (
-                                    <p className="text-xs text-[#1A1A1A]/40 line-through">
-                                      ₹{prod.compareAtPrice.toLocaleString()}
+                                    <p className="text-[11px] text-[#1A1A1A]/40 line-through">
+                                      ₹{prod.compareAtPrice?.toLocaleString("en-IN")}
                                     </p>
                                   )}
                                 </td>
                                 <td className="py-4 px-6">
                                   <span
-                                    className={`px-2.5 py-0.5 rounded-none text-xs font-bold border ${
-                                      prod.stock <=
-                                      (prod.lowStockThreshold || 5)
-                                        ? "bg-red-500/10 text-red-500 border-red-500/20"
-                                        : "bg-green-500/10 text-green-500 border-green-500/20"
+                                    className={`px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${
+                                      prod.stock <= (prod.lowStockThreshold || 5)
+                                        ? "bg-[#A85751]/10 text-[#A85751] border-[#A85751]/30"
+                                        : "bg-[#2A7D6B]/10 text-[#2A7D6B] border-[#2A7D6B]/30"
                                     }`}
                                   >
                                     {prod.stock} items
@@ -1202,7 +1168,7 @@ export default function AdminDashboard() {
                                   <div className="flex items-center justify-end gap-2">
                                     <button
                                       onClick={() => openEditProductModal(prod)}
-                                      className="p-2 bg-blue-500/10 hover:bg-blue-500 text-blue-400 hover:text-[#1A1A1A] rounded border border-blue-500/20 hover:border-transparent transition-all"
+                                      className="p-2 bg-[#F9F6F0] hover:bg-[#0C3A2E] text-[#0C3A2E] hover:text-white border border-[#1A1A1A]/15 transition-all"
                                       title="Edit Product Info"
                                     >
                                       <Edit size={14} />
@@ -1211,7 +1177,7 @@ export default function AdminDashboard() {
                                       onClick={() =>
                                         handleDeleteProduct(prod.id || prod._id, prod.name)
                                       }
-                                      className="p-2 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-[#1A1A1A] rounded border border-red-500/20 hover:border-transparent transition-all"
+                                      className="p-2 bg-[#A85751]/10 hover:bg-[#A85751] text-[#A85751] hover:text-white border border-[#A85751]/30 transition-all"
                                       title="Delete Product"
                                     >
                                       <Trash2 size={14} />
@@ -1224,9 +1190,9 @@ export default function AdminDashboard() {
                             <tr>
                               <td
                                 colSpan={5}
-                                className="py-8 text-center text-[#1A1A1A]/40"
+                                className="py-12 text-center text-[#1A1A1A]/40 text-xs uppercase tracking-wider"
                               >
-                                No products configured in database
+                                No products configured in catalog
                               </td>
                             </tr>
                           )}
@@ -1238,35 +1204,33 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* ORDERS TAB */}
+            {/* 3. ORDERS TAB */}
             {activeTab === "orders" && (
               <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <h3 className="font-bold text-xl text-[#1A1A1A]">
-                    Order Fulfillments
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="font-brand text-2xl text-[#1A1A1A] font-normal">
+                    Order Fulfillments & Processing
                   </h3>
                 </div>
 
                 {loadingOrders ? (
-                  <div className="flex flex-col items-center justify-center py-20">
-                    <Loader2 className="w-10 h-10 text-[#D4AF37] animate-spin mb-4" />
-                    <p className="text-[#1A1A1A]/60">Loading order queue...</p>
+                  <div className="flex flex-col items-center justify-center py-24 space-y-4">
+                    <Loader2 className="w-8 h-8 text-[#0C3A2E] animate-spin" />
+                    <p className="text-xs uppercase tracking-widest text-[#1A1A1A]/60 font-semibold">Loading order queue...</p>
                   </div>
                 ) : (
-                  <div className="bg-[#F9F6F0]/80 border border-primary/10 rounded-none overflow-hidden shadow-2xl backdrop-blur-md">
+                  <div className="bg-white border border-[#1A1A1A]/10 shadow-sm overflow-hidden">
                     <div className="overflow-x-auto">
                       <table className="w-full text-left border-collapse">
                         <thead>
-                          <tr className="border-b border-primary/10 text-[#1A1A1A]/60 text-xs font-bold uppercase tracking-wider bg-secondary/40">
+                          <tr className="bg-[#F9F6F0] text-[#1A1A1A]/60 text-[10px] font-bold uppercase tracking-wider border-b border-[#1A1A1A]/10">
                             <th className="py-4 px-6">Order ID</th>
                             <th className="py-4 px-6">Customer</th>
                             <th className="py-4 px-6">Items</th>
                             <th className="py-4 px-6">Grand Total</th>
                             <th className="py-4 px-6">Fulfillment Status</th>
                             <th className="py-4 px-6">Payment</th>
-                            <th className="py-4 px-6 text-right">
-                              Fulfill / Actions
-                            </th>
+                            <th className="py-4 px-6 text-right">Actions</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -1278,86 +1242,85 @@ export default function AdminDashboard() {
                               return (
                               <tr
                                 key={orderId}
-                                className="border-b border-white/5 hover:bg-white/5 transition-colors text-sm"
+                                className="border-b border-[#1A1A1A]/5 hover:bg-[#F9F6F0]/50 transition-colors text-xs text-[#1A1A1A]"
                               >
-                                <td className="py-4 px-6 font-mono font-bold text-primary">
+                                <td className="py-4 px-6 font-mono font-bold text-[#0C3A2E]">
                                   #{orderIdDisplay}
                                 </td>
                                 <td className="py-4 px-6">
-                                  <p className="font-bold text-[#1A1A1A]">
+                                  <p className="font-semibold text-sm text-[#1A1A1A]">
                                     {userName}
                                   </p>
-                                  <p className="text-xs text-[#1A1A1A]/60">
+                                  <p className="text-[11px] text-[#1A1A1A]/60">
                                     {ord.shippingAddress?.city},{" "}
                                     {ord.shippingAddress?.state}
                                   </p>
                                 </td>
                                 <td className="py-4 px-6">
-                                  <p className="text-[#1A1A1A]/70 font-semibold">
-                                    {ord.items?.length || 0} unique items
+                                  <p className="text-[#1A1A1A] font-medium">
+                                    {ord.items?.length || 0} pieces
                                   </p>
-                                  <p className="text-xs text-[#1A1A1A]/40 truncate max-w-[150px]">
+                                  <p className="text-[10px] text-[#1A1A1A]/40 truncate max-w-[150px]">
                                     {(ord.items || [])
                                       .map((item: any) => item.name)
                                       .join(", ")}
                                   </p>
                                 </td>
-                                <td className="py-4 px-6 font-bold text-[#1A1A1A]">
-                                  ₹{(ord.totalPrice || 0).toLocaleString()}
+                                <td className="py-4 px-6 font-semibold text-sm text-[#1A1A1A]">
+                                  ₹{(ord.totalPrice || 0).toLocaleString("en-IN")}
                                 </td>
                                 <td className="py-4 px-6">
                                   <span
-                                    className={`px-2.5 py-0.5 rounded-none text-xs font-bold border capitalize ${
+                                    className={`px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${
                                       ord.orderStatus === "delivered"
-                                        ? "bg-green-500/10 text-green-500 border-green-500/20"
+                                        ? "bg-[#2A7D6B]/10 text-[#2A7D6B] border-[#2A7D6B]/30"
                                         : ord.orderStatus === "cancelled"
-                                          ? "bg-red-500/10 text-red-500 border-red-500/20"
+                                          ? "bg-[#A85751]/10 text-[#A85751] border-[#A85751]/30"
                                           : ord.orderStatus === "shipped"
-                                            ? "bg-blue-500/10 text-blue-500 border-blue-500/20"
-                                            : "bg-[#D4AF37]/10 text-[#D4AF37] border-[#1A1A1A]/20"
+                                            ? "bg-[#0C3A2E]/10 text-[#0C3A2E] border-[#0C3A2E]/30"
+                                            : "bg-[#D4AF37]/15 text-[#8F6F12] border-[#D4AF37]/40"
                                     }`}
                                   >
                                     {ord.orderStatus || 'pending'}
                                   </span>
                                 </td>
                                 <td className="py-4 px-6 text-xs">
-                                  <p className="uppercase font-semibold text-[#1A1A1A]/70">
-                                    {ord.paymentMethod || 'N/A'}
+                                  <p className="uppercase font-semibold text-[#1A1A1A]">
+                                    {ord.paymentMethod || 'Prepaid'}
                                   </p>
                                   <p
                                     className={
-                                      ord.paymentInfo?.paymentStatus ===
-                                        "completed" ||
-                                      ord.paymentInfo?.paymentStatus ===
-                                        "succeeded"
-                                        ? "text-green-500"
-                                        : "text-yellow-500"
+                                      ord.paymentInfo?.paymentStatus === "completed" ||
+                                      ord.paymentInfo?.paymentStatus === "succeeded" ||
+                                      ord.paymentInfo?.paymentStatus === "paid" ||
+                                      ord.isPaid
+                                        ? "text-[#2A7D6B] font-semibold text-[10px]"
+                                        : "text-[#D4AF37] font-semibold text-[10px]"
                                     }
                                   >
-                                    {ord.paymentInfo?.paymentStatus ||
-                                      "pending"}
+                                    {ord.paymentInfo?.paymentStatus || (ord.isPaid ? "Paid" : "Pending")}
                                   </p>
                                 </td>
                                 <td className="py-4 px-6 text-right">
                                   <div className="flex items-center justify-end gap-2">
                                     <button
                                       onClick={() => openOrderActionModal(ord)}
-                                      className="p-2 bg-[#D4AF37]/10 hover:bg-[#D4AF37] text-[#D4AF37] hover:text-black rounded border border-[#1A1A1A]/20 hover:border-transparent transition-all"
-                                      title="Fulfill and Update Order"
+                                      className="p-2 bg-[#0C3A2E] hover:bg-[#0C3A2E]/90 text-white transition-all shadow-sm"
+                                      title="Fulfill and Update Tracking"
                                     >
                                       <Truck size={14} />
                                     </button>
                                     <Link
                                       href={`/dashboard/orders/${orderId}`}
-                                      className="p-2 bg-white/5 hover:bg-white/20 text-[#1A1A1A]/70 hover:text-[#1A1A1A] rounded border border-white/10 transition-all"
+                                      className="p-2 bg-[#F9F6F0] hover:bg-[#1A1A1A] text-[#1A1A1A] hover:text-white border border-[#1A1A1A]/15 transition-all"
                                       title="View Detailed Order Invoice & Tracking"
                                     >
                                       <Eye size={14} />
                                     </Link>
                                     <button
                                       onClick={() => handleDeleteOrder(orderId, ord.orderNumber)}
-                                      className="p-2 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-[#1A1A1A] rounded border border-red-500/20 hover:border-transparent transition-all"
-                                      title="Delete Order Permanently"
+                                      className="p-2 bg-[#A85751]/10 hover:bg-[#A85751] text-[#A85751] hover:text-white border border-[#A85751]/30 transition-all"
+                                      title="Delete Order Record"
                                     >
                                       <Trash2 size={14} />
                                     </button>
@@ -1369,9 +1332,9 @@ export default function AdminDashboard() {
                             <tr>
                               <td
                                 colSpan={7}
-                                className="py-8 text-center text-[#1A1A1A]/40"
+                                className="py-12 text-center text-[#1A1A1A]/40 text-xs uppercase tracking-wider"
                               >
-                                No orders logged in queue
+                                No orders logged in processing queue
                               </td>
                             </tr>
                           )}
@@ -1383,11 +1346,11 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* COUPONS TAB */}
+            {/* 4. COUPONS TAB */}
             {activeTab === "coupons" && (
               <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <h3 className="font-bold text-xl text-[#1A1A1A]">
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="font-brand text-2xl text-[#1A1A1A] font-normal">
                     Promotional Coupon Campaigns
                   </h3>
                   <button
@@ -1403,17 +1366,17 @@ export default function AdminDashboard() {
                       });
                       setCouponModalOpen(true);
                     }}
-                    className="bg-[#D4AF37] hover:bg-[#C29E30] text-black px-4 py-2.5 rounded-none font-bold text-sm flex items-center gap-1.5 shadow-lg shadow-[#D4AF37]/10 transition-all duration-300"
+                    className="bg-[#0C3A2E] hover:bg-[#0C3A2E]/90 text-white px-5 py-2.5 text-xs uppercase tracking-widest font-semibold flex items-center gap-2 shadow-sm transition-all"
                   >
-                    <Plus size={16} />
+                    <Plus size={14} />
                     Create Promo Coupon
                   </button>
                 </div>
 
                 {loadingCoupons ? (
-                  <div className="flex flex-col items-center justify-center py-20">
-                    <Loader2 className="w-10 h-10 text-[#D4AF37] animate-spin mb-4" />
-                    <p className="text-[#1A1A1A]/60">Loading coupons...</p>
+                  <div className="flex flex-col items-center justify-center py-24 space-y-4">
+                    <Loader2 className="w-8 h-8 text-[#0C3A2E] animate-spin" />
+                    <p className="text-xs uppercase tracking-widest text-[#1A1A1A]/60 font-semibold">Loading promotion campaigns...</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1421,66 +1384,61 @@ export default function AdminDashboard() {
                       coupons.map((coupon) => (
                         <div
                           key={coupon.id || coupon._id}
-                          className="bg-[#F9F6F0]/80 border border-primary/10 hover:border-primary/30 rounded-none p-6 shadow-xl backdrop-blur-md flex flex-col justify-between relative group transition-all duration-300"
+                          className="bg-white border border-[#1A1A1A]/10 hover:border-[#0C3A2E] p-6 shadow-sm flex flex-col justify-between relative group transition-all duration-300"
                         >
                           <button
                             onClick={() =>
                               handleDeleteCoupon(coupon.id || coupon._id, coupon.code)
                             }
-                            className="absolute top-4 right-4 text-[#1A1A1A]/40 hover:text-red-500 transition-colors p-1"
+                            className="absolute top-4 right-4 text-[#A85751]/60 hover:text-[#A85751] transition-colors p-1"
                             title="Remove Promo Coupon"
                           >
                             <Trash2 size={16} />
                           </button>
 
                           <div>
-                            <span className="bg-[#D4AF37]/10 text-[#D4AF37] border border-[#1A1A1A]/20 px-3 py-1 rounded font-mono font-bold text-sm tracking-widest">
+                            <span className="bg-[#0C3A2E] text-[#D4AF37] px-3 py-1 font-mono font-bold text-xs uppercase tracking-widest inline-block shadow-sm">
                               {coupon.code}
                             </span>
-                            <div className="mt-4 space-y-2 text-sm text-[#1A1A1A]/70">
-                              <p className="text-2xl font-black text-[#1A1A1A]">
+                            <div className="mt-4 space-y-1.5 text-sm text-[#1A1A1A]">
+                              <p className="text-3xl font-brand font-bold text-[#1A1A1A]">
                                 {coupon.discountType === "percentage"
                                   ? `${coupon.discountAmount}% OFF`
                                   : `₹${coupon.discountAmount} OFF`}
                               </p>
                               <p className="text-xs text-[#1A1A1A]/60">
-                                Min Purchase Required: ₹
-                                {coupon.minPurchase || 0}
+                                Minimum Order: ₹{coupon.minPurchase || 0}
                               </p>
                               {coupon.maxDiscount && (
                                 <p className="text-xs text-[#1A1A1A]/60">
-                                  Max Discount Limit: ₹{coupon.maxDiscount}
+                                  Maximum Discount: ₹{coupon.maxDiscount}
                                 </p>
                               )}
                             </div>
                           </div>
 
-                          <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-[#1A1A1A]/60">
+                          <div className="mt-6 pt-4 border-t border-[#1A1A1A]/10 flex items-center justify-between text-xs text-[#1A1A1A]/60 font-medium">
                             <span className="flex items-center gap-1">
-                              <Calendar size={12} />
+                              <Calendar size={13} className="text-[#0C3A2E]" />
                               Expires:{" "}
                               {coupon.expiryDate
-                                ? new Date(
-                                    coupon.expiryDate,
-                                  ).toLocaleDateString()
+                                ? new Date(coupon.expiryDate).toLocaleDateString("en-IN")
                                 : "Never"}
                             </span>
                             <span>
-                              Uses: {coupon.usedCount || 0} /{" "}
-                              {coupon.usageLimit || "∞"}
+                              Uses: {coupon.usedCount || 0} / {coupon.usageLimit || "∞"}
                             </span>
                           </div>
                         </div>
                       ))
                     ) : (
-                                          <div className="md:col-span-2 lg:col-span-3 py-16 text-center bg-[#F9F6F0]/60 border border-primary/10 rounded-none">
-                                            <Tag className="mx-auto text-gray-600 mb-3" size={48} />
-                        <h4 className="font-bold text-lg text-[#1A1A1A] mb-1">
-                          No coupons available
+                      <div className="md:col-span-2 lg:col-span-3 py-16 text-center bg-white border border-[#1A1A1A]/10 p-12">
+                        <Tag className="mx-auto text-[#1A1A1A]/30 mb-3" size={40} />
+                        <h4 className="font-brand text-lg text-[#1A1A1A] font-normal mb-1">
+                          No Active Campaigns
                         </h4>
                         <p className="text-xs text-[#1A1A1A]/60">
-                          Create a promotional campaign coupon to incentivize
-                          conversion
+                          Create a promotional campaign coupon to incentivize purchases
                         </p>
                       </div>
                     )}
@@ -1497,19 +1455,19 @@ export default function AdminDashboard() {
       {/* MODAL 1: ADD / EDIT PRODUCT */}
       <AnimatePresence>
         {productModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-[#F9F6F0] border border-primary/30 rounded-none overflow-hidden shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col"
+              className="bg-white border border-[#1A1A1A]/15 shadow-2xl w-full max-w-3xl max-h-[88vh] flex flex-col overflow-hidden"
             >
               {/* Header */}
-              <div className="p-6 border-b border-[#1A1A1A]/10 flex justify-between items-center bg-black/10">
-                <h3 className="font-bold text-lg text-[#1A1A1A]">
+              <div className="p-6 border-b border-[#1A1A1A]/10 flex justify-between items-center bg-[#F9F6F0]">
+                <h3 className="font-brand text-xl text-[#1A1A1A] font-normal">
                   {editingProduct
-                    ? "Edit Catalog Product"
-                    : "Add New Catalog Product"}
+                    ? "Edit Catalog Piece"
+                    : "Add New Catalog Piece"}
                 </h3>
                 <button
                   onClick={() => {
@@ -1525,13 +1483,13 @@ export default function AdminDashboard() {
               {/* Form Content */}
               <form
                 onSubmit={handleProductSubmit}
-                className="p-6 overflow-y-auto space-y-6 flex-grow"
+                className="p-6 md:p-8 overflow-y-auto space-y-6 flex-grow"
                 data-lenis-prevent="true"
               >
                 {/* Product Name */}
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
-                    Product Name *
+                <div className="space-y-1.5">
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
+                    Piece Name *
                   </label>
                   <input
                     type="text"
@@ -1539,16 +1497,16 @@ export default function AdminDashboard() {
                     onChange={(e) =>
                       setProductForm({ ...productForm, name: e.target.value })
                     }
-                    className="w-full bg-secondary border border-primary/20 rounded-none px-4 py-2.5 focus:outline-none focus:border-accent text-[#1A1A1A]"
-                    placeholder="Premium MDF Wall Art - Royal Gold"
+                    className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
+                    placeholder="Signature Metal Wall Art"
                     required
                   />
                 </div>
 
                 {/* Description */}
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
-                    Product Description *
+                <div className="space-y-1.5">
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
+                    Curated Description *
                   </label>
                   <textarea
                     value={productForm.description}
@@ -1558,16 +1516,16 @@ export default function AdminDashboard() {
                         description: e.target.value,
                       })
                     }
-                    className="w-full bg-secondary border border-primary/20 rounded-none px-4 py-2.5 focus:outline-none focus:border-accent text-[#1A1A1A] h-24 resize-none"
-                    placeholder="Describe the product material, design, and aesthetic values in detail..."
+                    className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition h-24 resize-none"
+                    placeholder="Describe material, finishing, craftsmanship and architectural aesthetics..."
                     required
                   />
                 </div>
 
                 {/* Pricing & Stock Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
                       Price (₹) *
                     </label>
                     <input
@@ -1579,13 +1537,13 @@ export default function AdminDashboard() {
                           price: e.target.value,
                         })
                       }
-                      className="w-full bg-secondary border border-primary/20 rounded-none px-4 py-2.5 focus:outline-none focus:border-accent text-[#1A1A1A] font-bold"
-                      placeholder="e.g. 1999"
+                      className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] font-semibold outline-none transition"
+                      placeholder="e.g. 4999"
                       required
                     />
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
                       Compare At Price (₹)
                     </label>
                     <input
@@ -1597,12 +1555,12 @@ export default function AdminDashboard() {
                           compareAtPrice: e.target.value,
                         })
                       }
-                      className="w-full bg-secondary border border-primary/20 rounded-none px-4 py-2.5 focus:outline-none focus:border-accent text-[#1A1A1A] placeholder-gray-500"
-                      placeholder="e.g. 2999"
+                      className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
+                      placeholder="e.g. 6999"
                     />
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
                       Stock Inventory *
                     </label>
                     <input
@@ -1614,14 +1572,14 @@ export default function AdminDashboard() {
                           stock: e.target.value,
                         })
                       }
-                      className="w-full bg-secondary border border-primary/20 rounded-none px-4 py-2.5 focus:outline-none focus:border-accent text-[#1A1A1A]"
+                      className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
                       placeholder="e.g. 25"
                       required
                     />
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
-                      Product Category *
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
+                      Category *
                     </label>
                     <select
                       value={productForm.category}
@@ -1631,7 +1589,7 @@ export default function AdminDashboard() {
                           category: e.target.value,
                         })
                       }
-                      className="w-full bg-secondary border border-primary/20 rounded-none px-4 py-2.5 focus:outline-none focus:border-accent text-[#1A1A1A]"
+                      className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
                       required
                     >
                       <option value="" disabled>
@@ -1646,23 +1604,23 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                {/* Unsplash/Cloudinary Images */}
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
-                    Product Images *
+                {/* Images */}
+                <div className="space-y-1.5">
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
+                    Product Imagery *
                   </label>
                   {productForm.images.map((url, index) => (
-                    <div key={`image-${index}-${url.slice(0, 10)}`} className="flex gap-2 mb-2">
+                    <div key={`image-${index}`} className="flex items-center gap-2 mb-2">
                       {(url.startsWith("data:") ||
                         url.startsWith("http://") ||
                         url.startsWith("https://")) &&
                       url.trim() !== "" ? (
-                        <div className="relative w-24 h-24 rounded-none overflow-hidden border border-[#1A1A1A]/20">
+                        <div className="relative w-10 h-10 bg-[#F9F6F0] border border-[#1A1A1A]/15 overflow-hidden flex-shrink-0">
                           <Image
                             src={url}
-                            alt="Uploaded"
+                            alt="Preview"
                             fill
-                            sizes="96px"
+                            sizes="40px"
                             className="object-cover"
                           />
                         </div>
@@ -1675,8 +1633,8 @@ export default function AdminDashboard() {
                           newImages[index] = e.target.value;
                           setProductForm({ ...productForm, images: newImages });
                         }}
-                        className="flex-1 bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A] text-xs"
-                        placeholder="https://... (Do not paste local D:\ paths here)"
+                        className="flex-1 bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2 text-xs text-[#1A1A1A] outline-none transition"
+                        placeholder="https://... image CDN URL"
                       />
                       {productForm.images.length > 1 && (
                         <button
@@ -1690,9 +1648,9 @@ export default function AdminDashboard() {
                               images: newImages,
                             });
                           }}
-                          className="p-2 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-[#1A1A1A] rounded border border-red-500/20"
+                          className="p-2 bg-[#A85751]/10 text-[#A85751] hover:bg-[#A85751] hover:text-white border border-[#A85751]/30 transition"
                         >
-                          <X size={16} />
+                          <X size={14} />
                         </button>
                       )}
                     </div>
@@ -1709,7 +1667,7 @@ export default function AdminDashboard() {
                   />
 
                   {/* Action Buttons */}
-                  <div className="flex gap-2 mt-2 flex-wrap">
+                  <div className="flex gap-4 pt-1 flex-wrap">
                     <button
                       type="button"
                       onClick={() =>
@@ -1718,9 +1676,9 @@ export default function AdminDashboard() {
                           images: [...productForm.images, ""],
                         })
                       }
-                      className="text-xs text-[#D4AF37] hover:underline flex items-center gap-1 font-bold"
+                      className="text-xs text-[#0C3A2E] hover:underline flex items-center gap-1 font-semibold uppercase tracking-wider"
                     >
-                      <Plus size={12} /> Add Image URL
+                      <Plus size={13} /> Add URL Field
                     </button>
                     <button
                       type="button"
@@ -1728,17 +1686,17 @@ export default function AdminDashboard() {
                         fileInputRef.current?.click()
                       }
                       disabled={isUploadingImages}
-                      className="text-xs text-[#D4AF37] hover:underline flex items-center gap-1 font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="text-xs text-[#0C3A2E] hover:underline flex items-center gap-1 font-semibold uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <Upload size={12} />{" "}
-                      {isUploadingImages ? "Uploading..." : "Add from Device"}
+                      <Upload size={13} />{" "}
+                      {isUploadingImages ? "Uploading..." : "Upload from Device"}
                     </button>
                   </div>
                 </div>
 
                 {/* Promo Checkboxes */}
-                <div className="grid grid-cols-3 gap-4 border-t border-white/5 pt-4">
-                  <label className="flex items-center gap-2 cursor-pointer">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-[#1A1A1A]/10 pt-4">
+                  <label className="flex items-center gap-2.5 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={productForm.featured}
@@ -1748,14 +1706,14 @@ export default function AdminDashboard() {
                           featured: e.target.checked,
                         })
                       }
-                      className="accent-[#D4AF37] w-4 h-4"
+                      className="w-4 h-4 accent-[#0C3A2E]"
                     />
-                    <span className="text-sm text-[#1A1A1A]/70">
-                      Featured Home Decor
+                    <span className="text-xs text-[#1A1A1A] font-medium">
+                      Featured Collection
                     </span>
                   </label>
 
-                  <label className="flex items-center gap-2 cursor-pointer">
+                  <label className="flex items-center gap-2.5 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={productForm.trending}
@@ -1765,14 +1723,14 @@ export default function AdminDashboard() {
                           trending: e.target.checked,
                         })
                       }
-                      className="accent-[#D4AF37] w-4 h-4"
+                      className="w-4 h-4 accent-[#0C3A2E]"
                     />
-                    <span className="text-sm text-[#1A1A1A]/70">
-                      Trending Section
+                    <span className="text-xs text-[#1A1A1A] font-medium">
+                      Trending Piece
                     </span>
                   </label>
 
-                  <label className="flex items-center gap-2 cursor-pointer">
+                  <label className="flex items-center gap-2.5 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={productForm.bestSeller}
@@ -1782,21 +1740,21 @@ export default function AdminDashboard() {
                           bestSeller: e.target.checked,
                         })
                       }
-                      className="accent-[#D4AF37] w-4 h-4"
+                      className="w-4 h-4 accent-[#0C3A2E]"
                     />
-                    <span className="text-sm text-[#1A1A1A]/70">
-                      Best Seller Decor
+                    <span className="text-xs text-[#1A1A1A] font-medium">
+                      Best Seller Showcase
                     </span>
                   </label>
                 </div>
 
                 {/* Technical Specifications */}
-                <div className="border-t border-white/5 pt-6">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
-                    Technical Specifications
+                <div className="border-t border-[#1A1A1A]/10 pt-4 space-y-2">
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
+                    Artisan Specifications
                   </label>
                   {productForm.specifications.map((spec, index) => (
-                    <div key={`spec-${index}-${spec.key}`} className="flex gap-2 mb-2">
+                    <div key={`spec-${index}`} className="flex gap-2 mb-2">
                       <input
                         type="text"
                         value={spec.key}
@@ -1808,8 +1766,8 @@ export default function AdminDashboard() {
                             specifications: newSpecs,
                           });
                         }}
-                        className="w-1/3 bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A] text-xs"
-                        placeholder="e.g. Dimensions"
+                        className="w-1/3 bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2 text-xs text-[#1A1A1A] outline-none transition"
+                        placeholder="e.g. Dimensions / Material"
                       />
                       <input
                         type="text"
@@ -1822,8 +1780,8 @@ export default function AdminDashboard() {
                             specifications: newSpecs,
                           });
                         }}
-                        className="w-2/3 bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A] text-xs"
-                        placeholder="e.g. 24 x 24 inches"
+                        className="w-2/3 bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2 text-xs text-[#1A1A1A] outline-none transition"
+                        placeholder="e.g. 36 x 36 Inches"
                       />
                       {productForm.specifications.length > 1 && (
                         <button
@@ -1837,9 +1795,9 @@ export default function AdminDashboard() {
                               specifications: newSpecs,
                             });
                           }}
-                          className="p-2 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-[#1A1A1A] rounded border border-red-500/20"
+                          className="p-2 bg-[#A85751]/10 text-[#A85751] hover:bg-[#A85751] hover:text-white border border-[#A85751]/30 transition"
                         >
-                          <X size={16} />
+                          <X size={14} />
                         </button>
                       )}
                     </div>
@@ -1855,30 +1813,30 @@ export default function AdminDashboard() {
                         ],
                       })
                     }
-                    className="mt-2 text-xs text-[#D4AF37] hover:underline flex items-center gap-1 font-bold"
+                    className="text-xs text-[#0C3A2E] hover:underline flex items-center gap-1 font-semibold uppercase tracking-wider pt-1"
                   >
-                    <Plus size={12} /> Add specification spec
+                    <Plus size={13} /> Add Specification
                   </button>
                 </div>
               </form>
 
               {/* Actions Footer */}
-              <div className="p-6 border-t border-[#1A1A1A]/10 flex justify-end gap-3 bg-black/10">
+              <div className="p-6 border-t border-[#1A1A1A]/10 flex justify-end gap-3 bg-[#F9F6F0]">
                 <button
                   type="button"
                   onClick={() => {
                     setProductModalOpen(false);
                     setUploadedDeviceImages([]);
                   }}
-                  className="bg-transparent hover:bg-white/5 border border-white/10 text-[#1A1A1A] px-5 py-2.5 rounded-none text-sm font-semibold transition-all"
+                  className="border border-[#1A1A1A]/20 hover:bg-white text-[#1A1A1A]/70 px-5 py-2.5 text-xs uppercase tracking-wider font-semibold transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleProductSubmit}
-                  className="bg-[#D4AF37] hover:bg-[#C29E30] text-black px-6 py-2.5 rounded-none text-sm font-bold shadow-lg shadow-[#D4AF37]/10 transition-all duration-300"
+                  className="bg-[#0C3A2E] hover:bg-[#0C3A2E]/90 text-white px-6 py-2.5 text-xs uppercase tracking-widest font-semibold shadow-sm transition-all"
                 >
-                  Save Product Item
+                  Save Piece to Catalog
                 </button>
               </div>
             </motion.div>
@@ -1889,20 +1847,20 @@ export default function AdminDashboard() {
       {/* MODAL 2: ORDER ACTIONS */}
       <AnimatePresence>
         {orderModalOpen && selectedOrder && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-[#F9F6F0] border border-primary/30 rounded-none overflow-hidden shadow-2xl w-full max-w-xl max-h-[85vh] flex flex-col"
+              className="bg-white border border-[#1A1A1A]/15 shadow-2xl w-full max-w-xl max-h-[88vh] flex flex-col overflow-hidden"
             >
               {/* Header */}
-              <div className="p-6 border-b border-[#1A1A1A]/10 flex justify-between items-center bg-black/10">
+              <div className="p-6 border-b border-[#1A1A1A]/10 flex justify-between items-center bg-[#F9F6F0]">
                 <div>
-                  <h3 className="font-bold text-lg text-[#1A1A1A]">
-                    Order Fulfillments & Shipping
+                  <h3 className="font-brand text-xl text-[#1A1A1A] font-normal">
+                    Fulfill & Dispatch Consignment
                   </h3>
-                  <p className="text-xs text-[#D4AF37] mt-0.5">
+                  <p className="text-xs text-[#0C3A2E] font-semibold mt-0.5">
                     Order #
                     {selectedOrder.orderNumber ||
                       (selectedOrder.id || selectedOrder._id || "").substring(0, 8).toUpperCase()}
@@ -1917,15 +1875,15 @@ export default function AdminDashboard() {
               </div>
 
               {/* Form Content */}
-              <div className="p-6 overflow-y-auto space-y-8 flex-grow" data-lenis-prevent="true">
+              <div className="p-6 md:p-8 overflow-y-auto space-y-8 flex-grow" data-lenis-prevent="true">
                 {/* Part 1: Update Status */}
                 <form onSubmit={handleUpdateOrderStatus} className="space-y-4">
-                  <h4 className="text-sm font-extrabold uppercase tracking-wider text-[#D4AF37] border-b border-white/5 pb-2">
-                    1. Update Order Status
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A] border-b border-[#1A1A1A]/10 pb-2">
+                    1. Consignment Lifecycle Status
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs text-[#1A1A1A]/60 mb-1.5">
+                    <div className="space-y-1.5">
+                      <label className="block text-[10px] uppercase font-bold text-[#1A1A1A]/60 tracking-wider">
                         New Status
                       </label>
                       <select
@@ -1936,7 +1894,7 @@ export default function AdminDashboard() {
                             status: e.target.value,
                           })
                         }
-                        className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A]"
+                        className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
                       >
                         <option value="pending">Pending</option>
                         <option value="confirmed">Confirmed</option>
@@ -1946,8 +1904,8 @@ export default function AdminDashboard() {
                         <option value="cancelled">Cancelled</option>
                       </select>
                     </div>
-                    <div>
-                      <label className="block text-xs text-[#1A1A1A]/60 mb-1.5">
+                    <div className="space-y-1.5">
+                      <label className="block text-[10px] uppercase font-bold text-[#1A1A1A]/60 tracking-wider">
                         Status Note
                       </label>
                       <input
@@ -1959,31 +1917,31 @@ export default function AdminDashboard() {
                             note: e.target.value,
                           })
                         }
-                        className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A]"
-                        placeholder="e.g. Consignment created"
+                        className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
+                        placeholder="e.g. Dispatched via Air"
                       />
                     </div>
                   </div>
                   <button
                     type="submit"
-                    className="bg-[#D4AF37] hover:bg-[#C29E30] text-black text-xs font-bold px-4 py-2 rounded shadow transition-all duration-300"
+                    className="bg-[#0C3A2E] hover:bg-[#0C3A2E]/90 text-white text-xs font-semibold uppercase tracking-wider px-5 py-2.5 shadow-sm transition-all"
                   >
-                    Commit Status Update
+                    Update Lifecycle Status
                   </button>
                 </form>
 
                 {/* Part 2: Shipping AWB Tracking */}
                 <form
                   onSubmit={handleUpdateOrderTracking}
-                  className="space-y-4 pt-6 border-t border-white/5"
+                  className="space-y-4 pt-6 border-t border-[#1A1A1A]/10"
                 >
-                  <h4 className="text-sm font-extrabold uppercase tracking-wider text-[#D4AF37] border-b border-white/5 pb-2">
-                    2. Consignment Courier Tracking Details
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A] border-b border-[#1A1A1A]/10 pb-2">
+                    2. Courier Consignment Details
                   </h4>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-xs text-[#1A1A1A]/60 mb-1.5">
+                    <div className="space-y-1.5">
+                      <label className="block text-[10px] uppercase font-bold text-[#1A1A1A]/60 tracking-wider">
                         Carrier Partner
                       </label>
                       <select
@@ -1994,7 +1952,7 @@ export default function AdminDashboard() {
                             carrier: e.target.value,
                           })
                         }
-                        className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A] text-xs"
+                        className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
                       >
                         <option value="Delhivery">Delhivery Express</option>
                         <option value="Shiprocket">Shiprocket Economy</option>
@@ -2002,9 +1960,9 @@ export default function AdminDashboard() {
                         <option value="DHL">DHL Express</option>
                       </select>
                     </div>
-                    <div>
-                      <label className="block text-xs text-[#1A1A1A]/60 mb-1.5">
-                        Tracking AWB ID
+                    <div className="space-y-1.5">
+                      <label className="block text-[10px] uppercase font-bold text-[#1A1A1A]/60 tracking-wider">
+                        Tracking AWB Code
                       </label>
                       <input
                         type="text"
@@ -2015,14 +1973,14 @@ export default function AdminDashboard() {
                             trackingNumber: e.target.value,
                           })
                         }
-                        className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A] text-xs"
+                        className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition font-mono"
                         placeholder="AWB100234598"
                         required
                       />
                     </div>
-                    <div>
-                      <label className="block text-xs text-[#1A1A1A]/60 mb-1.5">
-                        Est. Delivery Date
+                    <div className="space-y-1.5">
+                      <label className="block text-[10px] uppercase font-bold text-[#1A1A1A]/60 tracking-wider">
+                        Est. Delivery
                       </label>
                       <input
                         type="date"
@@ -2033,26 +1991,26 @@ export default function AdminDashboard() {
                             estimatedDelivery: e.target.value,
                           })
                         }
-                        className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A] text-xs"
+                        className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
                       />
                     </div>
                   </div>
 
                   <button
                     type="submit"
-                    className="bg-[#D4AF37] hover:bg-[#C29E30] text-black text-xs font-bold px-4 py-2 rounded shadow transition-all duration-300 flex items-center gap-1"
+                    className="bg-[#0C3A2E] hover:bg-[#0C3A2E]/90 text-white text-xs font-semibold uppercase tracking-wider px-5 py-2.5 shadow-sm transition-all flex items-center gap-2"
                   >
-                    <Truck size={14} /> Update Shipping Consignment
+                    <Truck size={14} /> Update Courier Consignment
                   </button>
                 </form>
               </div>
 
               {/* Close Footer */}
-              <div className="p-6 border-t border-[#1A1A1A]/10 flex justify-end bg-black/10">
+              <div className="p-6 border-t border-[#1A1A1A]/10 flex justify-end bg-[#F9F6F0]">
                 <button
                   type="button"
                   onClick={() => setOrderModalOpen(false)}
-                  className="bg-secondary/80 hover:bg-white/5 border border-white/10 text-[#1A1A1A] px-5 py-2.5 rounded-none text-sm font-semibold transition-all"
+                  className="border border-[#1A1A1A]/20 hover:bg-white text-[#1A1A1A]/70 px-5 py-2.5 text-xs uppercase tracking-wider font-semibold transition-all"
                 >
                   Close Manager
                 </button>
@@ -2065,17 +2023,17 @@ export default function AdminDashboard() {
       {/* MODAL 3: ADD COUPON */}
       <AnimatePresence>
         {couponModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-[#F9F6F0] border border-primary/30 rounded-none overflow-hidden shadow-2xl w-full max-w-md max-h-[85vh] flex flex-col"
+              className="bg-white border border-[#1A1A1A]/15 shadow-2xl w-full max-w-md max-h-[88vh] flex flex-col overflow-hidden"
             >
               {/* Header */}
-              <div className="p-6 border-b border-[#1A1A1A]/10 flex justify-between items-center bg-black/10">
-                <h3 className="font-bold text-lg text-[#1A1A1A]">
-                  Create Promotion Coupon
+              <div className="p-6 border-b border-[#1A1A1A]/10 flex justify-between items-center bg-[#F9F6F0]">
+                <h3 className="font-brand text-xl text-[#1A1A1A] font-normal">
+                  Create Promotional Campaign
                 </h3>
                 <button
                   onClick={() => setCouponModalOpen(false)}
@@ -2088,12 +2046,12 @@ export default function AdminDashboard() {
               {/* Form Content */}
               <form
                 onSubmit={handleCouponSubmit}
-                className="p-6 space-y-4 overflow-y-auto"
+                className="p-6 md:p-8 space-y-4 overflow-y-auto"
                 data-lenis-prevent="true"
               >
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
-                    Coupon Promo Code *
+                <div className="space-y-1.5">
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
+                    Promo Code *
                   </label>
                   <input
                     type="text"
@@ -2101,15 +2059,15 @@ export default function AdminDashboard() {
                     onChange={(e) =>
                       setCouponForm({ ...couponForm, code: e.target.value })
                     }
-                    className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A] font-mono font-bold uppercase tracking-wider"
+                    className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] font-mono font-bold uppercase tracking-wider outline-none transition"
                     placeholder="e.g. LUXURY20"
                     required
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
                       Discount Type
                     </label>
                     <select
@@ -2120,14 +2078,14 @@ export default function AdminDashboard() {
                           discountType: e.target.value,
                         })
                       }
-                      className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A]"
+                      className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
                     >
                       <option value="percentage">Percentage (%)</option>
                       <option value="fixed">Fixed Amount (₹)</option>
                     </select>
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
                       Discount Value *
                     </label>
                     <input
@@ -2139,7 +2097,7 @@ export default function AdminDashboard() {
                           discountAmount: e.target.value,
                         })
                       }
-                      className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A]"
+                      className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] font-semibold outline-none transition"
                       placeholder="e.g. 20"
                       required
                     />
@@ -2147,8 +2105,8 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
                       Min Purchase (₹)
                     </label>
                     <input
@@ -2160,12 +2118,12 @@ export default function AdminDashboard() {
                           minPurchase: e.target.value,
                         })
                       }
-                      className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A]"
+                      className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
                       placeholder="e.g. 999"
                     />
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
                       Expiry Date
                     </label>
                     <input
@@ -2177,14 +2135,14 @@ export default function AdminDashboard() {
                           expiryDate: e.target.value,
                         })
                       }
-                      className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A]"
+                      className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
                       Max Discount (₹)
                     </label>
                     <input
@@ -2196,12 +2154,12 @@ export default function AdminDashboard() {
                           maxDiscount: e.target.value,
                         })
                       }
-                      className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A]"
+                      className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
                       placeholder="e.g. 500"
                     />
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
                       Usage Limit
                     </label>
                     <input
@@ -2213,7 +2171,7 @@ export default function AdminDashboard() {
                           usageLimit: e.target.value,
                         })
                       }
-                      className="w-full bg-secondary/80 border border-primary/20 rounded-none px-4 py-2 focus:outline-none focus:border-accent text-[#1A1A1A]"
+                      className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
                       placeholder="e.g. 100"
                     />
                   </div>
@@ -2221,19 +2179,19 @@ export default function AdminDashboard() {
               </form>
 
               {/* Actions Footer */}
-              <div className="p-6 border-t border-[#1A1A1A]/10 flex justify-end gap-3 bg-black/10">
+              <div className="p-6 border-t border-[#1A1A1A]/10 flex justify-end gap-3 bg-[#F9F6F0]">
                 <button
                   type="button"
                   onClick={() => setCouponModalOpen(false)}
-                  className="bg-transparent hover:bg-white/5 border border-white/10 text-[#1A1A1A] px-5 py-2.5 rounded-none text-sm font-semibold transition-all"
+                  className="border border-[#1A1A1A]/20 hover:bg-white text-[#1A1A1A]/70 px-5 py-2.5 text-xs uppercase tracking-wider font-semibold transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleCouponSubmit}
-                  className="bg-[#D4AF37] hover:bg-[#C29E30] text-black px-6 py-2.5 rounded-none text-sm font-bold shadow-lg shadow-[#D4AF37]/10 transition-all duration-300"
+                  className="bg-[#0C3A2E] hover:bg-[#0C3A2E]/90 text-white px-6 py-2.5 text-xs uppercase tracking-widest font-semibold shadow-sm transition-all"
                 >
-                  Save Coupon
+                  Save Promotion
                 </button>
               </div>
             </motion.div>
