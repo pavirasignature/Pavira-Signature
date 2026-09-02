@@ -29,6 +29,11 @@ function AuthSync() {
 
     const backendToken = (session as any).accessToken;
     if (!backendToken) {
+      console.warn(
+        "[AuthSync] NextAuth session is authenticated but no backend accessToken was found. " +
+        "The user may appear logged in but API calls will fail. " +
+        "Check the jwt callback in [...nextauth].ts for backend sync errors."
+      );
       return;
     }
 

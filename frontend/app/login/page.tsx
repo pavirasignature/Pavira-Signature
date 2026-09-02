@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { signIn } from "next-auth/react";
 import { authAPI } from "@/lib/api";
@@ -13,6 +13,7 @@ import { PremiumMandala } from "@/components/PremiumVisuals";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { setUser, setToken } = useStore();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -21,6 +22,25 @@ export default function LoginPage() {
     email: "",
     password: "",
   });
+
+  // Detect NextAuth OAuth errors passed via query params (e.g., ?error=OAuthCallback)
+  useEffect(() => {
+    const authError = searchParams?.get("error");
+    if (authError) {
+      const errorMessages: Record<string, string> = {
+        OAuthSignin: "Could not start Google sign-in. Please try again.",
+        OAuthCallback: "Google sign-in was interrupted. Please try again.",
+        OAuthCreateAccount: "Could not create your account via Google. Please try again.",
+        Callback: "An error occurred during sign-in. Please try again.",
+        AccessDenied: "Access was denied. Please contact support.",
+        Configuration: "There is a server configuration issue. Please try again later.",
+        Default: "An unexpected sign-in error occurred. Please try again.",
+      };
+      const message = errorMessages[authError] || errorMessages.Default;
+      setError(message);
+      toast.error(message);
+    }
+  }, [searchParams]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -39,17 +59,20 @@ export default function LoginPage() {
         const user = response.data.data.user;
         const token = response.data.data.token;
 
+        // Set loginMethod flag BEFORE setToken to prevent AuthSync from
+        // overwriting credentials login with a stale NextAuth session
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem("loginMethod", "credentials");
+          sessionStorage.setItem("showAccessGrantedAlert", "true");
+        }
+
         setToken(token);
         setUser(user);
-        
-        if (typeof window !== "undefined") {
-          sessionStorage.setItem("showAccessGrantedAlert", "true");
-          sessionStorage.setItem("loginMethod", "credentials");
-        }
-        
+
         toast.success("Login successful!");
 
-        if (user.role === "admin") {
+        // Case-insensitive role check for defensive hardening
+        if (user.role?.toLowerCase() === "admin") {
           router.replace("/admin");
         } else {
           router.replace("/");
@@ -59,6 +82,7 @@ export default function LoginPage() {
       const errMsg = err.response?.data?.message || "Login failed";
       setError(errMsg);
       toast.error(errMsg);
+    } finally {
       setLoading(false);
     }
   };
@@ -68,18 +92,20 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      const result = await signIn("google", {
-        callbackUrl: typeof window !== "undefined" ? `${window.location.origin}/` : "/",
+      // With redirect: true, signIn() performs a full-page redirect to Google
+      // and never returns. Errors are handled via the ?error= query param
+      // detected in the useEffect above.
+      await signIn("google", {
+        callbackUrl: "/",
         redirect: true,
       });
-
-      if (result?.error) {
-        throw new Error(result.error);
-      }
     } catch (err) {
+      // This catch only fires if signIn() itself throws (e.g., network error
+      // before the redirect can happen)
       const errMsg = err instanceof Error ? err.message : "Google sign-in failed";
       setError(errMsg);
       toast.error(errMsg);
+    } finally {
       setLoading(false);
     }
   };
