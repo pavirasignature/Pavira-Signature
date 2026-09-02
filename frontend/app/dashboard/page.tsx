@@ -351,7 +351,11 @@ export default function DashboardPage() {
     return null;
   }
 
-  const userDisplayName = activeUser.name || `${activeUser.firstName || ''} ${activeUser.lastName || ''}`.trim() || 'Valued Customer';
+  const userDisplayName = 
+    activeUser.name?.trim() || 
+    `${activeUser.firstName || ''} ${activeUser.lastName || ''}`.trim() || 
+    (activeUser.email ? activeUser.email.split('@')[0] : '') || 
+    'Valued Customer';
 
   const menuItems = [
     { id: 'overview', icon: Compass, label: 'Overview' },
@@ -383,12 +387,16 @@ export default function DashboardPage() {
             {/* Left Sidebar Navigation */}
             <div className="w-full lg:w-1/4 bg-white border border-[#1A1A1A]/10 p-6 space-y-6 shadow-sm">
               <div className="flex items-center gap-4 pb-6 border-b border-[#1A1A1A]/10">
-                <div className="w-14 h-14 bg-[#0C3A2E] text-[#D4AF37] border border-[#D4AF37]/30 flex items-center justify-center font-brand font-bold text-2xl shadow-sm">
+                <div className="w-14 h-14 bg-[#0C3A2E] text-[#D4AF37] border border-[#D4AF37]/30 flex items-center justify-center font-brand font-bold text-2xl shadow-sm shrink-0">
                   {userDisplayName.charAt(0).toUpperCase()}
                 </div>
-                <div className="min-w-0">
-                  <h2 className="font-brand font-semibold text-base text-[#1A1A1A] truncate">{userDisplayName}</h2>
-                  <p className="text-xs text-[#1A1A1A]/60 truncate mt-0.5">{activeUser.email}</p>
+                <div className="min-w-0 flex-1">
+                  <h2 className="font-brand font-bold text-lg text-[#1A1A1A] truncate tracking-tight">
+                    {userDisplayName}
+                  </h2>
+                  <p className="text-xs text-[#1A1A1A]/70 truncate mt-0.5 font-medium">
+                    {activeUser.email}
+                  </p>
                 </div>
               </div>
 
