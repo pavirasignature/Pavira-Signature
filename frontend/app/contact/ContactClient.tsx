@@ -62,33 +62,6 @@ export default function ContactClient() {
         </div>
       </section>
 
-      {/* 2. How Can We Help? (Categories) */}
-      <section className="py-16 bg-muted/30 border-y border-border/50">
-        <div className="container mx-auto px-6 max-w-6xl">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="p-8 border border-border bg-background text-center flex flex-col items-center">
-              <HelpCircle className="text-accent mb-4" size={28} strokeWidth={1.5} />
-              <h3 className="font-semibold mb-2">Customer Support</h3>
-              <p className="text-sm text-muted-foreground font-light">Questions about an order, product or delivery?</p>
-            </div>
-            <div className="p-8 border border-border bg-background text-center flex flex-col items-center">
-              <Palette className="text-accent mb-4" size={28} strokeWidth={1.5} />
-              <h3 className="font-semibold mb-2">Design Consultation</h3>
-              <p className="text-sm text-muted-foreground font-light">Need help choosing the right size or design?</p>
-            </div>
-            <div className="p-8 border border-border bg-background text-center flex flex-col items-center">
-              <DraftingCompass className="text-accent mb-4" size={28} strokeWidth={1.5} />
-              <h3 className="font-semibold mb-2">Custom Projects</h3>
-              <p className="text-sm text-muted-foreground font-light">Looking for a custom size, finish or bulk requirement?</p>
-            </div>
-            <Link href="/professionals" className="p-8 border border-border bg-background hover:border-accent transition-colors text-center flex flex-col items-center cursor-pointer group">
-              <Building2 className="text-accent mb-4 group-hover:scale-110 transition-transform" size={28} strokeWidth={1.5} />
-              <h3 className="font-semibold mb-2">Architects & Designers</h3>
-              <p className="text-sm text-muted-foreground font-light">Trade pricing, project catalogue, or custom requirements.</p>
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* 3. Interactive Split Section */}
       <section className="py-24">
