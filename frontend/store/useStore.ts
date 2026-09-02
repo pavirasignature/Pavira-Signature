@@ -85,6 +85,9 @@ export const useStore = create<StoreState>()(
           sessionStorage.removeItem("token");
           sessionStorage.removeItem("user");
           sessionStorage.removeItem("loginMethod");
+          // Signal to AuthSync that the user explicitly logged out,
+          // so it must NOT re-sync a stale NextAuth cookie
+          sessionStorage.setItem("loggedOut", "true");
           // Also clear the persisted Zustand storage so stale cart/wishlist
           // never reappears on next page load
           localStorage.removeItem("pavira-signature-app-storage");

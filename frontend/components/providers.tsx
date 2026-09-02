@@ -20,6 +20,14 @@ function AuthSync() {
     }
 
     if (typeof window !== "undefined") {
+      // If the user explicitly logged out, do NOT re-sync the NextAuth session.
+      // This prevents the bug where navigating away from /login and back
+      // causes automatic re-login from a stale NextAuth cookie.
+      const hasLoggedOut = sessionStorage.getItem("loggedOut");
+      if (hasLoggedOut === "true") {
+        return;
+      }
+
       const currentMethod = sessionStorage.getItem("loginMethod");
       if (currentMethod === "credentials") {
         // Do not overwrite custom credentials (like admin) with NextAuth session on tab switch

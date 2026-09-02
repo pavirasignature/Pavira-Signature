@@ -62,6 +62,7 @@ export default function LoginPage() {
         // Set loginMethod flag BEFORE setToken to prevent AuthSync from
         // overwriting credentials login with a stale NextAuth session
         if (typeof window !== "undefined") {
+          sessionStorage.removeItem("loggedOut");
           sessionStorage.setItem("loginMethod", "credentials");
           sessionStorage.setItem("showAccessGrantedAlert", "true");
         }
@@ -92,6 +93,10 @@ export default function LoginPage() {
     setError(null);
 
     try {
+      // Clear the loggedOut flag so AuthSync can sync the fresh Google session
+      if (typeof window !== "undefined") {
+        sessionStorage.removeItem("loggedOut");
+      }
       // With redirect: true, signIn() performs a full-page redirect to Google
       // and never returns. Errors are handled via the ?error= query param
       // detected in the useEffect above.
