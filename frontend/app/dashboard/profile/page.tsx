@@ -11,13 +11,10 @@ export default function ProfileRedirectPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-[#1B2D20] flex items-center justify-center text-[#F9F6F0] relative overflow-hidden">
-      {/* Full Page Fixed Background Gradient */}
-      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,61,44,0.4)_0%,rgba(27,45,32,1)_100%)] z-0 pointer-events-none" />
-
-      <div className="text-center relative z-10">
-        <div className="w-10 h-10 border-4 border-[#D4AF37] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-sm font-semibold">Redirecting to your profile settings...</p>
+    <div className="min-h-screen bg-[#F9F6F0] flex items-center justify-center text-[#1A1A1A] selection:bg-[#0C3A2E] selection:text-white">
+      <div className="text-center">
+        <div className="w-8 h-8 border-2 border-[#0C3A2E] border-t-transparent animate-spin mx-auto mb-4"></div>
+        <p className="text-xs uppercase tracking-widest font-semibold text-[#1A1A1A]/60">Redirecting to profile settings...</p>
       </div>
     </div>
   );

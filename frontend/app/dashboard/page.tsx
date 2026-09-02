@@ -23,7 +23,10 @@ import {
   ShieldAlert,
   Phone,
   Mail,
-  Home
+  Home,
+  X,
+  Package,
+  Clock
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Header from '@/components/navigation/Header';
@@ -172,7 +175,6 @@ export default function DashboardPage() {
 
     try {
       setProfileLoading(true);
-      // Split name safely
       const nameParts = profileForm.name.trim().split(' ');
       const firstName = nameParts[0];
       const lastName = nameParts.slice(1).join(' ') || '.';
@@ -186,7 +188,6 @@ export default function DashboardPage() {
       });
 
       const updatedUser = res.user || res.data?.user || res.data || res;
-      // Merge values
       const mergedUser = { ...activeUser, ...updatedUser };
       setUser(mergedUser as any);
       sessionStorage.setItem('user', JSON.stringify(mergedUser));
@@ -334,7 +335,6 @@ export default function DashboardPage() {
       await authService.deleteAccount();
       toast.success('Your account has been deleted permanently. We are sorry to see you go!');
       
-      // Complete log out
       logout();
       sessionStorage.removeItem('token');
       sessionStorage.removeItem('user');
@@ -362,29 +362,37 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F9F6F0] text-[#F9F6F0] flex flex-col font-sans relative overflow-hidden">
-      {/* Full Page Fixed Background Gradient */}
-      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,61,44,0.4)_0%,rgba(27,45,32,1)_100%)] z-0 pointer-events-none" />
-
+    <div className="min-h-screen bg-[#F9F6F0] text-[#1A1A1A] flex flex-col font-sans selection:bg-[#0C3A2E] selection:text-white">
       <Header />
       
-      <main className="flex-grow pt-32 pb-20 relative z-10">
-        <div className="container mx-auto px-4">
+      <main className="flex-grow pt-32 pb-24 relative z-10">
+        <div className="container mx-auto px-4 max-w-7xl">
+          
+          {/* Top Page Header */}
+          <div className="mb-10 border-b border-[#1A1A1A]/10 pb-6">
+            <h1 className="text-3xl md:text-4xl font-brand text-[#1A1A1A] mb-2 font-normal">
+              My Cabinet
+            </h1>
+            <p className="text-xs uppercase tracking-[0.2em] text-[#1A1A1A]/60 font-light">
+              Manage your orders, saved locations, and personal profile
+            </p>
+          </div>
+
           <div className="flex flex-col lg:flex-row gap-8 items-start">
             
             {/* Left Sidebar Navigation */}
-            <div className="w-full lg:w-1/4 bg-white border border-[#1A1A1A]/10 rounded-none p-6 space-y-6">
+            <div className="w-full lg:w-1/4 bg-white border border-[#1A1A1A]/10 p-6 space-y-6 shadow-sm">
               <div className="flex items-center gap-4 pb-6 border-b border-[#1A1A1A]/10">
-                <div className="w-14 h-14 bg-[#D4AF37] rounded-none flex items-center justify-center text-black font-brand font-bold text-2xl shadow-lg">
+                <div className="w-14 h-14 bg-[#0C3A2E] text-[#D4AF37] border border-[#D4AF37]/30 flex items-center justify-center font-brand font-bold text-2xl shadow-sm">
                   {userDisplayName.charAt(0).toUpperCase()}
                 </div>
                 <div className="min-w-0">
-                  <h2 className="font-brand font-semibold text-lg text-[#1A1A1A] truncate">{userDisplayName}</h2>
-                  <p className="text-xs text-[#D4AF37] truncate">{activeUser.email}</p>
+                  <h2 className="font-brand font-semibold text-base text-[#1A1A1A] truncate">{userDisplayName}</h2>
+                  <p className="text-xs text-[#1A1A1A]/60 truncate mt-0.5">{activeUser.email}</p>
                 </div>
               </div>
 
-              <nav className="space-y-1.5">
+              <nav className="space-y-1">
                 {menuItems.map((item) => (
                   <button
                     key={item.id}
@@ -392,35 +400,35 @@ export default function DashboardPage() {
                       setActiveTab(item.id);
                       setTrackingOrder(null);
                     }}
-                    className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-none transition-all duration-300 font-medium text-sm text-left ${
+                    className={`w-full flex items-center gap-3 px-4 py-3 text-xs tracking-wider uppercase font-semibold transition-all text-left ${
                       activeTab === item.id
                         ? item.danger
-                          ? 'bg-red-500/10 border border-red-500/30 text-red-400'
-                          : 'bg-[#D4AF37] text-black shadow-lg font-semibold'
+                          ? 'bg-[#A85751] text-white shadow-sm'
+                          : 'bg-[#0C3A2E] text-white shadow-sm'
                         : item.danger
-                        ? 'text-[#1A1A1A]/60 hover:bg-red-500/5 hover:text-red-400 border border-transparent'
-                        : 'text-[#1A1A1A]/60 hover:bg-[#F9F6F0] hover:text-[#D4AF37] border border-transparent'
+                        ? 'text-[#A85751] hover:bg-[#A85751]/10'
+                        : 'text-[#1A1A1A]/70 hover:bg-[#F9F6F0] hover:text-[#0C3A2E]'
                     }`}
                   >
-                    <item.icon size={18} className={activeTab === item.id && !item.danger ? 'text-black' : ''} />
+                    <item.icon size={16} className={activeTab === item.id ? 'text-[#D4AF37]' : ''} />
                     <span>{item.label}</span>
                   </button>
                 ))}
-                
 
-
-                <button
-                  onClick={handleLogout}
-                  className="w-full flex items-center gap-3.5 px-4 py-3 rounded-none text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all duration-300 font-medium text-sm text-left border border-transparent"
-                >
-                  <LogOut size={18} />
-                  <span>Logout Account</span>
-                </button>
+                <div className="pt-4 border-t border-[#1A1A1A]/10 mt-3">
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-xs tracking-wider uppercase font-semibold text-[#A85751] hover:bg-[#A85751]/10 transition-all text-left"
+                  >
+                    <LogOut size={16} />
+                    <span>Logout Account</span>
+                  </button>
+                </div>
               </nav>
             </div>
 
             {/* Right Main Dashboard Panel */}
-            <div className="w-full lg:w-3/4 bg-white border border-[#1A1A1A]/10 rounded-none p-8 min-h-[550px] relative">
+            <div className="w-full lg:w-3/4 bg-white border border-[#1A1A1A]/10 p-8 min-h-[580px] shadow-sm relative">
               <AnimatePresence mode="wait">
                 
                 {/* 1. OVERVIEW TAB */}
@@ -432,64 +440,81 @@ export default function DashboardPage() {
                     exit={{ opacity: 0, y: -10 }}
                     className="space-y-8"
                   >
-                    <div>
-                      <h2 className="font-brand text-3xl text-[#1A1A1A] mb-2 font-semibold">Welcome to <span className="font-brand">Pavira Signature</span></h2>
-                      <p className="text-[#1A1A1A]/60 text-sm">Experience tailored Indian luxury. Manage your orders, delivery points, and security details from your central cabinet.</p>
+                    <div className="border-b border-[#1A1A1A]/10 pb-5">
+                      <h2 className="font-brand text-2xl md:text-3xl text-[#1A1A1A] mb-1 font-normal">
+                        Welcome, {userDisplayName}
+                      </h2>
+                      <p className="text-[#1A1A1A]/60 text-xs font-light tracking-wide">
+                        Experience bespoke Indian craftsmanship. Oversee your orders and account security with ease.
+                      </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div className="bg-[#F9F6F0] border border-[#1A1A1A]/10 rounded-none p-6 shadow-sm hover:border-[#0C3A2E]/50 transition">
-                        <ShoppingBag className="text-[#D4AF37] mb-3" size={26} />
-                        <h4 className="text-2xl font-bold text-[#1A1A1A] mb-1">{orders.length}</h4>
-                        <p className="text-[#1A1A1A]/60 text-xs uppercase tracking-wider font-semibold">Total Orders placed</p>
+                    {/* Quick Metrics */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                      <div className="bg-[#F9F6F0] border border-[#1A1A1A]/10 p-6 flex flex-col justify-between">
+                        <ShoppingBag className="text-[#0C3A2E] mb-4" size={24} />
+                        <div>
+                          <h4 className="font-brand text-3xl font-semibold text-[#1A1A1A] mb-1">{orders.length}</h4>
+                          <p className="text-[#1A1A1A]/50 text-[10px] uppercase tracking-[0.2em] font-semibold">Orders Placed</p>
+                        </div>
                       </div>
 
-                      <div className="bg-[#F9F6F0] border border-[#1A1A1A]/10 rounded-none p-6 shadow-sm hover:border-[#0C3A2E]/50 transition">
-                        <Heart className="text-[#D4AF37] mb-3" size={26} />
-                        <h4 className="text-2xl font-bold text-[#1A1A1A] mb-1">{wishlist.length}</h4>
-                        <p className="text-[#1A1A1A]/60 text-xs uppercase tracking-wider font-semibold">Wishlisted Pieces</p>
+                      <div className="bg-[#F9F6F0] border border-[#1A1A1A]/10 p-6 flex flex-col justify-between">
+                        <Heart className="text-[#0C3A2E] mb-4" size={24} />
+                        <div>
+                          <h4 className="font-brand text-3xl font-semibold text-[#1A1A1A] mb-1">{wishlist.length}</h4>
+                          <p className="text-[#1A1A1A]/50 text-[10px] uppercase tracking-[0.2em] font-semibold">Wishlisted Pieces</p>
+                        </div>
                       </div>
 
-                      <div className="bg-[#F9F6F0] border border-[#1A1A1A]/10 rounded-none p-6 shadow-sm hover:border-[#0C3A2E]/50 transition">
-                        <MapPin className="text-[#D4AF37] mb-3" size={26} />
-                        <h4 className="text-2xl font-bold text-[#1A1A1A] mb-1">{addresses.length}</h4>
-                        <p className="text-[#1A1A1A]/60 text-xs uppercase tracking-wider font-semibold">Saved Locations</p>
+                      <div className="bg-[#F9F6F0] border border-[#1A1A1A]/10 p-6 flex flex-col justify-between">
+                        <MapPin className="text-[#0C3A2E] mb-4" size={24} />
+                        <div>
+                          <h4 className="font-brand text-3xl font-semibold text-[#1A1A1A] mb-1">{addresses.length}</h4>
+                          <p className="text-[#1A1A1A]/50 text-[10px] uppercase tracking-[0.2em] font-semibold">Saved Locations</p>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Quick Profile Summary Card */}
-                    <div className="bg-[#0C3A2E] border border-[#1A1A1A]/10 rounded-none p-6">
-                      <h3 className="font-brand text-xl text-[#1A1A1A] mb-4 font-semibold">Customer Card</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-[#1A1A1A]/70">
-                        <div className="flex items-center gap-3 bg-white p-3.5 rounded-none">
-                          <User size={16} className="text-[#D4AF37]" />
-                          <div>
-                            <span className="block text-[10px] text-[#1A1A1A]/40 uppercase font-bold">Account Name</span>
-                            <span className="font-medium text-[#1A1A1A]">{userDisplayName}</span>
+                    {/* Editorial Customer Card */}
+                    <div className="bg-[#0C3A2E] text-white p-8 border border-[#D4AF37]/20 shadow-md">
+                      <div className="flex justify-between items-center mb-6 pb-4 border-b border-white/10">
+                        <h3 className="font-brand text-xl text-white font-normal">Patron Profile</h3>
+                        <span className="text-[10px] uppercase tracking-[0.2em] text-[#D4AF37] border border-[#D4AF37]/40 px-3 py-1 font-semibold">
+                          Verified Member
+                        </span>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div className="flex items-center gap-3.5 bg-white/5 border border-white/10 p-4">
+                          <User size={18} className="text-[#D4AF37] shrink-0" />
+                          <div className="min-w-0">
+                            <span className="block text-[9px] text-white/50 uppercase tracking-widest font-semibold">Account Name</span>
+                            <span className="font-medium text-white text-xs truncate block">{userDisplayName}</span>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-3 bg-white p-3.5 rounded-none">
-                          <Mail size={16} className="text-[#D4AF37]" />
-                          <div>
-                            <span className="block text-[10px] text-[#1A1A1A]/40 uppercase font-bold">Email Address</span>
-                            <span className="font-medium text-[#1A1A1A]">{activeUser.email}</span>
+                        <div className="flex items-center gap-3.5 bg-white/5 border border-white/10 p-4">
+                          <Mail size={18} className="text-[#D4AF37] shrink-0" />
+                          <div className="min-w-0">
+                            <span className="block text-[9px] text-white/50 uppercase tracking-widest font-semibold">Email Address</span>
+                            <span className="font-medium text-white text-xs truncate block">{activeUser.email}</span>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-3 bg-white p-3.5 rounded-none">
-                          <Phone size={16} className="text-[#D4AF37]" />
-                          <div>
-                            <span className="block text-[10px] text-[#1A1A1A]/40 uppercase font-bold">Contact Number</span>
-                            <span className="font-medium text-[#1A1A1A]">{activeUser.phone || 'Not added'}</span>
+                        <div className="flex items-center gap-3.5 bg-white/5 border border-white/10 p-4">
+                          <Phone size={18} className="text-[#D4AF37] shrink-0" />
+                          <div className="min-w-0">
+                            <span className="block text-[9px] text-white/50 uppercase tracking-widest font-semibold">Contact Phone</span>
+                            <span className="font-medium text-white text-xs truncate block">{activeUser.phone || 'Not provided'}</span>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-3 bg-white p-3.5 rounded-none">
-                          <Home size={16} className="text-[#D4AF37]" />
-                          <div>
-                            <span className="block text-[10px] text-[#1A1A1A]/40 uppercase font-bold">Default Location</span>
-                            <span className="font-medium text-[#1A1A1A] truncate">
+                        <div className="flex items-center gap-3.5 bg-white/5 border border-white/10 p-4">
+                          <Home size={18} className="text-[#D4AF37] shrink-0" />
+                          <div className="min-w-0">
+                            <span className="block text-[9px] text-white/50 uppercase tracking-widest font-semibold">Primary Address</span>
+                            <span className="font-medium text-white text-xs truncate block">
                               {addresses.find(a => a.isDefault)?.addressLine1 || 'No default location set'}
                             </span>
                           </div>
@@ -510,13 +535,13 @@ export default function DashboardPage() {
                   >
                     <div className="flex justify-between items-center pb-4 border-b border-[#1A1A1A]/10">
                       <div>
-                        <h2 className="font-brand text-2xl text-[#1A1A1A] font-semibold">Orders & tracking</h2>
-                        <p className="text-[#1A1A1A]/60 text-xs">Track shipment status and view details of your Indian handicraft purchases.</p>
+                        <h2 className="font-brand text-2xl text-[#1A1A1A] font-normal">Order History & Tracking</h2>
+                        <p className="text-[#1A1A1A]/60 text-xs mt-0.5">Track shipment progress and review your past acquisitions.</p>
                       </div>
                       {trackingOrder && (
                         <button 
                           onClick={() => setTrackingOrder(null)}
-                          className="px-3.5 py-1.5 bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 border border-[#1A1A1A]/20 text-[#D4AF37] rounded-none text-xs transition font-semibold"
+                          className="px-4 py-2 bg-[#F9F6F0] hover:bg-[#0C3A2E] hover:text-white border border-[#1A1A1A]/15 text-[#1A1A1A] text-xs font-semibold uppercase tracking-widest transition"
                         >
                           Back to List
                         </button>
@@ -524,27 +549,27 @@ export default function DashboardPage() {
                     </div>
 
                     {loadingOrders ? (
-                      <div className="flex flex-col items-center justify-center py-20 space-y-3">
-                        <div className="w-10 h-10 border-4 border-[#D4AF37] border-t-transparent rounded-none animate-spin"></div>
-                        <p className="text-xs text-[#1A1A1A]/60 font-semibold">Retrieving your orders...</p>
+                      <div className="flex flex-col items-center justify-center py-24 space-y-4">
+                        <div className="w-8 h-8 border-2 border-[#0C3A2E] border-t-transparent animate-spin"></div>
+                        <p className="text-xs uppercase tracking-widest text-[#1A1A1A]/60 font-semibold">Retrieving your orders...</p>
                       </div>
                     ) : trackingOrder ? (
                       /* Live Shipment Consignment Tracker view */
                       <div className="space-y-6">
-                        <div className="bg-[#F9F6F0] border border-[#1A1A1A]/10 rounded-none p-6">
+                        <div className="bg-[#F9F6F0] border border-[#1A1A1A]/10 p-6 md:p-8">
                           <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6 pb-6 border-b border-[#1A1A1A]/10">
                             <div>
-                              <span className="block text-[10px] text-[#1A1A1A]/60 uppercase font-bold tracking-wider mb-0.5">Order Serial</span>
-                              <span className="font-brand text-lg text-[#1A1A1A] font-semibold">#{trackingOrder._id}</span>
+                              <span className="block text-[10px] text-[#1A1A1A]/50 uppercase font-bold tracking-[0.2em] mb-1">Consignment Serial</span>
+                              <span className="font-brand text-xl text-[#0C3A2E] font-semibold">#{trackingOrder._id || trackingOrder.id}</span>
                             </div>
-                            <div className="flex flex-wrap gap-4 text-xs">
-                              <div className="bg-white px-4 py-2 rounded-none border border-[#1A1A1A]/10">
-                                <span className="block text-[9px] text-[#1A1A1A]/40 uppercase font-bold mb-0.5">Date Ordered</span>
+                            <div className="flex flex-wrap gap-3 text-xs">
+                              <div className="bg-white px-4 py-2 border border-[#1A1A1A]/10">
+                                <span className="block text-[9px] text-[#1A1A1A]/50 uppercase tracking-wider font-semibold">Date Ordered</span>
                                 <span className="text-[#1A1A1A] font-medium">{new Date(trackingOrder.createdAt).toLocaleDateString('en-IN')}</span>
                               </div>
-                              <div className="bg-white px-4 py-2 rounded-none border border-[#1A1A1A]/10">
-                                <span className="block text-[9px] text-[#1A1A1A]/40 uppercase font-bold mb-0.5">Order Total</span>
-                                <span className="text-[#D4AF37] font-semibold">₹{trackingOrder.totalPrice?.toLocaleString('en-IN')}</span>
+                              <div className="bg-white px-4 py-2 border border-[#1A1A1A]/10">
+                                <span className="block text-[9px] text-[#1A1A1A]/50 uppercase tracking-wider font-semibold">Total Price</span>
+                                <span className="text-[#0C3A2E] font-semibold">₹{trackingOrder.totalPrice?.toLocaleString('en-IN')}</span>
                               </div>
                             </div>
                           </div>
@@ -552,119 +577,119 @@ export default function DashboardPage() {
                           {/* Shipment Delivery details */}
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                             <div className="space-y-3">
-                              <h4 className="text-sm font-bold text-[#1A1A1A] flex items-center gap-2">
-                                <Truck size={16} className="text-[#D4AF37]" />
-                                <span>Shipping Carrier details</span>
+                              <h4 className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A] flex items-center gap-2">
+                                <Truck size={16} className="text-[#0C3A2E]" />
+                                <span>Carrier Dispatch Details</span>
                               </h4>
                               {trackingOrder.tracking && trackingOrder.tracking.trackingNumber ? (
-                                <div className="bg-white border border-[#1A1A1A]/10 p-4 rounded-none space-y-2">
-                                  <p className="text-xs"><span className="text-[#1A1A1A]/60">Carrier:</span> <span className="text-[#1A1A1A] font-semibold uppercase">{trackingOrder.tracking.carrier}</span></p>
-                                  <p className="text-xs"><span className="text-[#1A1A1A]/60">Tracking Code:</span> <span className="text-[#D4AF37] font-mono font-semibold select-all">{trackingOrder.tracking.trackingNumber}</span></p>
-                                  <p className="text-xs"><span className="text-[#1A1A1A]/60">Estimated Delivery:</span> <span className="text-[#1A1A1A] font-semibold">{trackingOrder.tracking.estimatedDelivery ? new Date(trackingOrder.tracking.estimatedDelivery).toLocaleDateString('en-IN') : 'TBD'}</span></p>
+                                <div className="bg-white border border-[#1A1A1A]/10 p-5 space-y-2 text-xs">
+                                  <p><span className="text-[#1A1A1A]/50 uppercase tracking-wider text-[10px] block">Carrier</span> <span className="text-[#1A1A1A] font-semibold">{trackingOrder.tracking.carrier}</span></p>
+                                  <p><span className="text-[#1A1A1A]/50 uppercase tracking-wider text-[10px] block">Tracking Code</span> <span className="text-[#0C3A2E] font-mono font-semibold select-all">{trackingOrder.tracking.trackingNumber}</span></p>
+                                  <p><span className="text-[#1A1A1A]/50 uppercase tracking-wider text-[10px] block">Estimated Delivery</span> <span className="text-[#1A1A1A] font-semibold">{trackingOrder.tracking.estimatedDelivery ? new Date(trackingOrder.tracking.estimatedDelivery).toLocaleDateString('en-IN') : 'In Transit'}</span></p>
                                 </div>
                               ) : (
-                                <div className="bg-white border border-[#D4AF37]/5 p-4 rounded-none text-center py-6 text-[#1A1A1A]/60 text-xs">
-                                  <Calendar className="mx-auto mb-2 text-gray-650" size={24} />
-                                  <span>Shipment is currently being packaged. Carrier details will populate here shortly.</span>
+                                <div className="bg-white border border-[#1A1A1A]/10 p-6 text-center text-[#1A1A1A]/60 text-xs">
+                                  <Calendar className="mx-auto mb-2 text-[#1A1A1A]/30" size={24} />
+                                  <span>Package is undergoing quality curation. Carrier details will update shortly.</span>
                                 </div>
                               )}
                             </div>
 
                             <div className="space-y-3">
-                              <h4 className="text-sm font-bold text-[#1A1A1A] flex items-center gap-2">
-                                <MapPin size={16} className="text-[#D4AF37]" />
-                                <span>Delivery Destination</span>
+                              <h4 className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A] flex items-center gap-2">
+                                <MapPin size={16} className="text-[#0C3A2E]" />
+                                <span>Destination Address</span>
                               </h4>
-                              <div className="bg-white border border-[#1A1A1A]/10 p-4 rounded-none text-xs space-y-1 text-[#1A1A1A]/70">
+                              <div className="bg-white border border-[#1A1A1A]/10 p-5 text-xs space-y-1 text-[#1A1A1A]/70">
                                 <p className="font-semibold text-[#1A1A1A]">{trackingOrder.shippingAddress?.fullName}</p>
                                 <p>{trackingOrder.shippingAddress?.addressLine1}</p>
                                 {trackingOrder.shippingAddress?.addressLine2 && <p>{trackingOrder.shippingAddress?.addressLine2}</p>}
                                 <p>{trackingOrder.shippingAddress?.city}, {trackingOrder.shippingAddress?.state} - {trackingOrder.shippingAddress?.postalCode}</p>
-                                <p className="text-[#1A1A1A]/60 mt-1">Phone: {trackingOrder.shippingAddress?.phone}</p>
+                                <p className="text-[#1A1A1A]/50 text-[11px] pt-1">Phone: {trackingOrder.shippingAddress?.phone}</p>
                               </div>
                             </div>
                           </div>
 
                           {/* Consignment Status Progress Timeline */}
-                          <div className="space-y-3">
-                            <h4 className="text-sm font-bold text-[#1A1A1A]">Consignment Tracker Timeline</h4>
-                            <div className="relative pl-8 border-l border-[#1A1A1A]/10 space-y-6 py-2 ml-4 text-sm">
+                          <div className="space-y-4">
+                            <h4 className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A]">Consignment Status Flow</h4>
+                            <div className="relative pl-6 border-l-2 border-[#0C3A2E]/20 space-y-6 py-2 ml-3 text-sm">
                               {/* Order Placed */}
                               <div className="relative">
-                                <span className="absolute -left-[25px] top-0 w-4 h-4 rounded-none border-2 bg-[#D4AF37] border-[#D4AF37]"></span>
-                                <p className="font-semibold text-[#1A1A1A]">Order Placed</p>
-                                <p className="text-xs text-[#1A1A1A]/40">We have successfully received your order.</p>
+                                <span className="absolute -left-[31px] top-0.5 w-3.5 h-3.5 bg-[#0C3A2E] border-2 border-white shadow-sm"></span>
+                                <p className="font-semibold text-xs uppercase tracking-wider text-[#1A1A1A]">Order Placed</p>
+                                <p className="text-[11px] text-[#1A1A1A]/50">Order received and logged into crafting schedule.</p>
                               </div>
 
                               {/* Order Confirmed */}
                               <div className="relative">
-                                <span className={`absolute -left-[25px] top-0 w-4 h-4 rounded-none border-2 ${
+                                <span className={`absolute -left-[31px] top-0.5 w-3.5 h-3.5 border-2 border-white shadow-sm ${
                                   ['confirmed', 'processing', 'packed', 'shipped', 'out_for_delivery', 'delivered'].includes(trackingOrder.orderStatus)
-                                    ? 'bg-[#D4AF37] border-[#D4AF37]'
-                                    : 'bg-white border-[#1A1A1A]/10'
+                                    ? 'bg-[#0C3A2E]'
+                                    : 'bg-[#E5E0D8]'
                                 }`}></span>
-                                <p className={`font-semibold ${
+                                <p className={`font-semibold text-xs uppercase tracking-wider ${
                                   ['confirmed', 'processing', 'packed', 'shipped', 'out_for_delivery', 'delivered'].includes(trackingOrder.orderStatus)
                                     ? 'text-[#1A1A1A]'
-                                    : 'text-[#1A1A1A]/60'
-                                }`}>Order Confirmed</p>
-                                <p className="text-xs text-[#1A1A1A]/40">Your order has been verified and is ready for preparation.</p>
+                                    : 'text-[#1A1A1A]/40'
+                                }`}>Order Verified</p>
+                                <p className="text-[11px] text-[#1A1A1A]/50">Payment confirmed and items reserved.</p>
                               </div>
 
                               {/* Processing */}
                               <div className="relative">
-                                <span className={`absolute -left-[25px] top-0 w-4 h-4 rounded-none border-2 ${
+                                <span className={`absolute -left-[31px] top-0.5 w-3.5 h-3.5 border-2 border-white shadow-sm ${
                                   ['processing', 'packed', 'shipped', 'out_for_delivery', 'delivered'].includes(trackingOrder.orderStatus)
-                                    ? 'bg-[#D4AF37] border-[#D4AF37]'
-                                    : 'bg-white border-[#1A1A1A]/10'
+                                    ? 'bg-[#0C3A2E]'
+                                    : 'bg-[#E5E0D8]'
                                 }`}></span>
-                                <p className={`font-semibold ${
+                                <p className={`font-semibold text-xs uppercase tracking-wider ${
                                   ['processing', 'packed', 'shipped', 'out_for_delivery', 'delivered'].includes(trackingOrder.orderStatus)
                                     ? 'text-[#1A1A1A]'
-                                    : 'text-[#1A1A1A]/60'
-                                }`}>Processing & Packaging</p>
-                                <p className="text-xs text-[#1A1A1A]/40">Our artisans are preparing and quality-checking your signature items.</p>
+                                    : 'text-[#1A1A1A]/40'
+                                }`}>Handcrafting & Quality Verification</p>
+                                <p className="text-[11px] text-[#1A1A1A]/50">Artisans performing final inspection and protective boxing.</p>
                               </div>
 
                               {/* Shipped */}
                               <div className="relative">
-                                <span className={`absolute -left-[25px] top-0 w-4 h-4 rounded-none border-2 ${
+                                <span className={`absolute -left-[31px] top-0.5 w-3.5 h-3.5 border-2 border-white shadow-sm ${
                                   ['shipped', 'out_for_delivery', 'delivered'].includes(trackingOrder.orderStatus)
-                                    ? 'bg-[#D4AF37] border-[#D4AF37]'
-                                    : 'bg-white border-[#1A1A1A]/10'
+                                    ? 'bg-[#0C3A2E]'
+                                    : 'bg-[#E5E0D8]'
                                 }`}></span>
-                                <p className={`font-semibold ${
+                                <p className={`font-semibold text-xs uppercase tracking-wider ${
                                   ['shipped', 'out_for_delivery', 'delivered'].includes(trackingOrder.orderStatus)
                                     ? 'text-[#1A1A1A]'
-                                    : 'text-[#1A1A1A]/60'
-                                }`}>In Transit / Shipped</p>
-                                <p className="text-xs text-[#1A1A1A]/40">Handed over to carrier consignment partner.</p>
+                                    : 'text-[#1A1A1A]/40'
+                                }`}>In Transit</p>
+                                <p className="text-[11px] text-[#1A1A1A]/50">Handed to carrier for direct delivery.</p>
                               </div>
 
                               {/* Delivered */}
                               <div className="relative">
-                                <span className={`absolute -left-[25px] top-0 w-4 h-4 rounded-none border-2 ${
-                                  trackingOrder.orderStatus === 'delivered' ? 'bg-[#D4AF37] border-[#D4AF37]' : 'bg-white border-[#1A1A1A]/10'
+                                <span className={`absolute -left-[31px] top-0.5 w-3.5 h-3.5 border-2 border-white shadow-sm ${
+                                  trackingOrder.orderStatus === 'delivered' ? 'bg-[#2A7D6B]' : 'bg-[#E5E0D8]'
                                 }`}></span>
-                                <p className={`font-semibold ${trackingOrder.orderStatus === 'delivered' ? 'text-[#D4AF37]' : 'text-[#1A1A1A]/60'}`}>Delivered</p>
-                                <p className="text-xs text-[#1A1A1A]/40">Package has reached your doorstep successfully.</p>
+                                <p className={`font-semibold text-xs uppercase tracking-wider ${trackingOrder.orderStatus === 'delivered' ? 'text-[#2A7D6B]' : 'text-[#1A1A1A]/40'}`}>Delivered</p>
+                                <p className="text-[11px] text-[#1A1A1A]/50">Piece successfully received at your sanctuary.</p>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     ) : orders.length === 0 ? (
-                      <div className="bg-[#F9F6F0] border border-[#1A1A1A]/10 rounded-none p-12 text-center text-[#1A1A1A]/60 space-y-4">
-                        <ShoppingBag size={48} className="mx-auto text-gray-650" />
+                      <div className="bg-[#F9F6F0] border border-[#1A1A1A]/10 p-16 text-center text-[#1A1A1A]/60 space-y-4">
+                        <ShoppingBag size={40} className="mx-auto text-[#1A1A1A]/30" />
                         <div>
-                          <h4 className="text-[#1A1A1A] font-brand text-lg font-semibold mb-1">No orders yet</h4>
-                          <p className="text-xs max-w-sm mx-auto">Explore our collection of luxurious, handcrafted Indian home decor artwork pieces.</p>
+                          <h4 className="text-[#1A1A1A] font-brand text-lg font-normal mb-1">No Orders Recorded</h4>
+                          <p className="text-xs max-w-sm mx-auto font-light">Explore our curated collection of signature Indian decor pieces to begin.</p>
                         </div>
                         <Link 
                           href="/products" 
-                          className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#D4AF37] hover:bg-[#C9A52C] text-black font-semibold rounded-none text-xs transition"
+                          className="inline-flex items-center gap-2 px-6 py-3 bg-[#0C3A2E] hover:bg-[#0C3A2E]/90 text-white font-semibold text-xs uppercase tracking-[0.2em] transition"
                         >
-                          <span>Explore Products</span>
+                          <span>Explore Gallery</span>
                           <ArrowRight size={14} />
                         </Link>
                       </div>
@@ -674,37 +699,39 @@ export default function DashboardPage() {
                         {orders.map((ord: any) => (
                           <div 
                             key={ord.id || ord._id} 
-                            className="bg-[#F9F6F0] border border-[#1A1A1A]/10 hover:border-[#0C3A2E]/30 transition rounded-none p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
+                            className="bg-[#F9F6F0] border border-[#1A1A1A]/10 hover:border-[#0C3A2E] transition p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
                           >
                             <div className="space-y-1 min-w-0">
                               <div className="flex items-center gap-3">
-                                <span className="font-brand font-semibold text-[#1A1A1A] text-sm">#{(ord.id || ord._id || "").slice(-8).toUpperCase()}</span>
-                                <span className={`px-2.5 py-0.5 rounded-none text-[10px] font-bold uppercase tracking-wider ${
+                                <span className="font-brand font-semibold text-[#1A1A1A] text-base">
+                                  #{(ord.id || ord._id || "").slice(-8).toUpperCase()}
+                                </span>
+                                <span className={`px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider border ${
                                   ord.orderStatus === 'delivered'
-                                    ? 'bg-green-500/10 border border-green-500/20 text-green-400'
+                                    ? 'bg-[#2A7D6B]/10 border-[#2A7D6B]/30 text-[#2A7D6B]'
                                     : ord.orderStatus === 'shipped'
-                                    ? 'bg-blue-500/10 border border-blue-500/20 text-blue-400'
-                                    : 'bg-[#D4AF37]/10 border border-[#1A1A1A]/20 text-[#D4AF37]'
+                                    ? 'bg-[#0C3A2E]/10 border-[#0C3A2E]/30 text-[#0C3A2E]'
+                                    : 'bg-[#D4AF37]/15 border-[#D4AF37]/40 text-[#8F6F12]'
                                 }`}>
                                   {ord.orderStatus}
                                 </span>
                               </div>
-                              <p className="text-xs text-[#1A1A1A]/60">Ordered: {new Date(ord.createdAt).toLocaleDateString('en-IN')}</p>
-                              <p className="text-xs text-[#D4AF37] font-semibold mt-1">₹{ord.totalPrice?.toLocaleString('en-IN')}</p>
+                              <p className="text-xs text-[#1A1A1A]/60">Ordered on: {new Date(ord.createdAt).toLocaleDateString('en-IN')}</p>
+                              <p className="text-sm font-semibold text-[#1A1A1A] mt-1">₹{ord.totalPrice?.toLocaleString('en-IN')}</p>
                             </div>
 
                             <div className="flex gap-2.5 w-full md:w-auto">
                               <button 
                                 onClick={() => setTrackingOrder(ord)}
-                                className="flex-grow md:flex-grow-0 px-4 py-2 border border-[#1A1A1A]/20 text-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-none text-xs transition font-semibold"
+                                className="flex-grow md:flex-grow-0 px-4 py-2.5 border border-[#0C3A2E] text-[#0C3A2E] hover:bg-[#0C3A2E] hover:text-white text-xs font-semibold uppercase tracking-wider transition"
                               >
-                                Track Package
+                                Track
                               </button>
                               <Link 
                                 href={`/dashboard/orders/${ord.id || ord._id}`}
-                                className="flex-grow md:flex-grow-0 px-4 py-2 bg-[#D4AF37] hover:bg-[#C9A52C] text-black rounded-none text-xs transition font-semibold text-center"
+                                className="flex-grow md:flex-grow-0 px-4 py-2.5 bg-[#0C3A2E] hover:bg-[#0C3A2E]/90 text-white text-xs font-semibold uppercase tracking-wider transition text-center"
                               >
-                                Order Details
+                                View Details
                               </Link>
                             </div>
                           </div>
@@ -723,49 +750,49 @@ export default function DashboardPage() {
                     exit={{ opacity: 0, y: -10 }}
                     className="space-y-8"
                   >
-                    <div>
-                      <h2 className="font-brand text-2xl text-[#1A1A1A] font-semibold mb-1">Profile & security</h2>
-                      <p className="text-[#1A1A1A]/60 text-xs font-light">Update your personal contact details or modify your account authorization credentials.</p>
+                    <div className="border-b border-[#1A1A1A]/10 pb-4">
+                      <h2 className="font-brand text-2xl text-[#1A1A1A] font-normal mb-1">Profile & Security Credentials</h2>
+                      <p className="text-[#1A1A1A]/60 text-xs font-light">Update your personal contact details or modify your sign-in password.</p>
                     </div>
 
                     {/* Customer Info Form */}
-                    <div className="bg-[#F9F6F0] border border-[#1A1A1A]/10 rounded-none p-6 space-y-4">
-                      <h3 className="text-sm font-bold text-[#1A1A1A] flex items-center gap-2">
-                        <User size={16} className="text-[#D4AF37]" />
+                    <div className="bg-[#F9F6F0] border border-[#1A1A1A]/10 p-6 md:p-8 space-y-4">
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A] flex items-center gap-2">
+                        <User size={16} className="text-[#0C3A2E]" />
                         <span>Personal Details</span>
                       </h3>
                       
-                      <form onSubmit={handleUpdateProfile} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-1">
-                          <label className="block text-[10px] text-[#1A1A1A]/60 uppercase font-bold tracking-wider">Account Name</label>
+                      <form onSubmit={handleUpdateProfile} className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                        <div className="space-y-1.5">
+                          <label className="block text-[10px] text-[#1A1A1A]/60 uppercase font-bold tracking-wider">Full Name</label>
                           <input 
                             type="text" 
                             value={profileForm.name}
                             onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
-                            className="w-full bg-white border border-[#1A1A1A]/10 focus:border-[#D4AF37] rounded-none px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
+                            className="w-full bg-white border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
                             placeholder="John Doe"
                           />
                         </div>
 
-                        <div className="space-y-1">
+                        <div className="space-y-1.5">
                           <label className="block text-[10px] text-[#1A1A1A]/60 uppercase font-bold tracking-wider">Contact Phone</label>
                           <input 
                             type="tel" 
                             value={profileForm.phone}
                             onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
-                            className="w-full bg-white border border-[#1A1A1A]/10 focus:border-[#D4AF37] rounded-none px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
-                            placeholder="Add phone number"
+                            className="w-full bg-white border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
+                            placeholder="+91-9876543210"
                           />
                         </div>
 
-                        <div className="space-y-1 md:col-span-2">
+                        <div className="space-y-1.5 md:col-span-2">
                           <label className="block text-[10px] text-[#1A1A1A]/60 uppercase font-bold tracking-wider">Email Address</label>
                           <input 
                             type="email" 
                             value={profileForm.email}
                             onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
-                            className="w-full bg-white border border-[#1A1A1A]/10 focus:border-[#D4AF37] rounded-none px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
-                            placeholder="Email address"
+                            className="w-full bg-white border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
+                            placeholder="name@domain.com"
                           />
                         </div>
 
@@ -773,53 +800,53 @@ export default function DashboardPage() {
                           <button
                             type="submit"
                             disabled={profileLoading}
-                            className="px-5 py-2.5 bg-[#D4AF37] hover:bg-[#C9A52C] text-black font-semibold rounded-none text-xs transition"
+                            className="px-6 py-3 bg-[#0C3A2E] hover:bg-[#0C3A2E]/90 text-white font-semibold text-xs uppercase tracking-[0.15em] transition"
                           >
-                            {profileLoading ? 'Updating Profile...' : 'Save Profile Changes'}
+                            {profileLoading ? 'Updating...' : 'Save Profile Changes'}
                           </button>
                         </div>
                       </form>
                     </div>
 
                     {/* Change Password Form */}
-                    <div className="bg-[#F9F6F0] border border-[#1A1A1A]/10 rounded-none p-6 space-y-4">
-                      <h3 className="text-sm font-bold text-[#1A1A1A] flex items-center gap-2">
-                        <Lock size={16} className="text-[#D4AF37]" />
-                        <span>Change Password</span>
+                    <div className="bg-[#F9F6F0] border border-[#1A1A1A]/10 p-6 md:p-8 space-y-4">
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A] flex items-center gap-2">
+                        <Lock size={16} className="text-[#0C3A2E]" />
+                        <span>Security & Password</span>
                       </h3>
 
-                      <form onSubmit={handleChangePassword} className="space-y-4">
+                      <form onSubmit={handleChangePassword} className="space-y-4 pt-2">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div className="space-y-1">
+                          <div className="space-y-1.5">
                             <label className="block text-[10px] text-[#1A1A1A]/60 uppercase font-bold tracking-wider">Current Password</label>
                             <input 
                               type="password" 
                               value={passwordForm.currentPassword}
                               onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
-                              className="w-full bg-white border border-[#1A1A1A]/10 focus:border-[#D4AF37] rounded-none px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
+                              className="w-full bg-white border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
                               placeholder="••••••••"
                             />
                           </div>
 
-                          <div className="space-y-1">
+                          <div className="space-y-1.5">
                             <label className="block text-[10px] text-[#1A1A1A]/60 uppercase font-bold tracking-wider">New Password</label>
                             <input 
                               type="password" 
                               value={passwordForm.newPassword}
                               onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-                              className="w-full bg-white border border-[#1A1A1A]/10 focus:border-[#D4AF37] rounded-none px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
-                              placeholder="At least 6 chars"
+                              className="w-full bg-white border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
+                              placeholder="Min. 6 characters"
                             />
                           </div>
 
-                          <div className="space-y-1">
+                          <div className="space-y-1.5">
                             <label className="block text-[10px] text-[#1A1A1A]/60 uppercase font-bold tracking-wider">Confirm New Password</label>
                             <input 
                               type="password" 
                               value={passwordForm.confirmPassword}
                               onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
-                              className="w-full bg-white border border-[#1A1A1A]/10 focus:border-[#D4AF37] rounded-none px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
-                              placeholder="Match password"
+                              className="w-full bg-white border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
+                              placeholder="••••••••"
                             />
                           </div>
                         </div>
@@ -828,9 +855,9 @@ export default function DashboardPage() {
                           <button
                             type="submit"
                             disabled={passwordLoading}
-                            className="px-5 py-2.5 bg-[#D4AF37] hover:bg-[#C9A52C] text-black font-semibold rounded-none text-xs transition"
+                            className="px-6 py-3 bg-[#0C3A2E] hover:bg-[#0C3A2E]/90 text-white font-semibold text-xs uppercase tracking-[0.15em] transition"
                           >
-                            {passwordLoading ? 'Updating Password...' : 'Change Password'}
+                            {passwordLoading ? 'Updating...' : 'Update Password'}
                           </button>
                         </div>
                       </form>
@@ -849,28 +876,28 @@ export default function DashboardPage() {
                   >
                     <div className="flex justify-between items-center pb-4 border-b border-[#1A1A1A]/10">
                       <div>
-                        <h2 className="font-brand text-2xl text-[#1A1A1A] font-semibold">Saved Locations</h2>
-                        <p className="text-[#1A1A1A]/60 text-xs">Manage your default shipping addresses for fast Indian checkout.</p>
+                        <h2 className="font-brand text-2xl text-[#1A1A1A] font-normal">Saved Delivery Locations</h2>
+                        <p className="text-[#1A1A1A]/60 text-xs mt-0.5">Manage your residential and business delivery destinations.</p>
                       </div>
                       <button 
                         onClick={openAddAddress}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#D4AF37] hover:bg-[#C9A52C] text-black font-semibold rounded-none text-xs transition"
+                        className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-[#0C3A2E] hover:bg-[#0C3A2E]/90 text-white font-semibold text-xs uppercase tracking-wider transition"
                       >
                         <Plus size={14} />
-                        <span>Add Address</span>
+                        <span>Add Location</span>
                       </button>
                     </div>
 
                     {addresses.length === 0 ? (
-                      <div className="bg-[#F9F6F0] border border-[#1A1A1A]/10 rounded-none p-12 text-center text-[#1A1A1A]/60 space-y-4">
-                        <MapPin size={48} className="mx-auto text-gray-650" />
+                      <div className="bg-[#F9F6F0] border border-[#1A1A1A]/10 p-16 text-center text-[#1A1A1A]/60 space-y-4">
+                        <MapPin size={40} className="mx-auto text-[#1A1A1A]/30" />
                         <div>
-                          <h4 className="text-[#1A1A1A] font-brand text-lg font-semibold mb-1">No addresses saved</h4>
-                          <p className="text-xs max-w-sm mx-auto">Set up your delivery addresses to streamline checkout flows and track shipments.</p>
+                          <h4 className="text-[#1A1A1A] font-brand text-lg font-normal mb-1">No Locations Saved</h4>
+                          <p className="text-xs max-w-sm mx-auto font-light">Add a delivery address to expedite your checkout experience.</p>
                         </div>
                         <button 
                           onClick={openAddAddress}
-                          className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-[#D4AF37] hover:bg-[#C9A52C] text-black font-semibold rounded-none text-xs transition"
+                          className="inline-flex items-center gap-1.5 px-6 py-3 bg-[#0C3A2E] hover:bg-[#0C3A2E]/90 text-white font-semibold text-xs uppercase tracking-[0.15em] transition"
                         >
                           <Plus size={14} />
                           <span>Add Your First Location</span>
@@ -881,16 +908,18 @@ export default function DashboardPage() {
                         {addresses.map((addr: any) => (
                           <div 
                             key={addr._id} 
-                            className={`bg-[#F9F6F0] border rounded-none p-5 space-y-4 transition flex flex-col justify-between ${
-                              addr.isDefault ? 'border-[#D4AF37] ring-1 ring-[#D4AF37]/25 shadow-md' : 'border-[#1A1A1A]/10 hover:border-[#385C42]'
+                            className={`p-6 space-y-4 transition flex flex-col justify-between ${
+                              addr.isDefault 
+                                ? 'bg-white border-2 border-[#0C3A2E] shadow-sm' 
+                                : 'bg-[#F9F6F0] border border-[#1A1A1A]/10 hover:border-[#0C3A2E]'
                             }`}
                           >
                             <div className="space-y-2">
                               <div className="flex justify-between items-start gap-2">
-                                <h4 className="font-semibold text-[#1A1A1A] text-sm truncate">{addr.fullName}</h4>
+                                <h4 className="font-brand font-semibold text-[#1A1A1A] text-sm truncate">{addr.fullName}</h4>
                                 {addr.isDefault && (
-                                  <span className="shrink-0 inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#D4AF37]/15 border border-[#D4AF37]/35 text-[#D4AF37] text-[9px] font-bold rounded-none uppercase tracking-wider">
-                                    <Check size={8} />
+                                  <span className="shrink-0 inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#0C3A2E] text-[#D4AF37] text-[9px] font-bold uppercase tracking-wider">
+                                    <Check size={9} />
                                     <span>Default</span>
                                   </span>
                                 )}
@@ -898,38 +927,38 @@ export default function DashboardPage() {
                               <p className="text-xs text-[#1A1A1A]/70 leading-relaxed font-light">
                                 {addr.addressLine1}
                                 {addr.addressLine2 && <span className="block mt-0.5">{addr.addressLine2}</span>}
-                                <span className="block mt-0.5">{addr.city}, {addr.state} - <span className="font-semibold">{addr.postalCode}</span></span>
-                                <span className="block mt-0.5 text-[#1A1A1A]/60">{addr.country}</span>
+                                <span className="block mt-0.5">{addr.city}, {addr.state} - <span className="font-semibold text-[#1A1A1A]">{addr.postalCode}</span></span>
+                                <span className="block mt-0.5 text-[#1A1A1A]/50">{addr.country}</span>
                               </p>
-                              <p className="text-xs text-[#1A1A1A]/60 flex items-center gap-1 pt-1.5">
-                                <Phone size={12} className="text-[#D4AF37]" />
-                                <span>Phone: {addr.phone}</span>
+                              <p className="text-xs text-[#1A1A1A]/70 flex items-center gap-1.5 pt-1.5">
+                                <Phone size={12} className="text-[#0C3A2E]" />
+                                <span>{addr.phone}</span>
                               </p>
                             </div>
 
-                            <div className="flex items-center justify-between border-t border-[#1A1A1A]/10 pt-3.5 mt-2 gap-2">
+                            <div className="flex items-center justify-between border-t border-[#1A1A1A]/10 pt-4 mt-2 gap-2">
                               {!addr.isDefault ? (
                                 <button 
                                   onClick={() => handleSetDefaultAddress(addr)}
-                                  className="text-[10px] text-[#1A1A1A]/60 hover:text-[#D4AF37] transition font-semibold"
+                                  className="text-[11px] text-[#0C3A2E] hover:underline transition font-semibold uppercase tracking-wider"
                                 >
                                   Make Default
                                 </button>
                               ) : (
-                                <span className="text-[10px] text-green-400 font-bold">Active Delivery Location</span>
+                                <span className="text-[10px] text-[#2A7D6B] font-bold uppercase tracking-wider">Primary Location</span>
                               )}
                               
-                              <div className="flex gap-3">
+                              <div className="flex gap-2">
                                 <button 
                                   onClick={() => openEditAddress(addr)}
-                                  className="text-[#1A1A1A]/60 hover:text-[#1A1A1A] p-1 rounded transition"
+                                  className="text-[#1A1A1A]/60 hover:text-[#0C3A2E] p-1.5 transition"
                                   title="Edit Address"
                                 >
                                   <Edit size={14} />
                                 </button>
                                 <button 
                                   onClick={() => handleDeleteAddress(addr._id)}
-                                  className="text-red-500/60 hover:text-red-400 p-1 rounded transition"
+                                  className="text-[#A85751]/70 hover:text-[#A85751] p-1.5 transition"
                                   title="Delete Address"
                                 >
                                   <Trash2 size={14} />
@@ -952,18 +981,18 @@ export default function DashboardPage() {
                     exit={{ opacity: 0, y: -10 }}
                     className="space-y-6"
                   >
-                    <div className="pb-4 border-b border-red-500/20">
-                      <h2 className="font-brand text-2xl text-red-500 font-semibold">Danger Zone</h2>
-                      <p className="text-[#1A1A1A]/60 text-xs font-light">Critical settings. Actions taken here are permanent and cannot be undone.</p>
+                    <div className="pb-4 border-b border-[#A85751]/20">
+                      <h2 className="font-brand text-2xl text-[#A85751] font-normal">Danger Zone</h2>
+                      <p className="text-[#1A1A1A]/60 text-xs font-light mt-0.5">Permanent account modifications. Actions taken here are irreversible.</p>
                     </div>
 
-                    <div className="bg-red-500/5 border border-red-500/25 rounded-none p-6 space-y-4">
+                    <div className="bg-[#A85751]/5 border border-[#A85751]/20 p-8 space-y-4">
                       <div className="flex gap-4 items-start">
-                        <ShieldAlert className="text-red-500 shrink-0 mt-0.5" size={28} />
+                        <ShieldAlert className="text-[#A85751] shrink-0 mt-0.5" size={24} />
                         <div className="space-y-1">
                           <h4 className="font-brand text-lg text-[#1A1A1A] font-semibold">Delete Account Permanently</h4>
                           <p className="text-xs text-[#1A1A1A]/60 leading-relaxed max-w-xl font-light">
-                            Deleting your account completely deletes all saved credentials, wishlist history, and address details. Your pending orders will continue shipping, but you will lose online tracking access permanently.
+                            Deleting your account completely purges all saved shipping addresses, order histories, and personal credentials.
                           </p>
                         </div>
                       </div>
@@ -974,7 +1003,7 @@ export default function DashboardPage() {
                             setDeleteConfirmText('');
                             setDeleteModalOpen(true);
                           }}
-                          className="px-5 py-2.5 bg-red-600 hover:bg-[#A85751] text-white font-bold rounded-none text-xs transition shadow-md shadow-red-900/20"
+                          className="px-6 py-3 bg-[#A85751] hover:bg-[#A85751]/90 text-white font-semibold text-xs uppercase tracking-[0.15em] transition shadow-sm"
                         >
                           Delete My Account
                         </button>
@@ -992,21 +1021,21 @@ export default function DashboardPage() {
 
       {/* Address modal form */}
       {addressModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-[#F9F6F0] border border-[#1A1A1A]/20 rounded-none w-full max-w-lg overflow-hidden shadow-2xl"
+            className="bg-white border border-[#1A1A1A]/20 w-full max-w-lg overflow-hidden shadow-2xl"
           >
-            <div className="bg-white px-6 py-4 border-b border-[#1A1A1A]/10 flex justify-between items-center">
-              <h3 className="font-brand text-lg text-[#1A1A1A] font-semibold">
-                {addressModalMode === 'add' ? 'Add New Delivery Address' : 'Edit Delivery Address'}
+            <div className="bg-[#F9F6F0] px-6 py-4 border-b border-[#1A1A1A]/10 flex justify-between items-center">
+              <h3 className="font-brand text-lg text-[#1A1A1A] font-normal">
+                {addressModalMode === 'add' ? 'Add Delivery Destination' : 'Edit Delivery Destination'}
               </h3>
               <button 
                 onClick={() => setAddressModalOpen(false)}
-                className="text-[#1A1A1A]/60 hover:text-[#1A1A1A] text-sm font-semibold transition"
+                className="text-[#1A1A1A]/60 hover:text-[#1A1A1A] transition"
               >
-                Cancel
+                <X size={18} />
               </button>
             </div>
 
@@ -1019,19 +1048,19 @@ export default function DashboardPage() {
                     required
                     value={addressForm.fullName}
                     onChange={(e) => setAddressForm({ ...addressForm, fullName: e.target.value })}
-                    className="w-full bg-white border border-[#1A1A1A]/10 focus:border-[#D4AF37] rounded-none px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
+                    className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
                     placeholder="Recipient Name"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="block text-[9px] text-[#1A1A1A]/60 uppercase font-bold tracking-wider">Receiver Phone Number *</label>
+                  <label className="block text-[9px] text-[#1A1A1A]/60 uppercase font-bold tracking-wider">Phone Number *</label>
                   <input 
                     type="tel" 
                     required
                     value={addressForm.phone}
                     onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value })}
-                    className="w-full bg-white border border-[#1A1A1A]/10 focus:border-[#D4AF37] rounded-none px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
+                    className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
                     placeholder="10-digit Mobile"
                   />
                 </div>
@@ -1043,19 +1072,19 @@ export default function DashboardPage() {
                     required
                     value={addressForm.addressLine1}
                     onChange={(e) => setAddressForm({ ...addressForm, addressLine1: e.target.value })}
-                    className="w-full bg-white border border-[#1A1A1A]/10 focus:border-[#D4AF37] rounded-none px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
-                    placeholder="Street, apartment details"
+                    className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
+                    placeholder="Street, building name"
                   />
                 </div>
 
                 <div className="space-y-1 md:col-span-2">
-                  <label className="block text-[9px] text-[#1A1A1A]/60 uppercase font-bold tracking-wider">Address Line 2 (Area, Colony, Landmark)</label>
+                  <label className="block text-[9px] text-[#1A1A1A]/60 uppercase font-bold tracking-wider">Address Line 2 (Area, Landmark)</label>
                   <input 
                     type="text" 
                     value={addressForm.addressLine2}
                     onChange={(e) => setAddressForm({ ...addressForm, addressLine2: e.target.value })}
-                    className="w-full bg-white border border-[#1A1A1A]/10 focus:border-[#D4AF37] rounded-none px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
-                    placeholder="Sector, landmark details"
+                    className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
+                    placeholder="Area, landmark"
                   />
                 </div>
 
@@ -1066,8 +1095,8 @@ export default function DashboardPage() {
                     required
                     value={addressForm.city}
                     onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })}
-                    className="w-full bg-white border border-[#1A1A1A]/10 focus:border-[#D4AF37] rounded-none px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
-                    placeholder="Mumbai / Delhi"
+                    className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
+                    placeholder="City"
                   />
                 </div>
 
@@ -1078,20 +1107,20 @@ export default function DashboardPage() {
                     required
                     value={addressForm.state}
                     onChange={(e) => setAddressForm({ ...addressForm, state: e.target.value })}
-                    className="w-full bg-white border border-[#1A1A1A]/10 focus:border-[#D4AF37] rounded-none px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
-                    placeholder="Maharashtra"
+                    className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
+                    placeholder="State"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="block text-[9px] text-[#1A1A1A]/60 uppercase font-bold tracking-wider">PIN Code *</label>
+                  <label className="block text-[9px] text-[#1A1A1A]/60 uppercase font-bold tracking-wider">Postal Code (PIN) *</label>
                   <input 
                     type="text" 
                     required
                     value={addressForm.postalCode}
                     onChange={(e) => setAddressForm({ ...addressForm, postalCode: e.target.value })}
-                    className="w-full bg-white border border-[#1A1A1A]/10 focus:border-[#D4AF37] rounded-none px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
-                    placeholder="6-digit ZIP"
+                    className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
+                    placeholder="PIN Code"
                   />
                 </div>
 
@@ -1102,36 +1131,38 @@ export default function DashboardPage() {
                     required
                     value={addressForm.country}
                     onChange={(e) => setAddressForm({ ...addressForm, country: e.target.value })}
-                    className="w-full bg-white border border-[#1A1A1A]/10 focus:border-[#D4AF37] rounded-none px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
+                    className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
                     placeholder="India"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 pt-2">
+              <div className="flex items-center gap-2.5 pt-2">
                 <input 
                   type="checkbox" 
                   id="isDefault" 
                   checked={addressForm.isDefault}
                   onChange={(e) => setAddressForm({ ...addressForm, isDefault: e.target.checked })}
-                  className="rounded border-[#1A1A1A]/10 text-[#D4AF37] bg-white focus:ring-0"
+                  className="w-4 h-4 accent-[#0C3A2E] border-[#1A1A1A]/20"
                 />
-                <label htmlFor="isDefault" className="text-xs text-[#1A1A1A]/70 select-none cursor-pointer">Designate as my default shipping address</label>
+                <label htmlFor="isDefault" className="text-xs text-[#1A1A1A]/80 select-none cursor-pointer">
+                  Designate as primary default delivery location
+                </label>
               </div>
 
-              <div className="border-t border-[#1A1A1A]/10 pt-4 flex justify-end gap-2.5 mt-2">
+              <div className="border-t border-[#1A1A1A]/10 pt-4 flex justify-end gap-3 mt-2">
                 <button
                   type="button"
                   onClick={() => setAddressModalOpen(false)}
-                  className="px-4.5 py-2.5 border border-[#1A1A1A]/10 text-[#1A1A1A]/60 hover:text-[#1A1A1A] rounded-none text-xs transition font-semibold"
+                  className="px-5 py-2.5 border border-[#1A1A1A]/20 text-[#1A1A1A]/70 hover:text-[#1A1A1A] text-xs font-semibold uppercase tracking-wider transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-[#D4AF37] hover:bg-[#C9A52C] text-black font-semibold rounded-none text-xs transition"
+                  className="px-6 py-2.5 bg-[#0C3A2E] hover:bg-[#0C3A2E]/90 text-white font-semibold text-xs uppercase tracking-wider transition"
                 >
-                  {addressModalMode === 'add' ? 'Add Location' : 'Save Changes'}
+                  {addressModalMode === 'add' ? 'Save Location' : 'Update Location'}
                 </button>
               </div>
             </form>
@@ -1141,46 +1172,46 @@ export default function DashboardPage() {
 
       {/* Delete Account Confirmation Modal */}
       {deleteModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-[#F9F6F0] border border-red-500/30 rounded-none w-full max-w-md overflow-hidden shadow-2xl"
+            className="bg-white border border-[#A85751]/30 w-full max-w-md overflow-hidden shadow-2xl"
           >
-            <div className="bg-red-500/10 px-6 py-4 border-b border-red-500/20 flex justify-between items-center">
-              <h3 className="font-brand text-lg text-red-500 font-semibold flex items-center gap-2">
-                <ShieldAlert size={20} />
+            <div className="bg-[#A85751]/10 px-6 py-4 border-b border-[#A85751]/20 flex justify-between items-center">
+              <h3 className="font-brand text-lg text-[#A85751] font-normal flex items-center gap-2">
+                <ShieldAlert size={18} />
                 <span>Permanent Account Deletion</span>
               </h3>
               <button 
                 onClick={() => setDeleteModalOpen(false)}
-                className="text-[#1A1A1A]/60 hover:text-[#1A1A1A] text-sm font-semibold transition"
+                className="text-[#1A1A1A]/60 hover:text-[#1A1A1A] transition"
               >
-                Cancel
+                <X size={18} />
               </button>
             </div>
 
             <div className="p-6 space-y-4">
               <p className="text-xs text-[#1A1A1A]/70 leading-relaxed font-light">
-                This action is irreversible and deletes all details. Please type the confirmation phrase <span className="font-bold text-red-400 select-none">DELETE PERMANENTLY</span> below to acknowledge risk.
+                This action is irreversible. Please type the exact confirmation phrase <span className="font-bold text-[#A85751] select-none">DELETE PERMANENTLY</span> below to proceed.
               </p>
               
-              <div className="space-y-1">
-                <label className="block text-[9px] text-[#1A1A1A]/60 uppercase font-bold tracking-wider">Confirmation Phrase</label>
+              <div className="space-y-1.5">
+                <label className="block text-[9px] text-[#1A1A1A]/60 uppercase font-bold tracking-wider">Confirmation Input</label>
                 <input 
                   type="text" 
                   value={deleteConfirmText}
                   onChange={(e) => setDeleteConfirmText(e.target.value)}
-                  className="w-full bg-white border border-red-500/20 focus:border-red-500 rounded-none px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition font-semibold"
-                  placeholder="Type: DELETE PERMANENTLY"
+                  className="w-full bg-[#F9F6F0] border border-[#A85751]/30 focus:border-[#A85751] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition font-semibold"
+                  placeholder="DELETE PERMANENTLY"
                 />
               </div>
 
-              <div className="border-t border-[#1A1A1A]/10 pt-4 flex justify-end gap-2.5 mt-2">
+              <div className="border-t border-[#1A1A1A]/10 pt-4 flex justify-end gap-3 mt-2">
                 <button
                   type="button"
                   onClick={() => setDeleteModalOpen(false)}
-                  className="px-4.5 py-2.5 border border-[#1A1A1A]/10 text-[#1A1A1A]/60 hover:text-[#1A1A1A] rounded-none text-xs transition font-semibold"
+                  className="px-5 py-2.5 border border-[#1A1A1A]/20 text-[#1A1A1A]/70 hover:text-[#1A1A1A] text-xs font-semibold uppercase tracking-wider transition"
                 >
                   Cancel
                 </button>
@@ -1188,9 +1219,9 @@ export default function DashboardPage() {
                   type="button"
                   onClick={handleDeleteAccount}
                   disabled={deleteConfirmText !== 'DELETE PERMANENTLY' || deleteLoading}
-                  className="px-5 py-2.5 bg-red-600 hover:bg-red-500 disabled:opacity-40 disabled:cursor-not-allowed text-[#1A1A1A] font-bold rounded-none text-xs transition"
+                  className="px-6 py-2.5 bg-[#A85751] hover:bg-[#A85751]/90 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-xs uppercase tracking-wider transition"
                 >
-                  {deleteLoading ? 'Deleting Account...' : 'Confirm Permanent Deletion'}
+                  {deleteLoading ? 'Deleting...' : 'Confirm Deletion'}
                 </button>
               </div>
             </div>
