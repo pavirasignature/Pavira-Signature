@@ -79,7 +79,19 @@ export default function AccountMenu({ isLoggedIn, userName, userRole, handleLogo
                 {userRole === "admin" ? <ShieldCheck size={16} /> : <User size={16} />}
                 <span>{userRole === "admin" ? "Admin Panel" : "My Profile"}</span>
               </Link>
-              
+
+              {/* Admin also gets access to their own profile dashboard */}
+              {userRole === "admin" && (
+                <Link
+                  href="/dashboard"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-accent hover:bg-muted/50 transition-colors"
+                >
+                  <User size={16} />
+                  <span>My Profile</span>
+                </Link>
+              )}
+
               {userRole !== "admin" && (
                 <Link
                   href="/dashboard/orders"
