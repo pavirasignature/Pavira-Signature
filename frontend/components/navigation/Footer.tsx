@@ -123,11 +123,11 @@ export default function Footer() {
               </h4>
               <div className="flex flex-col space-y-2.5 text-xs font-light text-[#F9F6F0]/80">
                 <a
-                  href="mailto:connect@pavirasignature.in"
+                  href="mailto:care@pavirasignature.in"
                   className="flex items-center gap-2 hover:text-[#D4AF37] transition-colors"
                 >
                   <Mail size={14} className="text-[#D4AF37]" />
-                  <span>connect@pavirasignature.in</span>
+                  <span>care@pavirasignature.in</span>
                 </a>
                 <a
                   href="tel:+918487816296"
