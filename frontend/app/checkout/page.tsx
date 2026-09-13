@@ -9,6 +9,7 @@ import {
   couponService,
   paymentService,
   authService,
+  productService,
 } from "@/lib/services";
 import { useStore } from "@/store/useStore";
 import { motion, AnimatePresence } from "framer-motion";
@@ -49,6 +50,8 @@ export default function CheckoutPage() {
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
   const [order, setOrder] = useState<any>(null);
   const [mounted, setMounted] = useState(false);
+  // Live stock map: productId -> current stock from backend
+  const [liveStockMap, setLiveStockMap] = useState<Record<string, number>>({});
 
   const itemsPrice = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -57,7 +60,11 @@ export default function CheckoutPage() {
   const shippingPrice = itemsPrice >= 999 ? 0 : 99;
   const taxPrice = 0;
   const totalPrice = itemsPrice + shippingPrice + taxPrice - couponDiscount;
-  const hasOutOfStockItems = cart.some((item) => typeof item.stock === 'number' && item.stock === 0);
+  const hasOutOfStockItems = cart.some((item) => {
+    const liveStock = liveStockMap[item.product];
+    const stock = liveStock !== undefined ? liveStock : item.stock;
+    return typeof stock === 'number' && stock === 0;
+  });
 
   useEffect(() => {
     setMounted(true);
@@ -109,6 +116,28 @@ export default function CheckoutPage() {
       fetchUserData();
     }
   }, []);
+
+  // Fetch live stock from backend for all cart items
+  useEffect(() => {
+    if (cart.length === 0) return;
+    const fetchLiveStock = async () => {
+      const stockMap: Record<string, number> = {};
+      await Promise.all(
+        cart.map(async (item) => {
+          try {
+            const product = await productService.getProduct(item.product);
+            if (product && typeof product.stock === 'number') {
+              stockMap[item.product] = product.stock;
+            }
+          } catch (e) {
+            // silently skip — use cart stock as fallback
+          }
+        })
+      );
+      setLiveStockMap(stockMap);
+    };
+    fetchLiveStock();
+  }, [cart.length]);
 
   const handleSelectAddress = (addr: any) => {
     setShippingAddress({
@@ -722,12 +751,16 @@ export default function CheckoutPage() {
                           <p className="text-[10px] text-[#1A1A1A]/50 mt-0.5">
                             Qty: {item.quantity}
                           </p>
-                          {item.stock === 0 && (
-                            <p className="text-[10px] text-[#A85751] font-medium mt-0.5 flex items-center gap-1">
-                              <AlertCircle size={9} />
-                              Out of stock
-                            </p>
-                          )}
+                          {(() => {
+                            const live = liveStockMap[item.product];
+                            const effectiveStock = live !== undefined ? live : item.stock;
+                            return typeof effectiveStock === 'number' && effectiveStock === 0 ? (
+                              <p className="text-[10px] text-[#A85751] font-medium mt-0.5 flex items-center gap-1">
+                                <AlertCircle size={9} />
+                                Out of stock
+                              </p>
+                            ) : null;
+                          })()}
                         </div>
                         <span className="text-xs font-semibold text-[#1A1A1A] shrink-0">
                           ₹{(item.price * item.quantity).toLocaleString("en-IN")}
