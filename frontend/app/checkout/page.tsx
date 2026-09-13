@@ -497,14 +497,15 @@ export default function CheckoutPage() {
                       <input
                         type="tel"
                         value={shippingAddress.phone}
-                        onChange={(e) =>
-                          setShippingAddress({
-                            ...shippingAddress,
-                            phone: e.target.value,
-                          })
-                        }
-                        placeholder="e.g. 9876543210"
+                        onChange={(e) => {
+                          const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+                          setShippingAddress({ ...shippingAddress, phone: digits });
+                        }}
+                        placeholder="10-digit mobile number"
                         className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] placeholder-[#1A1A1A]/30 outline-none transition"
+                        maxLength={10}
+                        inputMode="numeric"
+                        pattern="[0-9]{10}"
                         required
                       />
                     </div>

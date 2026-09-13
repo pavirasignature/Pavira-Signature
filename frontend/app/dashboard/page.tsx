@@ -795,9 +795,15 @@ export default function DashboardPage() {
                           <input 
                             type="tel" 
                             value={profileForm.phone}
-                            onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
+                            onChange={(e) => {
+                              const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+                              setProfileForm({ ...profileForm, phone: digits });
+                            }}
                             className="w-full bg-white border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
-                            placeholder="+91-9876543210"
+                            placeholder="10-digit mobile number"
+                            maxLength={10}
+                            inputMode="numeric"
+                            pattern="[0-9]{10}"
                           />
                         </div>
 
@@ -1075,9 +1081,15 @@ export default function DashboardPage() {
                     type="tel" 
                     required
                     value={addressForm.phone}
-                    onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value })}
+                    onChange={(e) => {
+                      const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+                      setAddressForm({ ...addressForm, phone: digits });
+                    }}
                     className="w-full bg-[#F9F6F0] border border-[#1A1A1A]/15 focus:border-[#0C3A2E] px-4 py-2.5 text-xs text-[#1A1A1A] outline-none transition"
-                    placeholder="10-digit Mobile"
+                    placeholder="10-digit mobile number"
+                    maxLength={10}
+                    inputMode="numeric"
+                    pattern="[0-9]{10}"
                   />
                 </div>
 
