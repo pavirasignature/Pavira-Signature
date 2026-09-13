@@ -57,7 +57,7 @@ export default function CheckoutPage() {
   const shippingPrice = itemsPrice >= 999 ? 0 : 99;
   const taxPrice = 0;
   const totalPrice = itemsPrice + shippingPrice + taxPrice - couponDiscount;
-  const hasOutOfStockItems = cart.some((item) => item.stock === 0);
+  const hasOutOfStockItems = cart.some((item) => typeof item.stock === 'number' && item.stock === 0);
 
   useEffect(() => {
     setMounted(true);

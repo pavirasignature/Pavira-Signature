@@ -135,7 +135,7 @@ export const useStore = create<StoreState>()(
                 price: product.price,
                 image: image || "",
                 quantity,
-                stock: product.stock !== undefined ? product.stock : 0,
+                stock: product.stock !== undefined && product.stock !== null ? product.stock : 999,
               },
             ],
           });
