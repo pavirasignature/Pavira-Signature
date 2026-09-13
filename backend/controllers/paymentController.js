@@ -10,9 +10,14 @@ const { sendError, sendSuccess } = require("../utils/response");
 const { supabase } = require("../utils/supabase");
 
 const razorpayKeyId =
-  process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+  process.env.RAZORPAY_KEY_ID || 
+  process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 
+  "rzp_test_TSgNjvLn7x0WEt";
+
 const razorpaySecretKey =
-  process.env.RAZORPAY_KEY_SECRET || process.env.RAZORPAY_SECRET_KEY;
+  process.env.RAZORPAY_KEY_SECRET || 
+  process.env.RAZORPAY_SECRET_KEY || 
+  "r7YgwWq6z7sZzvSKKI2JByu2";
 
 const hasRazorpayKeys = !!(razorpayKeyId && razorpaySecretKey);
 
