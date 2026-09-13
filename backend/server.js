@@ -46,8 +46,7 @@ const contactRoutes = require("./routes/contact");
 const app = express();
 
 // Trust proxy for rate-limiting behind rewrites or deployment platforms like Vercel
-const proxyConfig = "trust proxy";
-app.set(proxyConfig, 1);
+app.set("trust proxy", 1);
 
 // CORS configuration - Must be defined first so that all responses (including rate-limited ones) carry valid headers
 // CORS configuration
