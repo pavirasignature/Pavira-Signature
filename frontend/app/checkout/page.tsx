@@ -207,15 +207,17 @@ export default function CheckoutPage() {
     }
 
     if (hasOutOfStockItems) {
-      toast.error(
-        "One or more items are out of stock. Please remove them to proceed.",
-      );
+      toast.error("One or more items are out of stock. Please remove them to proceed.");
       return;
     }
 
     setLoading(true);
+    const toastId = toast.loading("Creating your order...");
+
     try {
+      // 1. Load Razorpay SDK
       if (paymentMethod === "razorpay") {
+        toast.loading("Loading payment gateway...", { id: toastId });
         const isScriptLoaded = await new Promise((resolve) => {
           if (typeof window !== "undefined" && (window as any).Razorpay) {
             return resolve(true);
@@ -226,14 +228,14 @@ export default function CheckoutPage() {
           script.onerror = () => resolve(false);
           document.body.appendChild(script);
         });
-
         if (!isScriptLoaded) {
-          throw new Error(
-            "Razorpay SDK could not load. Please check your internet connection.",
-          );
+          toast.dismiss(toastId);
+          throw new Error("Could not load Razorpay. Check your internet connection.");
         }
       }
 
+      // 2. Create order in DB
+      toast.loading("Placing your order...", { id: toastId });
       const orderResponse = await orderService.createOrder({
         items: cart.map((item) => ({
           product: item.product,
@@ -252,44 +254,44 @@ export default function CheckoutPage() {
       const orderData = orderResponse.data;
       const effectiveOrderId = orderData._id || orderData.id;
       setOrder(orderData);
+      toast.dismiss(toastId);
 
+      // 3. Handle payment
       if (paymentMethod === "razorpay") {
+        const rzpToast = toast.loading("Opening payment window...");
         const razorpayResponse = await paymentService.createRazorpayOrder({
           orderId: effectiveOrderId,
         });
         const razorpayData = razorpayResponse.data || razorpayResponse;
+        toast.dismiss(rzpToast);
+
+        const rzpKey =
+          razorpayData.keyId ||
+          process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ||
+          "rzp_test_TSgNjvLn7x0WEt";
 
         const options = {
-          key:
-            razorpayData.keyId ||
-            process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ||
-            "rzp_test_TSgNjvLn7x0WEt",
+          key: rzpKey,
           amount: razorpayData.amount,
           currency: razorpayData.currency || "INR",
           name: "Pavira Signature",
-          description: `Luxury Decor - Order #${orderData.orderNumber || effectiveOrderId}`,
-          image: "https://pavirasignature.in/logo.png",
+          description: `Order #${orderData.orderNumber || String(effectiveOrderId).substring(0, 8).toUpperCase()}`,
+          image: "/favicon.ico",
           order_id: razorpayData.id || razorpayData.order_id,
           prefill: {
             name: (user as any)?.name || shippingAddress.fullName || "",
             email: (user as any)?.email || "",
             contact: shippingAddress.phone || "",
           },
-          theme: {
-            color: "#0C3A2E",
-          },
-          config: {
-            display: {
-              hide: [{ method: "card" }],
-            },
-          },
+          theme: { color: "#0C3A2E" },
           modal: {
             ondismiss: () => {
               setLoading(false);
-              toast("Payment window closed", { icon: "ℹ️" });
+              toast("Payment window closed — your order is saved. You can retry payment from My Orders.", { icon: "ℹ️", duration: 5000 });
             },
           },
           handler: async (response: any) => {
+            const vToast = toast.loading("Verifying your payment...");
             try {
               await paymentService.verifyRazorpayPayment({
                 orderId: effectiveOrderId,
@@ -297,15 +299,14 @@ export default function CheckoutPage() {
                 razorpayPaymentId: response.razorpay_payment_id,
                 razorpaySignature: response.razorpay_signature,
               });
+              toast.dismiss(vToast);
               clearCart();
               setIsOrderPlaced(true);
-              toast.success("Payment verified! Order placed successfully!");
+              toast.success("Payment verified! Order placed successfully! 🎉");
             } catch (err: any) {
+              toast.dismiss(vToast);
               console.error("Razorpay verification failed:", err);
-              toast.error(
-                err.response?.data?.message ||
-                  "Failed to verify Razorpay payment",
-              );
+              toast.error(err.response?.data?.message || "Payment verification failed. Contact support.");
             } finally {
               setLoading(false);
             }
@@ -317,28 +318,28 @@ export default function CheckoutPage() {
         rzp.on("payment.failed", (failedRes: any) => {
           console.error("Razorpay payment failed:", failedRes.error);
           setLoading(false);
-          toast.error(
-            failedRes.error?.description || "Payment failed. Please try again.",
-          );
+          toast.error(failedRes.error?.description || "Payment failed. Please try again.");
         });
         rzp.open();
+
       } else {
         // Cash on Delivery
-        await paymentService.confirmCODPayment({
-          orderId: effectiveOrderId,
-        });
+        const codToast = toast.loading("Confirming Cash on Delivery order...");
+        await paymentService.confirmCODPayment({ orderId: effectiveOrderId });
+        toast.dismiss(codToast);
         clearCart();
         setIsOrderPlaced(true);
-        toast.success("Order placed successfully!");
+        toast.success("Order placed! We'll contact you before delivery. 🎉");
         setLoading(false);
       }
     } catch (error: any) {
+      toast.dismiss(toastId);
       console.error("Place order failed:", error);
-      toast.error(
+      const msg =
         error.response?.data?.message ||
-          error.message ||
-          "Failed to place order",
-      );
+        error.message ||
+        "Something went wrong. Please try again.";
+      toast.error(msg, { duration: 6000 });
       setLoading(false);
     }
   };
