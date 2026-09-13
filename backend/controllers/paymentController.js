@@ -286,8 +286,11 @@ exports.createRazorpayOrder = async (req, res) => {
 
     // Store razorpayOrderId in Supabase order
     await Order.findByIdAndUpdate(orderId, {
-      "paymentInfo.razorpayOrderId": razorpayOrder.id,
-      "paymentInfo.paymentStatus": "initiated",
+      paymentInfo: {
+        ...order.paymentInfo,
+        razorpayOrderId: razorpayOrder.id,
+        paymentStatus: "initiated",
+      },
     });
 
     return sendSuccess(
@@ -373,6 +376,7 @@ exports.verifyRazorpayPayment = async (req, res) => {
     // Update order status in Supabase (STEP 9)
     const updatedOrder = await Order.findByIdAndUpdate(orderId, {
       paymentInfo: {
+        ...(order.paymentInfo || {}),
         paymentId: razorpayPaymentId,
         razorpayOrderId: razorpayOrderId,
         paymentStatus: "completed",
@@ -508,11 +512,17 @@ exports.handleRazorpayWebhook = async (req, res) => {
       const orderId = orderNotes.orderId;
 
       if (orderId) {
-        await Order.findByIdAndUpdate(orderId, {
-          "paymentInfo.paymentStatus": "failed",
-          "paymentInfo.paymentId": paymentEntity.id,
-        });
-        console.log(`Razorpay Webhook: Payment failed for Order ${orderId}`);
+        const failedOrder = await Order.findById(orderId);
+        if (failedOrder) {
+          await Order.findByIdAndUpdate(orderId, {
+            paymentInfo: {
+              ...(failedOrder.paymentInfo || {}),
+              paymentStatus: "failed",
+              paymentId: paymentEntity.id,
+            }
+          });
+          console.log(`Razorpay Webhook: Payment failed for Order ${orderId}`);
+        }
       }
     } else if (event === "refund.created" || event === "refund.processed") {
       const refundEntity = payload.refund?.entity;
@@ -526,11 +536,17 @@ exports.handleRazorpayWebhook = async (req, res) => {
 
         if (matchedOrders && matchedOrders.length > 0) {
           for (const ord of matchedOrders) {
-            await Order.findByIdAndUpdate(ord.id, {
-              orderStatus: "refunded",
-              "paymentInfo.paymentStatus": "refunded",
-            });
-            console.log(`Razorpay Webhook: Order ${ord.id} marked as refunded`);
+            const fullOrd = await Order.findById(ord.id);
+            if (fullOrd) {
+              await Order.findByIdAndUpdate(ord.id, {
+                orderStatus: "refunded",
+                paymentInfo: {
+                  ...(fullOrd.paymentInfo || {}),
+                  paymentStatus: "refunded",
+                },
+              });
+              console.log(`Razorpay Webhook: Order ${ord.id} marked as refunded`);
+            }
           }
         }
       }
