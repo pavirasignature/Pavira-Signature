@@ -364,7 +364,7 @@ export default function CheckoutPage() {
               <CheckCircle2 className="text-[#D4AF37]" size={40} />
             </div>
             <h1 className="font-brand text-3xl text-[#1A1A1A] font-normal mb-3">
-              Order Confirmed
+              {paymentMethod === "razorpay" ? "Payment completed Successfully" : "Order Confirmed"}
             </h1>
             <p className="text-[#1A1A1A]/60 text-sm mb-2">
               Thank you for your acquisition. We are preparing your consignment
