@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, LogOut, Package, ShieldCheck, ChevronDown } from "lucide-react";
 
@@ -9,10 +10,11 @@ interface AccountMenuProps {
   isLoggedIn: boolean;
   userName: string;
   userRole: string;
+  userImage?: string;
   handleLogout: () => void;
 }
 
-export default function AccountMenu({ isLoggedIn, userName, userRole, handleLogout }: AccountMenuProps) {
+export default function AccountMenu({ isLoggedIn, userName, userRole, userImage, handleLogout }: AccountMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -44,10 +46,20 @@ export default function AccountMenu({ isLoggedIn, userName, userRole, handleLogo
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 group"
       >
-        <div className="w-8 h-8 rounded-full border border-border flex items-center justify-center bg-muted group-hover:border-accent transition-all duration-300 overflow-hidden relative">
-          <span className="text-foreground font-serif text-sm relative z-10 group-hover:scale-110 transition-transform duration-300">
-            {userName.charAt(0).toUpperCase()}
-          </span>
+        <div className="w-8 h-8 rounded-full border border-border group-hover:border-accent transition-all duration-300 overflow-hidden relative bg-muted flex items-center justify-center shrink-0">
+          {userImage ? (
+            <Image
+              src={userImage}
+              alt={userName}
+              fill
+              className="object-cover"
+              sizes="32px"
+            />
+          ) : (
+            <span className="text-foreground font-serif text-sm relative z-10 group-hover:scale-110 transition-transform duration-300">
+              {userName.charAt(0).toUpperCase()}
+            </span>
+          )}
         </div>
         <ChevronDown size={14} className={`text-muted-foreground transition-transform duration-300 ${isOpen ? "rotate-180 text-foreground" : ""}`} />
       </button>
@@ -61,13 +73,31 @@ export default function AccountMenu({ isLoggedIn, userName, userRole, handleLogo
             transition={{ type: "spring", stiffness: 200, damping: 20 }}
             className="absolute top-full right-0 mt-4 w-56 bg-background border border-border rounded-xl shadow-lg overflow-hidden z-50"
           >
-            <div className="p-4 border-b border-border bg-muted/30">
-              {userRole === "admin" && (
-                <p className="text-xs text-accent uppercase tracking-widest font-bold mb-1">
-                  Administrator
-                </p>
-              )}
-              <p className="text-sm font-serif text-foreground truncate">{userName}</p>
+            <div className="p-4 border-b border-border bg-muted/30 flex items-center gap-3">
+              {/* Avatar in dropdown header */}
+              <div className="w-9 h-9 rounded-full overflow-hidden relative bg-muted border border-border shrink-0 flex items-center justify-center">
+                {userImage ? (
+                  <Image
+                    src={userImage}
+                    alt={userName}
+                    fill
+                    className="object-cover"
+                    sizes="36px"
+                  />
+                ) : (
+                  <span className="text-foreground font-serif text-sm">
+                    {userName.charAt(0).toUpperCase()}
+                  </span>
+                )}
+              </div>
+              <div className="min-w-0">
+                {userRole === "admin" && (
+                  <p className="text-xs text-accent uppercase tracking-widest font-bold mb-0.5">
+                    Administrator
+                  </p>
+                )}
+                <p className="text-sm font-serif text-foreground truncate">{userName}</p>
+              </div>
             </div>
             
             <div className="py-2">

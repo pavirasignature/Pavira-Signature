@@ -28,6 +28,7 @@ export default function Header() {
   const cart = useStore((state: any) => state.cart);
   const wishlist = useStore((state: any) => state.wishlist);
   const logout = useStore((state: any) => state.logout);
+  const storeUser = useStore((state: any) => state.user);
 
   const cartCount = cart.reduce(
     (sum: number, item: any) => sum + (item.quantity || 0),
@@ -92,6 +93,16 @@ export default function Header() {
     return () => window.removeEventListener("authChanged", handler);
   }, []);
 
+  // Also re-sync whenever the Zustand store user changes (e.g. after AuthSync writes image from Google)
+  useEffect(() => {
+    if (storeUser) {
+      setIsLoggedIn(true);
+      setUserName(storeUser.name || storeUser.firstName || "User");
+      setUserRole(storeUser.role || "customer");
+      setUserImage(storeUser.image || storeUser.photoUrl || "");
+    }
+  }, [storeUser]);
+
   const checkAuth = () => {
     const token =
       typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
@@ -105,7 +116,9 @@ export default function Header() {
           const parsed = JSON.parse(storedUser);
           setUserName(parsed.name || parsed.firstName || "User");
           setUserRole(parsed.role || "customer");
-          setUserImage(parsed.image || parsed.photoUrl || "");
+          // Prefer store's live user image (updated by AuthSync reactively) over sessionStorage
+          const liveImage = storeUser?.image || storeUser?.photoUrl || "";
+          setUserImage(liveImage || parsed.image || parsed.photoUrl || "");
         } catch (e) {
           setUserName("User");
           setUserRole("customer");
@@ -238,6 +251,7 @@ export default function Header() {
               isLoggedIn={isLoggedIn}
               userName={userName}
               userRole={userRole}
+              userImage={userImage}
               handleLogout={handleLogout}
             />
           </div>
