@@ -203,6 +203,22 @@ export default function MobileNav({
               {/* ── Account links ── */}
               {isLoggedIn ? (
                 <>
+                  {/* Admin Panel — only for admin */}
+                  {isAdmin && (
+                    <motion.div custom={navLinks.length + 1} variants={itemVariants} initial="hidden" animate="show">
+                      <Link
+                        href="/admin"
+                        onClick={onClose}
+                        className="flex items-center gap-4 px-4 py-3.5 rounded-sm text-[#0C3A2E] hover:bg-[#0C3A2E]/5 transition-all group"
+                      >
+                        <span className="w-8 h-8 flex items-center justify-center bg-[#0C3A2E]/10 rounded-sm">
+                          <ShieldCheck size={16} strokeWidth={1.5} />
+                        </span>
+                        <span className="font-semibold text-sm uppercase tracking-widest">Admin Panel</span>
+                        <ChevronRight size={14} className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </Link>
+                    </motion.div>
+                  )}
 
                   {/* My Profile */}
                   <motion.div custom={navLinks.length + 2} variants={itemVariants} initial="hidden" animate="show">
