@@ -136,6 +136,10 @@ export default function Header() {
     { label: "Contact", href: "/contact" },
   ];
 
+  if (userRole === "admin") {
+    navLinks.push({ label: "Admin Panel", href: "/admin" });
+  }
+
   return (
     <>
       <motion.header
