@@ -137,11 +137,7 @@ export default function RootLayout({
             `,
           }}
         />
-        {/* Razorpay Checkout SDK */}
-        <Script
-          src="https://checkout.razorpay.com/v1/checkout.js"
-          strategy="lazyOnload"
-        />
+
       </head>
       <body
         className="bg-background text-foreground font-sans antialiased overflow-x-hidden selection:bg-accent selection:text-accent-foreground"
@@ -150,10 +146,7 @@ export default function RootLayout({
         <ScrollRestoration />
         <ClientBody>{children}</ClientBody>
         <AutoRefreshWidget />
-        <Script
-          src="https://checkout.razorpay.com/v1/checkout.js"
-          strategy="beforeInteractive"
-        />
+
       </body>
     </html>
   );
