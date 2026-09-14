@@ -67,6 +67,8 @@ export const useStore = create<StoreState>()(
           } else {
             sessionStorage.removeItem("token");
           }
+          // Notify the Header to re-check auth immediately (no reload needed)
+          window.dispatchEvent(new Event("authChanged"));
         }
         if (token) {
           get().fetchCart();
@@ -88,6 +90,8 @@ export const useStore = create<StoreState>()(
           // Signal to AuthSync that the user explicitly logged out,
           // so it must NOT re-sync a stale NextAuth cookie
           sessionStorage.setItem("loggedOut", "true");
+          // Notify the Header to re-check auth immediately
+          window.dispatchEvent(new Event("authChanged"));
           // Also clear the persisted Zustand storage so stale cart/wishlist
           // never reappears on next page load
           localStorage.removeItem("pavira-signature-app-storage");

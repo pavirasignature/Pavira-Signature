@@ -83,6 +83,14 @@ export default function Header() {
     }
   }, [pathname]);
 
+  // Re-check auth immediately whenever login/logout fires the authChanged event
+  // (fired by setToken and logout in useStore.ts — no page reload needed)
+  useEffect(() => {
+    const handler = () => checkAuth();
+    window.addEventListener("authChanged", handler);
+    return () => window.removeEventListener("authChanged", handler);
+  }, []);
+
   const checkAuth = () => {
     const token =
       typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
