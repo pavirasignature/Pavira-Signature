@@ -197,7 +197,7 @@ export default function HomeClient() {
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
           <svg
             viewBox="0 0 1000 1000"
-            className="w-[85vw] h-[85vw] md:w-[75vw] md:h-[75vw] lg:w-[65vw] lg:h-[65vw] max-w-[1300px] max-h-[1300px] opacity-[0.15]"
+            className="w-[800px] h-[800px] sm:w-[90vw] sm:h-[90vw] md:w-[75vw] md:h-[75vw] lg:w-[65vw] lg:h-[65vw] max-w-[1300px] max-h-[1300px] opacity-[0.15]"
             style={{ animation: "spin-slow 120s linear infinite" }}
           >
             {/* Outer ring of petals */}
