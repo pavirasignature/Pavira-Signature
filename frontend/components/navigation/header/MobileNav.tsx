@@ -110,30 +110,59 @@ export default function MobileNav({
             </div>
 
             {/* ── User identity strip ── */}
-            {isLoggedIn && (
-              <motion.div
-                custom={0}
-                variants={itemVariants}
-                initial="hidden"
-                animate="show"
-                className="mx-4 mt-4 mb-1 flex items-center gap-3 bg-[#0C3A2E] px-4 py-3"
-              >
-                <div className="w-9 h-9 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 flex items-center justify-center shrink-0">
-                  <span className="text-[#D4AF37] text-sm font-bold font-serif">
-                    {(userName || "U").charAt(0).toUpperCase()}
-                  </span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[#F9F6F0] text-sm font-semibold truncate">{userName || "My Account"}</p>
-                  {isAdmin && (
-                    <p className="text-[#D4AF37] text-[10px] uppercase tracking-widest font-bold mt-0.5">
-                      Administrator
-                    </p>
-                  )}
-                </div>
-                <ChevronRight size={14} className="text-[#F9F6F0]/40 shrink-0" />
-              </motion.div>
-            )}
+            {isLoggedIn && (() => {
+              // Truncate long names — show first 18 chars max
+              const displayName = (userName || "My Account").length > 18
+                ? (userName || "My Account").substring(0, 18).trim() + "…"
+                : (userName || "My Account");
+              const initial = (userName || "U").charAt(0).toUpperCase();
+              const stripContent = (
+                <motion.div
+                  custom={0}
+                  variants={itemVariants}
+                  initial="hidden"
+                  animate="show"
+                  className="mx-4 mt-4 mb-1"
+                >
+                  <div className={`flex items-center gap-3 px-4 py-3 border ${
+                    isAdmin
+                      ? "bg-[#0C3A2E] border-[#0C3A2E]"
+                      : "bg-white border-[#1A1A1A]/10"
+                  }`}>
+                    {/* Avatar */}
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-bold text-base ${
+                      isAdmin
+                        ? "bg-[#D4AF37]/20 border border-[#D4AF37]/50 text-[#D4AF37]"
+                        : "bg-[#0C3A2E]/10 border border-[#0C3A2E]/20 text-[#0C3A2E]"
+                    }`}>
+                      {initial}
+                    </div>
+                    {/* Name + Role */}
+                    <div className="flex-1 min-w-0">
+                      <p className={`text-sm font-semibold leading-tight ${
+                        isAdmin ? "text-[#F9F6F0]" : "text-[#1A1A1A]"
+                      }`}>
+                        {displayName}
+                      </p>
+                      <p className={`text-[10px] uppercase tracking-widest font-bold mt-0.5 ${
+                        isAdmin ? "text-[#D4AF37]" : "text-[#0C3A2E]/60"
+                      }`}>
+                        {isAdmin ? "Administrator" : "My Account"}
+                      </p>
+                    </div>
+                    {/* Arrow */}
+                    <ChevronRight size={15} className={isAdmin ? "text-[#F9F6F0]/40" : "text-[#1A1A1A]/30"} />
+                  </div>
+                </motion.div>
+              );
+
+              // For admin — wrap in a Link to /admin; for users — plain display
+              return isAdmin ? (
+                <Link href="/admin" onClick={onClose}>
+                  {stripContent}
+                </Link>
+              ) : stripContent;
+            })()}
 
             {/* ── Nav links ── */}
             <nav className="flex-1 overflow-y-auto px-4 py-3 space-y-1">
