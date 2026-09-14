@@ -256,6 +256,7 @@ export default function Header() {
         navLinks={navLinks}
         isLoggedIn={isLoggedIn}
         userRole={userRole}
+        userName={userName}
         handleLogout={handleLogout}
       />
 
