@@ -79,7 +79,7 @@ export default function ResetPasswordPage() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* New Password */}
                 <div>
-                  <label className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
+                  <label htmlFor="password" className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
                     New Password
                   </label>
                   <div className="relative group">
@@ -88,6 +88,8 @@ export default function ResetPasswordPage() {
                       size={20}
                     />
                     <input
+                      id="password"
+                      name="password"
                       type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -107,7 +109,7 @@ export default function ResetPasswordPage() {
 
                 {/* Confirm New Password */}
                 <div>
-                  <label className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
+                  <label htmlFor="confirmPassword" className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
                     Confirm New Password
                   </label>
                   <div className="relative group">
@@ -116,6 +118,8 @@ export default function ResetPasswordPage() {
                       size={20}
                     />
                     <input
+                      id="confirmPassword"
+                      name="confirmPassword"
                       type={showPassword ? "text" : "password"}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}

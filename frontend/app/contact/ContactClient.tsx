@@ -133,8 +133,9 @@ export default function ContactClient() {
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label className="text-xs uppercase tracking-widest font-semibold text-muted-foreground">Name *</label>
+                        <label htmlFor="name" className="text-xs uppercase tracking-widest font-semibold text-muted-foreground">Name *</label>
                         <input
+                          id="name"
                           type="text"
                           name="name"
                           value={formData.name}
@@ -144,8 +145,9 @@ export default function ContactClient() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs uppercase tracking-widest font-semibold text-muted-foreground">Email Address *</label>
+                        <label htmlFor="email" className="text-xs uppercase tracking-widest font-semibold text-muted-foreground">Email Address *</label>
                         <input
+                          id="email"
                           type="email"
                           name="email"
                           value={formData.email}
@@ -157,8 +159,9 @@ export default function ContactClient() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs uppercase tracking-widest font-semibold text-muted-foreground">Inquiry Type *</label>
+                      <label htmlFor="subject" className="text-xs uppercase tracking-widest font-semibold text-muted-foreground">Inquiry Type *</label>
                       <input
+                        id="subject"
                         type="text"
                         name="subject"
                         value={formData.subject}
@@ -170,8 +173,9 @@ export default function ContactClient() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs uppercase tracking-widest font-semibold text-muted-foreground">Message *</label>
+                      <label htmlFor="message" className="text-xs uppercase tracking-widest font-semibold text-muted-foreground">Message *</label>
                       <textarea
+                        id="message"
                         name="message"
                         value={formData.message}
                         onChange={handleChange}

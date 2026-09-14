@@ -502,10 +502,11 @@ export default function CheckoutPage() {
                   {/* Manual Address Form */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
+                      <label htmlFor="fullName" className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
                         Full Name *
                       </label>
                       <input
+                        id="fullName"
                         type="text"
                         value={shippingAddress.fullName}
                         onChange={(e) =>
@@ -521,10 +522,11 @@ export default function CheckoutPage() {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
+                      <label htmlFor="phone" className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
                         Phone Number *
                       </label>
                       <input
+                        id="phone"
                         type="tel"
                         value={shippingAddress.phone}
                         onChange={(e) => {
@@ -542,10 +544,11 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
+                    <label htmlFor="addressLine1" className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
                       Address Line 1 *
                     </label>
                     <input
+                      id="addressLine1"
                       type="text"
                       value={shippingAddress.addressLine1}
                       onChange={(e) =>
@@ -561,13 +564,14 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
+                    <label htmlFor="addressLine2" className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
                       Address Line 2{" "}
                       <span className="normal-case text-[#1A1A1A]/30 font-normal">
                         (optional)
                       </span>
                     </label>
                     <input
+                      id="addressLine2"
                       type="text"
                       value={shippingAddress.addressLine2}
                       onChange={(e) =>
@@ -583,10 +587,11 @@ export default function CheckoutPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="space-y-1.5">
-                      <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
+                      <label htmlFor="city" className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
                         City *
                       </label>
                       <input
+                        id="city"
                         type="text"
                         value={shippingAddress.city}
                         onChange={(e) =>
@@ -602,10 +607,11 @@ export default function CheckoutPage() {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
+                      <label htmlFor="state" className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
                         State *
                       </label>
                       <input
+                        id="state"
                         type="text"
                         value={shippingAddress.state}
                         onChange={(e) =>
@@ -621,10 +627,11 @@ export default function CheckoutPage() {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
+                      <label htmlFor="postalCode" className="block text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A]/60">
                         Postal Code *
                       </label>
                       <input
+                        id="postalCode"
                         type="text"
                         value={shippingAddress.postalCode}
                         onChange={(e) =>

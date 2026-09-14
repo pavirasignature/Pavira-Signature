@@ -205,7 +205,7 @@ export default function SignupPage() {
 
                 {/* First Name Field */}
                 <motion.div variants={itemVariants}>
-                  <label className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
+                  <label htmlFor="firstName" className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
                     First Name
                   </label>
                   <div className="relative group">
@@ -214,6 +214,7 @@ export default function SignupPage() {
                       size={20}
                     />
                     <input
+                      id="firstName"
                       type="text"
                       name="firstName"
                       value={formData.firstName}
@@ -227,7 +228,7 @@ export default function SignupPage() {
 
                 {/* Last Name Field */}
                 <motion.div variants={itemVariants}>
-                  <label className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
+                  <label htmlFor="lastName" className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
                     Last Name
                   </label>
                   <div className="relative group">
@@ -236,6 +237,7 @@ export default function SignupPage() {
                       size={20}
                     />
                     <input
+                      id="lastName"
                       type="text"
                       name="lastName"
                       value={formData.lastName}
@@ -248,7 +250,7 @@ export default function SignupPage() {
 
                 {/* Email Field */}
                 <motion.div variants={itemVariants}>
-                  <label className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
+                  <label htmlFor="email" className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
                     Email Address
                   </label>
                   <div className="relative group">
@@ -257,6 +259,7 @@ export default function SignupPage() {
                       size={20}
                     />
                     <input
+                      id="email"
                       type="email"
                       name="email"
                       value={formData.email}
@@ -270,7 +273,7 @@ export default function SignupPage() {
 
                 {/* Password Field */}
                 <motion.div variants={itemVariants}>
-                  <label className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
+                  <label htmlFor="password" className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
                     Password
                   </label>
                   <div className="relative group">
@@ -279,6 +282,7 @@ export default function SignupPage() {
                       size={20}
                     />
                     <input
+                      id="password"
                       type={showPassword ? "text" : "password"}
                       name="password"
                       value={formData.password}
@@ -299,7 +303,7 @@ export default function SignupPage() {
 
                 {/* Confirm Password Field */}
                 <motion.div variants={itemVariants}>
-                  <label className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
+                  <label htmlFor="confirmPassword" className="block text-xs font-semibold mb-2 text-[#F9F6F0]/70 uppercase tracking-widest">
                     Confirm Password
                   </label>
                   <div className="relative group">
@@ -308,6 +312,7 @@ export default function SignupPage() {
                       size={20}
                     />
                     <input
+                      id="confirmPassword"
                       type={showPassword ? "text" : "password"}
                       name="confirmPassword"
                       value={formData.confirmPassword}
@@ -321,9 +326,11 @@ export default function SignupPage() {
 
                 {/* Terms & Conditions */}
                 <motion.div variants={itemVariants} className="pt-2">
-                  <label className="flex items-start gap-3 text-sm cursor-pointer group">
+                  <label htmlFor="terms" className="flex items-start gap-3 text-sm cursor-pointer group">
                     <div className="relative flex items-center justify-center w-5 h-5 mt-0.5 rounded border border-[#2A4734] group-hover:border-[#D4AF37] transition-colors bg-[#111E16] flex-shrink-0">
                       <input 
+                        id="terms"
+                        name="terms"
                         type="checkbox" 
                         checked={agreed}
                         onChange={(e) => setAgreed(e.target.checked)}

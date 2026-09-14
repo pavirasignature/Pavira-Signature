@@ -196,7 +196,7 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Email Field */}
               <div>
-                <label className="block text-xs font-semibold mb-2 text-[#1A1A1A]/60 uppercase tracking-[0.15em]">
+                <label htmlFor="email" className="block text-xs font-semibold mb-2 text-[#1A1A1A]/60 uppercase tracking-[0.15em]">
                   Email Address
                 </label>
                 <div className="relative group">
@@ -205,6 +205,7 @@ export default function LoginPage() {
                     size={18}
                   />
                   <input
+                    id="email"
                     type="email"
                     name="email"
                     value={formData.email}
@@ -218,7 +219,7 @@ export default function LoginPage() {
 
               {/* Password Field */}
               <div>
-                <label className="block text-xs font-semibold mb-2 text-[#1A1A1A]/60 uppercase tracking-[0.15em]">
+                <label htmlFor="password" className="block text-xs font-semibold mb-2 text-[#1A1A1A]/60 uppercase tracking-[0.15em]">
                   Password
                 </label>
                 <div className="relative group">
@@ -227,6 +228,7 @@ export default function LoginPage() {
                     size={18}
                   />
                   <input
+                    id="password"
                     type={showPassword ? "text" : "password"}
                     name="password"
                     value={formData.password}
@@ -247,9 +249,9 @@ export default function LoginPage() {
 
               {/* Remember & Forgot */}
               <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center gap-2.5 cursor-pointer group">
+                <label htmlFor="remember" className="flex items-center gap-2.5 cursor-pointer group">
                   <div className="relative flex items-center justify-center w-4 h-4 border border-[#1A1A1A]/20 group-hover:border-[#0C3A2E] transition-colors bg-white">
-                    <input type="checkbox" className="opacity-0 absolute inset-0 cursor-pointer peer" />
+                    <input id="remember" name="remember" type="checkbox" className="opacity-0 absolute inset-0 cursor-pointer peer" />
                     <div className="w-2 h-2 bg-[#0C3A2E] scale-0 peer-checked:scale-100 transition-transform" />
                   </div>
                   <span className="text-[#1A1A1A]/50 group-hover:text-[#1A1A1A] transition-colors text-xs">Remember me</span>
