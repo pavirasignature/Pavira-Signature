@@ -26,6 +26,7 @@ interface MobileNavProps {
   isLoggedIn?: boolean;
   userRole?: string;
   userName?: string;
+  userImage?: string;
   handleLogout?: () => void;
 }
 
@@ -43,6 +44,7 @@ export default function MobileNav({
   isLoggedIn,
   userRole,
   userName,
+  userImage,
   handleLogout,
 }: MobileNavProps) {
   useEffect(() => {
@@ -130,12 +132,21 @@ export default function MobileNav({
                       : "bg-white border-[#1A1A1A]/10"
                   }`}>
                     {/* Avatar */}
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-bold text-base ${
+                    <div className={`relative w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-bold text-base overflow-hidden ${
                       isAdmin
                         ? "bg-[#D4AF37]/20 border border-[#D4AF37]/50 text-[#D4AF37]"
                         : "bg-[#0C3A2E]/10 border border-[#0C3A2E]/20 text-[#0C3A2E]"
                     }`}>
-                      {initial}
+                      {userImage ? (
+                        <Image
+                          src={userImage}
+                          alt={displayName}
+                          fill
+                          className="object-cover"
+                        />
+                      ) : (
+                        initial
+                      )}
                     </div>
                     {/* Name + Role */}
                     <div className="flex-1 min-w-0">

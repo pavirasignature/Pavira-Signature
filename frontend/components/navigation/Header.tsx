@@ -23,6 +23,7 @@ export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
   const [userRole, setUserRole] = useState("customer");
+  const [userImage, setUserImage] = useState("");
 
   const cart = useStore((state: any) => state.cart);
   const wishlist = useStore((state: any) => state.wishlist);
@@ -104,14 +105,17 @@ export default function Header() {
           const parsed = JSON.parse(storedUser);
           setUserName(parsed.name || parsed.firstName || "User");
           setUserRole(parsed.role || "customer");
+          setUserImage(parsed.image || parsed.photoUrl || "");
         } catch (e) {
           setUserName("User");
           setUserRole("customer");
+          setUserImage("");
         }
       }
     } else {
       setIsLoggedIn(false);
       setUserRole("customer");
+      setUserImage("");
     }
   };
 
@@ -119,6 +123,7 @@ export default function Header() {
     logout();
     setIsLoggedIn(false);
     setUserRole("customer");
+    setUserImage("");
     if (typeof window !== "undefined") {
       window.location.href = "/";
     }
@@ -265,6 +270,7 @@ export default function Header() {
         isLoggedIn={isLoggedIn}
         userRole={userRole}
         userName={userName}
+        userImage={userImage}
         handleLogout={handleLogout}
       />
 
