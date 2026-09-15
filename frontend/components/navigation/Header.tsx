@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, Heart, ShoppingBag, Lock } from "lucide-react";
+import { Menu, Heart, ShoppingBag, Lock, ShieldCheck } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -254,11 +254,21 @@ export default function Header() {
 
           {/* Mobile Menu Toggle */}
           <div className="md:hidden flex items-center gap-3">
+            {userRole === "admin" && (
+              <Link
+                href="/admin"
+                className="relative p-2 text-[#0C3A2E] hover:text-accent transition flex items-center justify-center bg-[#D4AF37]/10 rounded-full"
+                title="Admin Panel"
+              >
+                <ShieldCheck size={20} strokeWidth={1.5} />
+              </Link>
+            )}
+
             <SearchOverlay />
 
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative p-2 text-foreground/90 hover:text-accent transition"
+              className="relative p-2 text-foreground/90 hover:text-accent transition flex items-center justify-center"
             >
               <ShoppingBag size={22} strokeWidth={1.5} />
               {cartCount > 0 && (

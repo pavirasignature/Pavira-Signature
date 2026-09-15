@@ -57,7 +57,7 @@ export default function CartPage() {
     }
   };
 
-  const hasOutOfStockItems = cart.some((item) => item.stock === 0);
+  const hasOutOfStockItems = cart.some((item) => item.stock != null && item.stock <= 0);
 
   const handleCheckout = () => {
     if (hasOutOfStockItems) {
@@ -139,7 +139,7 @@ export default function CartPage() {
                       </p>
                     </div>
 
-                    {item.stock === 0 ? (
+                    {item.stock != null && item.stock <= 0 ? (
                       <div className="text-[#A85751] text-[10px] uppercase font-bold tracking-wider mt-2 flex items-center gap-1">
                         Currently out of stock
                       </div>

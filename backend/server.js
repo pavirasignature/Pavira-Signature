@@ -8,12 +8,16 @@ const slowDown = require("express-slow-down");
 const path = require("path");
 const fs = require("fs");
 
+const logger = require("./utils/logger");
+
 // Global process exception handlers to prevent server crashes
 process.on("uncaughtException", (err) => {
-  console.error("Uncaught Exception! Shutting down gracefully...", err);
+  logger.error("Uncaught Exception! Shutting down gracefully...", { error: err, type: "uncaughtException" });
+  process.exit(1);
 });
 process.on("unhandledRejection", (err) => {
-  console.error("Unhandled Rejection! Shutting down gracefully...", err);
+  logger.error("Unhandled Rejection! Shutting down gracefully...", { error: err, type: "unhandledRejection" });
+  process.exit(1);
 });
 
 // Load environment variables - Handle both direct execution and Vercel serverless
@@ -41,6 +45,10 @@ const uploadRoutes = require("./routes/upload");
 const wishlistRoutes = require("./routes/wishlists");
 const redirectRoutes = require("./routes/redirects");
 const contactRoutes = require("./routes/contact");
+const cartRoutes = require("./routes/cart");
+
+// Initialize queues and workers
+require("./utils/queue");
 
 // Initialize express app
 const app = express();
@@ -154,7 +162,7 @@ const globalLimiter = rateLimit({
 // 3. Stricter Limiter for Auth Routes
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: process.env.NODE_ENV === "development" || !process.env.NODE_ENV ? 1000 : 100,
+  max: 20, // Strict limit of 20 attempts per 15 mins
   skip: (req) => req.method === "OPTIONS",
   keyGenerator: safeKeyGenerator,
   validate: { default: false },
@@ -174,6 +182,19 @@ const checkoutLimiter = rateLimit({
   message: {
     success: false,
     message: "Too many order requests, please try again later.",
+  },
+});
+
+// 5. Stricter Limiter for Payments
+const paymentLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20, // Max 20 payment attempts per 15 mins
+  skip: (req) => req.method === "OPTIONS",
+  keyGenerator: safeKeyGenerator,
+  validate: { default: false },
+  message: {
+    success: false,
+    message: "Too many payment attempts, please try again later.",
   },
 });
 
@@ -305,12 +326,13 @@ app.use("/api/orders", checkoutLimiter, orderRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/categories", publicCache, categoryRoutes);
 app.use("/api/coupons", couponRoutes);
-app.use("/api/payments", paymentRoutes);
+app.use("/api/payments", paymentLimiter, paymentRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/wishlists", wishlistRoutes);
 app.use("/api/redirects", redirectRoutes);
 app.use("/api/contact", contactRoutes);
+app.use("/api/cart", cartRoutes);
 
 // Health check route
 app.get("/api/health", async (req, res) => {
@@ -327,11 +349,22 @@ app.get("/api/health", async (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(err.status || 500).json({
+  const statusCode = err.status || 500;
+  
+  // Log error structurally
+  logger.error(err.message || "Internal server error", {
+    error: err,
+    path: req.path,
+    method: req.method,
+    ip: req.ip,
+    userId: req.userId || "anonymous",
+    status: statusCode
+  });
+
+  // Never expose stack trace to frontend under any env to prevent leaking sensitive paths
+  res.status(statusCode).json({
     success: false,
-    message: err.message || "Internal server error",
-    ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
+    message: err.isOperational ? err.message : "Internal server error"
   });
 });
 
@@ -340,19 +373,15 @@ const PORT = process.env.PORT || 5000;
 
 if (require.main === module) {
   const server = app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    logger.info(`Server running on port ${PORT}`);
   });
 
   server.on("error", (error) => {
     if (error.code === "EADDRINUSE") {
-      console.error(
-        `\n❌ Port ${PORT} is already in use. This usually means a previous instance is still running.\n` +
-          `✅ To fix this on Windows, run: \n` +
-          `   npm run kill-port\n`,
-      );
+      logger.error(`Port ${PORT} is already in use. Run npm run kill-port`, { type: "EADDRINUSE", port: PORT });
       process.exit(1);
     } else {
-      console.error("Server error:", error);
+      logger.error("Server initialization error", { error });
     }
   });
 }

@@ -16,6 +16,7 @@ interface AccountMenuProps {
 
 export default function AccountMenu({ isLoggedIn, userName, userRole, userImage, handleLogout }: AccountMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [imgError, setImgError] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -47,13 +48,14 @@ export default function AccountMenu({ isLoggedIn, userName, userRole, userImage,
         className="flex items-center gap-2 group"
       >
         <div className="w-8 h-8 rounded-full border border-border group-hover:border-accent transition-all duration-300 overflow-hidden relative bg-muted flex items-center justify-center shrink-0">
-          {userImage ? (
+          {userImage && !imgError ? (
             <Image
               src={userImage}
               alt={userName}
               fill
               className="object-cover"
               sizes="32px"
+              onError={() => setImgError(true)}
             />
           ) : (
             <span className="text-foreground font-serif text-sm relative z-10 group-hover:scale-110 transition-transform duration-300">
@@ -76,13 +78,14 @@ export default function AccountMenu({ isLoggedIn, userName, userRole, userImage,
             <div className="p-4 border-b border-border bg-muted/30 flex items-center gap-3">
               {/* Avatar in dropdown header */}
               <div className="w-9 h-9 rounded-full overflow-hidden relative bg-muted border border-border shrink-0 flex items-center justify-center">
-                {userImage ? (
+                {userImage && !imgError ? (
                   <Image
                     src={userImage}
                     alt={userName}
                     fill
                     className="object-cover"
                     sizes="36px"
+                    onError={() => setImgError(true)}
                   />
                 ) : (
                   <span className="text-foreground font-serif text-sm">

@@ -38,6 +38,22 @@ const authenticate = async (req, res, next) => {
 };
 
 /**
+ * Middleware to optionally verify JWT token if present
+ */
+const protectOptional = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1] || req.cookies?.token;
+    if (token) {
+      const decoded = verifyToken(token);
+      req.userId = decoded.id;
+    }
+  } catch (error) {
+    // Ignore invalid tokens for optional auth
+  }
+  next();
+};
+
+/**
  * Middleware to verify admin role
  */
 const authorize = (...roles) => {
@@ -78,6 +94,7 @@ exports.protect = authenticate;
 exports.isAdmin = isAdmin;
 exports.authenticate = authenticate;
 exports.authorize = authorize;
+exports.protectOptional = protectOptional;
 
 // Optional auth - doesn't fail if no token
 exports.optionalAuth = async (req, res, next) => {

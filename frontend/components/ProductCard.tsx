@@ -74,7 +74,7 @@ const getProductImage = (product: Product) => {
 
 // Determine product badge
 const getProductBadge = (product: Product): { label: string; color: string } | null => {
-  if (product.stock === 0) return { label: "Out of Stock", color: "bg-[#A85751] text-white" };
+  if (product.stock != null && product.stock <= 0) return { label: "Out of Stock", color: "bg-[#A85751] text-white" };
   if (product.isLimited || (product.stock && product.stock > 0 && product.stock <= 3))
     return { label: "Low Stock", color: "bg-[#A85751]/90 text-white" };
   if (product.isBestSeller) return { label: "Bestseller", color: "bg-[#0C3A2E] text-white" };
@@ -92,7 +92,7 @@ export default function ProductCard({ product, priority = false, onQuickView }: 
   const router = useRouter();
   const productId = product._id || product.id || "";
   const productImg = getProductImage(product);
-  const isOutOfStock = (product as any)?.stock === 0;
+  const isOutOfStock = (product as any)?.stock <= 0;
   const badge = getProductBadge(product);
 
   const handleAddToCart = (e: React.MouseEvent) => {

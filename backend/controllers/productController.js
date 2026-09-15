@@ -7,17 +7,10 @@ const { supabase } = require("../utils/supabase");
 const Category = require("../models/Category");
 const { sendError, sendSuccess, sendPaginated } = require("../utils/response");
 
-// In-memory cache for public product listing endpoints
-let featuredCache = {}; // key: limit, value: { data, expiry }
-let trendingCache = {}; // key: limit, value: { data, expiry }
-let bestSellersCache = {}; // key: limit, value: { data, expiry }
-let productsListCache = {}; // key: queryJSON, value: { data, pagination, expiry }
+const { getCache, setCache, clearCache } = require("../utils/cache");
 
-const clearProductsCache = () => {
-  featuredCache = {};
-  trendingCache = {};
-  bestSellersCache = {};
-  productsListCache = {};
+const clearProductsCache = async () => {
+  await clearCache("products:*");
 };
 
 /**
@@ -41,7 +34,7 @@ exports.getProducts = async (req, res) => {
       maxPrice = 100000,
     } = req.query;
 
-    const cacheKey = JSON.stringify({
+    const cacheKey = `products:list:${JSON.stringify({
       search,
       category,
       sort,
@@ -49,11 +42,10 @@ exports.getProducts = async (req, res) => {
       limit,
       minPrice,
       maxPrice
-    });
+    })}`;
 
-    const now = Date.now();
-    if (productsListCache[cacheKey] && productsListCache[cacheKey].expiry > now) {
-      const cached = productsListCache[cacheKey];
+    const cached = await getCache(cacheKey);
+    if (cached) {
       return sendPaginated(
         res,
         200,
@@ -141,11 +133,8 @@ exports.getProducts = async (req, res) => {
       pages: Math.ceil((count || 0) / limitNum),
     };
 
-    productsListCache[cacheKey] = {
-      data: productsWithCategory,
-      pagination,
-      expiry: now + 30000 // 30 seconds
-    };
+    const responseData = { data: productsWithCategory, pagination };
+    await setCache(cacheKey, responseData, 300); // Cache for 5 mins
 
     return sendPaginated(
       res,
@@ -216,14 +205,15 @@ exports.getFeaturedProducts = async (req, res) => {
     );
 
     const limit = Number(req.query.limit) || 8;
-    const now = Date.now();
+    const cacheKey = `products:featured:${limit}`;
 
-    if (featuredCache[limit] && featuredCache[limit].expiry > now) {
+    const cachedData = await getCache(cacheKey);
+    if (cachedData) {
       return sendSuccess(
         res,
         200,
-        featuredCache[limit].data,
-        "Featured products fetched successfully"
+        cachedData,
+        "Featured products fetched successfully (cached)"
       );
     }
 
@@ -271,10 +261,7 @@ exports.getFeaturedProducts = async (req, res) => {
       }
     }
 
-    featuredCache[limit] = {
-      data: productsWithCategory,
-      expiry: now + 60000 // 60 seconds
-    };
+    await setCache(cacheKey, productsWithCategory, 600); // 10 mins
 
     return sendSuccess(
       res,

@@ -39,7 +39,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
   const [isWishlisted, setIsWishlisted] = useState(false);
   const productId = product._id || product.id || "";
   const productImg = getProductImage(product);
-  const isOutOfStock = product?.stock === 0;
+  const isOutOfStock = product?.stock <= 0;
   const categoryName =
     typeof product.category === "object" && product.category
       ? product.category.name

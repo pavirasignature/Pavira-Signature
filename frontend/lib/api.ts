@@ -26,8 +26,11 @@ const api = axios.create({
 
 // Add request interceptor for token
 api.interceptors.request.use((config: any) => {
-  const token =
-    typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
+  const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
+  const sessionId = typeof window !== "undefined" ? localStorage.getItem("session_id") : null;
+  if (sessionId) {
+    config.headers["x-session-id"] = sessionId;
+  }
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

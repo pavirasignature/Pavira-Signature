@@ -53,6 +53,15 @@ export default function VerifyEmailPage() {
         </div>
       </div>
       <div className="w-full lg:w-[40%] flex flex-col relative min-h-screen bg-gradient-to-br from-[#112F24] to-[#07241D]">
+        {/* Mobile Mandala Background - Only visible on small screens */}
+        <motion.div
+          animate={{ rotate: -360 }}
+          transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
+          className="lg:hidden absolute top-[-10%] right-[-30%] w-[120%] h-[120%] opacity-10 pointer-events-none z-0"
+        >
+          <PremiumMandala />
+        </motion.div>
+
         <div className="pt-6 px-6 md:pt-8 md:px-12 w-full z-20">
           <Link href="/" className="inline-flex items-center gap-2 text-[#D4AF37] hover:text-[#F9F6F0] transition-colors text-xs md:text-sm font-semibold tracking-wider uppercase bg-[#111E16]/80 px-4 py-2.5 rounded-full border border-[#D4AF37]/30 hover:border-[#D4AF37] shadow-lg w-fit backdrop-blur-md">
             <ArrowLeft size={16} /><span className="text-yellow-500">Back to Gallery</span>

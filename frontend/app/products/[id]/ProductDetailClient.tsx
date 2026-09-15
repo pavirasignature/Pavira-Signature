@@ -36,7 +36,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
   } = useStore();
   const router = useRouter();
 
-  const isOutOfStock = product.stock === 0;
+  const isOutOfStock = product.stock != null && product.stock <= 0;
   const [quantity, setQuantity] = useState(isOutOfStock ? 0 : 1);
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);

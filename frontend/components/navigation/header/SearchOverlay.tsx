@@ -63,7 +63,11 @@ export default function SearchOverlay() {
                 <div className="pl-4 md:pl-6 pr-3 md:pr-4 text-muted-foreground">
                   <Search className="w-5 h-5 md:w-6 md:h-6" strokeWidth={1.5} />
                 </div>
+                <label htmlFor="search-input" className="sr-only">Search</label>
                 <input
+                  id="search-input"
+                  name="search"
+                  aria-label="Search"
                   ref={inputRef}
                   type="text"
                   value={query}

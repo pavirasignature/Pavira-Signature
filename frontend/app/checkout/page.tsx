@@ -50,6 +50,7 @@ export default function CheckoutPage() {
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
   const [order, setOrder] = useState<any>(null);
   const [mounted, setMounted] = useState(false);
+  const [idempotencyKey, setIdempotencyKey] = useState("");
   // Live stock map: productId -> current stock from backend
   const [liveStockMap, setLiveStockMap] = useState<Record<string, number>>({});
 
@@ -63,11 +64,12 @@ export default function CheckoutPage() {
   const hasOutOfStockItems = cart.some((item) => {
     const liveStock = liveStockMap[item.product];
     const stock = liveStock !== undefined ? liveStock : item.stock;
-    return typeof stock === 'number' && stock === 0;
+    return typeof stock === 'number' && stock <= 0;
   });
 
   useEffect(() => {
     setMounted(true);
+    setIdempotencyKey(crypto.randomUUID());
   }, []);
 
   useEffect(() => {
@@ -245,6 +247,7 @@ export default function CheckoutPage() {
         shippingAddress,
         paymentMethod,
         couponCode: couponCode || undefined,
+        idempotencyKey,
       });
 
       if (!orderResponse.success) {

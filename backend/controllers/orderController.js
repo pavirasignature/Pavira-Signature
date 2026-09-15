@@ -9,11 +9,11 @@ const Coupon = require("../models/Coupon");
 const User = require("../models/User");
 const { sendError, sendSuccess, sendPaginated } = require("../utils/response");
 const {
-  sendOrderConfirmationEmail,
   sendShippingUpdateEmail,
 } = require("../utils/email");
 const { generateInvoice } = require("../utils/invoice");
 const { supabase } = require("../utils/supabase");
+const { emailQueue } = require("../utils/queue");
 
 /**
  * Create Order
@@ -21,7 +21,7 @@ const { supabase } = require("../utils/supabase");
  */
 exports.createOrder = async (req, res) => {
   try {
-    const { items, shippingAddress, paymentMethod, couponCode } = req.body;
+    const { items, shippingAddress, paymentMethod, couponCode, idempotencyKey } = req.body;
 
     // Validation
     if (!items || items.length === 0) {
@@ -32,18 +32,44 @@ exports.createOrder = async (req, res) => {
       return sendError(res, 400, "Shipping address is required");
     }
 
+    if (idempotencyKey) {
+      // Check for existing order with this idempotency key
+      const { data: existingOrder } = await supabase
+        .from("orders")
+        .select("*")
+        .contains("paymentInfo", { idempotencyKey })
+        .maybeSingle();
+
+      if (existingOrder) {
+        return sendSuccess(res, 200, existingOrder, "Order already processed");
+      }
+    }
+
     // Calculate subtotal and validate stock
     let subtotal = 0;
     const orderItems = [];
+    
+    // Bulk fetch all products to eliminate N+1 queries
+    const productIds = items.map(item => item.product);
+    const { data: products, error: productError } = await supabase
+      .from("products")
+      .select("*")
+      .in("id", productIds);
+      
+    if (productError) {
+      return sendError(res, 500, "Database error verifying products", productError.message);
+    }
+    
+    // Create a dictionary map for O(1) lookups
+    const productMap = {};
+    for (const p of (products || [])) {
+      productMap[p.id] = p;
+    }
 
     for (const item of items) {
-      const { data: product, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("id", item.product)
-        .single();
+      const product = productMap[item.product];
 
-      if (error || !product) {
+      if (!product) {
         return sendError(res, 404, `Product not found: ${item.product}`);
       }
 
@@ -61,7 +87,7 @@ exports.createOrder = async (req, res) => {
       orderItems.push({
         product: product.id,
         name: product.name,
-        image: product.images[0]?.url || "/placeholder.jpg",
+        image: product.images?.[0]?.url || product.image || "/placeholder.jpg",
         quantity: item.quantity,
         price: product.price,
         discount: item.discount || 0,
@@ -142,33 +168,28 @@ exports.createOrder = async (req, res) => {
       totalPrice,
       paymentInfo: {
         paymentStatus: "pending",
+        idempotencyKey,
       },
       orderStatus: "pending",
     });
 
-    // Update product stock
+    // Update product stock using atomic RPC lock
     for (const item of items) {
       try {
-        const { data: productData } = await supabase
-          .from("products")
-          .select("stock")
-          .eq("id", item.product)
-          .single();
-
-        if (productData) {
-          const newStock = Math.max(0, productData.stock - item.quantity);
-          await supabase
-            .from("products")
-            .update({ stock: newStock })
-            .eq("id", item.product);
+        const { error } = await supabase.rpc("decrement_product_stock", {
+          p_id: item.product,
+          qty: item.quantity
+        });
+        
+        if (error) {
+          console.error(`Failed to lock/decrement stock for ${item.product}:`, error);
         }
       } catch (stockErr) {
         console.error("Stock update error:", stockErr);
-        // Continue even if stock update fails, to not fail the order completely
       }
     }
 
-    // Send confirmation email
+    // Queue confirmation email instead of sending inline
     try {
       const { data: userData } = await supabase
         .from("users")
@@ -177,10 +198,16 @@ exports.createOrder = async (req, res) => {
         .single();
 
       if (userData) {
-        await sendOrderConfirmationEmail(userData.email, order);
+        await emailQueue.add("send-confirmation", {
+          orderId: order._id || order.id,
+          userEmail: userData.email
+        }, {
+          attempts: 3,
+          backoff: { type: "exponential", delay: 1000 }
+        });
       }
     } catch (emailError) {
-      console.error("Order confirmation email failed:", emailError);
+      console.error("Order confirmation email enqueue failed:", emailError);
     }
 
     // Clear user's cart after order is created

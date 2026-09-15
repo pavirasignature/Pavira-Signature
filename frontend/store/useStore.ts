@@ -111,92 +111,52 @@ export const useStore = create<StoreState>()(
         if (!productId) return;
 
         const currentCart = get().cart;
-        const existingItem = currentCart.find(
-          (item) => item.product === productId,
-        );
+        const existingItem = currentCart.find((item) => item.product === productId);
+        let newCart = [];
 
         if (existingItem) {
-          set({
-            cart: currentCart.map((item) =>
-              item.product === productId
-                ? { ...item, quantity: item.quantity + quantity }
-                : item,
-            ),
-          });
+          newCart = currentCart.map((item) =>
+            item.product === productId
+              ? { ...item, quantity: item.quantity + quantity }
+              : item
+          );
         } else {
           let image = product.image;
           if (!image && product.images && product.images.length > 0) {
             const firstImg = product.images[0];
             image = typeof firstImg === "string" ? firstImg : (firstImg && typeof firstImg === "object" ? firstImg.url : "");
           }
-
-          set({
-            cart: [
-              ...currentCart,
-              {
-                product: productId,
-                name: product.name,
-                price: product.price,
-                image: image || "",
-                quantity,
-                stock: product.stock !== undefined && product.stock !== null ? product.stock : 999,
-              },
-            ],
-          });
+          newCart = [
+            ...currentCart,
+            {
+              product: productId,
+              name: product.name,
+              price: product.price,
+              image: image || "",
+              quantity,
+              stock: product.stock !== undefined && product.stock !== null ? product.stock : 999,
+            },
+          ];
         }
 
-        const token =
-          get().token ||
-          (typeof window !== "undefined"
-            ? sessionStorage.getItem("token")
-            : null);
-        if (token) {
-          try {
-            const { orderService } = await import("@/lib/services");
-            await orderService.addToCart({ productId, quantity });
-          } catch (error) {
-            console.error("Failed to sync cart item with backend:", error);
-          }
+        set({ cart: newCart });
+
+        try {
+          const api = (await import("@/lib/api")).default;
+          await api.post("/cart/sync", { cart: newCart });
+        } catch (error) {
+          console.error("Failed to sync cart item with backend:", error);
         }
       },
       removeFromCart: async (productId) => {
-        set({ cart: get().cart.filter((item) => item.product !== productId) });
+        const newCart = get().cart.filter((item) => item.product !== productId);
+        set({ cart: newCart });
 
-        const token =
-          get().token ||
-          (typeof window !== "undefined"
-            ? sessionStorage.getItem("token")
-            : null);
-        if (token) {
-          try {
-            const { orderService } = await import("@/lib/services");
-            const response = await orderService.removeFromCart(productId);
-            if (!response.success) {
-              console.error(
-                "Failed to remove item from backend cart:",
-                response.message,
-              );
-              // Re-add the item if backend removal failed
-              const product = get().cart.find(
-                (item) => item.product === productId,
-              );
-              if (!product) {
-                set({
-                  cart: [
-                    ...get().cart,
-                    { product: productId, quantity: 1, price: 0 },
-                  ],
-                });
-              }
-            }
-          } catch (error: any) {
-            console.error(
-              "Failed to remove item from backend cart:",
-              error?.message || error,
-            );
-            // Don't re-add since we already removed from local state
-            // The backend will handle cleaning up orphaned cart items
-          }
+        try {
+          const api = (await import("@/lib/api")).default;
+          await api.post("/cart/sync", { cart: newCart });
+        } catch (error: any) {
+          console.error("Failed to sync cart removal:", error?.message || error);
         }
       },
       updateCartQuantity: async (productId, quantity) => {
@@ -204,65 +164,46 @@ export const useStore = create<StoreState>()(
           get().removeFromCart(productId);
           return;
         }
-        set({
-          cart: get().cart.map((item) =>
-            item.product === productId ? { ...item, quantity } : item,
-          ),
-        });
-
-        const token =
-          get().token ||
-          (typeof window !== "undefined"
-            ? sessionStorage.getItem("token")
-            : null);
-        if (token) {
-          try {
-            const { orderService } = await import("@/lib/services");
-            await orderService.updateCartItem(productId, { quantity });
-          } catch (error) {
-            console.error(
-              "Failed to update cart item quantity in backend:",
-              error,
-            );
-          }
+        const newCart = get().cart.map((item) =>
+          item.product === productId ? { ...item, quantity } : item
+        );
+        set({ cart: newCart });
+        try {
+          const api = (await import("@/lib/api")).default;
+          await api.post("/cart/sync", { cart: newCart });
+        } catch (error) {
+          console.error("Failed to update cart item quantity in backend:", error);
         }
       },
-      clearCart: () => set({ cart: [] }),
+      clearCart: async () => {
+        set({ cart: [] });
+        try {
+          const api = (await import("@/lib/api")).default;
+          await api.post("/cart/sync", { cart: [] });
+        } catch (error) {
+          console.error("Failed to clear cart:", error);
+        }
+      },
       getCartTotal: () =>
         get().cart.reduce(
           (total, item) => total + item.price * item.quantity,
           0,
         ),
       fetchCart: async () => {
-        const token =
-          get().token ||
-          (typeof window !== "undefined"
-            ? sessionStorage.getItem("token")
-            : null);
-        const lastUserId = get().lastUserId;
-        if (!token) {
-          if (lastUserId) {
-            set({ cart: [], wishlist: [], lastUserId: null });
-          }
-          return;
+        if (typeof window === "undefined") return;
+        let sessionId = localStorage.getItem("session_id");
+        if (!sessionId) {
+          sessionId = crypto.randomUUID();
+          localStorage.setItem("session_id", sessionId);
         }
+        
         try {
-          const { orderService } = await import("@/lib/services");
-          const response = await orderService.getCart();
-          if (response.success && response.cart) {
-            const backendCart = response.cart.map((item: any) => ({
-              product: item.product._id || item.product,
-              name: item.product.name || item.name,
-              price: item.price || item.product.price,
-              image:
-                item.product.images?.[0]?.url ||
-                item.product.image ||
-                item.image ||
-                "",
-              quantity: item.quantity,
-              stock: item.product.stock !== undefined ? item.product.stock : 0,
-            }));
-            set({ cart: backendCart });
+          const api = (await import("@/lib/api")).default;
+          const response = await api.get("/cart", {
+            headers: { "x-session-id": sessionId }
+          });
+          if (response.data && response.data.cart) {
+            set({ cart: response.data.cart });
           }
         } catch (error) {
           console.error("Failed to fetch cart from backend:", error);
