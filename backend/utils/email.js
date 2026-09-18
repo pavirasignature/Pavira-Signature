@@ -19,6 +19,15 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// DEV/SAFE MODE: Override sendMail to prevent actual email delivery and avoid Google account spam restrictions
+transporter.sendMail = async (mailOptions) => {
+  console.log(`\n--- [EMAIL SAFE MODE: DISABLED] ---`);
+  console.log(`Would have sent email to: ${mailOptions.to}`);
+  console.log(`Subject: ${mailOptions.subject}`);
+  console.log(`-----------------------------------\n`);
+  return { messageId: "safe-mode-blocked-id-" + Date.now() };
+};
+
 /**
  * Send Welcome Email — Luxury Branded Template
  */
