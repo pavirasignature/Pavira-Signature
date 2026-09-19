@@ -6,10 +6,14 @@
 const nodemailer = require("nodemailer");
 
 const EMAIL_SERVICE = process.env.EMAIL_SERVICE || "Gmail";
-const EMAIL_USER = process.env.EMAIL_USER || "connect@pavirasignature.in";
-const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD || "hatb ijfn wete fhww";
+const EMAIL_USER = process.env.EMAIL_USER;
+const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
 const EMAIL_FROM =
   process.env.EMAIL_FROM || "Pavira Signature <connect@pavirasignature.in>";
+
+if (!EMAIL_USER || !EMAIL_PASSWORD) {
+  console.warn("[WARNING] Email credentials not provided in environment variables.");
+}
 
 const transporter = nodemailer.createTransport({
   service: EMAIL_SERVICE,
