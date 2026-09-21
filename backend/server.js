@@ -172,6 +172,19 @@ const authLimiter = rateLimit({
   },
 });
 
+// 3a. Stricter Limiter for Contact/Inquiry Routes - Prevent spam/email bombing
+const contactLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5, // Max 5 contact form submissions per 15 mins per IP
+  skip: (req) => req.method === "OPTIONS",
+  keyGenerator: safeKeyGenerator,
+  validate: { default: false },
+  message: {
+    success: false,
+    message: "Too many contact form submissions. Please try again later or email us directly at care@pavirasignature.in.",
+  },
+});
+
 // 4. Stricter Limiter for Checkout/Orders
 const checkoutLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -331,7 +344,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/wishlists", wishlistRoutes);
 app.use("/api/redirects", redirectRoutes);
-app.use("/api/contact", contactRoutes);
+app.use("/api/contact", contactLimiter, contactRoutes);
 app.use("/api/cart", cartRoutes);
 
 // Health check route

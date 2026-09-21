@@ -9,7 +9,8 @@ const EMAIL_SERVICE = process.env.EMAIL_SERVICE || "Gmail";
 const EMAIL_USER = process.env.EMAIL_USER;
 const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
 const EMAIL_FROM =
-  process.env.EMAIL_FROM || "Pavira Signature <connect@pavirasignature.in>";
+  process.env.EMAIL_FROM || "Pavira Signature <care@pavirasignature.in>";
+const EMAIL_SAFE_MODE = process.env.EMAIL_SAFE_MODE === "true"; // Enable safe mode via env variable
 
 if (!EMAIL_USER || !EMAIL_PASSWORD) {
   console.warn("[WARNING] Email credentials not provided in environment variables.");
@@ -23,14 +24,24 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// DEV/SAFE MODE: Override sendMail to prevent actual email delivery and avoid Google account spam restrictions
-transporter.sendMail = async (mailOptions) => {
-  console.log(`\n--- [EMAIL SAFE MODE: DISABLED] ---`);
-  console.log(`Would have sent email to: ${mailOptions.to}`);
-  console.log(`Subject: ${mailOptions.subject}`);
-  console.log(`-----------------------------------\n`);
-  return { messageId: "safe-mode-blocked-id-" + Date.now() };
-};
+// Optional Safe Mode: Override sendMail to prevent actual email delivery
+// Useful for development/testing without sending real emails
+if (EMAIL_SAFE_MODE) {
+  console.warn("\n⚠️  [EMAIL SAFE MODE ENABLED] Emails will be logged but NOT sent ⚠️\n");
+  
+  const originalSendMail = transporter.sendMail.bind(transporter);
+  transporter.sendMail = async (mailOptions) => {
+    console.log(`\n--- [EMAIL SAFE MODE: BLOCKED] ---`);
+    console.log(`Would have sent email to: ${mailOptions.to}`);
+    console.log(`Subject: ${mailOptions.subject}`);
+    console.log(`From: ${mailOptions.from || EMAIL_FROM}`);
+    console.log(`Reply-To: ${mailOptions.replyTo || "N/A"}`);
+    console.log(`-----------------------------------\n`);
+    return { messageId: "safe-mode-blocked-" + Date.now(), accepted: [mailOptions.to] };
+  };
+} else {
+  console.log("✅ [EMAIL SERVICE ACTIVE] Emails will be sent via", EMAIL_SERVICE);
+}
 
 /**
  * Send Welcome Email — Luxury Branded Template
@@ -576,7 +587,7 @@ const sendVerificationEmail = async (
 const sendInquiryEmailToAdmin = async ({ name, email, subject, message }) => {
   try {
     const adminRecipients = [
-      "connect@pavirasignature.in",
+      "care@pavirasignature.in",
       EMAIL_USER,
     ].filter(Boolean);
     // Remove duplicates
