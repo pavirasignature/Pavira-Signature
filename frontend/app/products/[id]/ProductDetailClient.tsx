@@ -9,6 +9,8 @@ import { getAbsoluteUrl, isExternalUrl } from "@/lib/config";
 import Image from "next/image";
 import { useStore } from "@/store/useStore";
 import toast from "react-hot-toast";
+import RelatedProducts from "@/components/sections/RelatedProducts";
+import ProductReviews from "@/components/sections/ProductReviews";
 
 interface Product {
   _id: string;
@@ -193,17 +195,50 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 mb-24 items-start">
           {/* LEFT: 7-IMAGE GALLERY */}
           <div className="lg:col-span-7 flex flex-col gap-4">
-            {/* Active Display */}
-            <div className="aspect-[4/3] sm:aspect-[16/11] relative w-full overflow-hidden bg-[#F2EFE9] border border-border">
+            {/* Active Display with Zoom (B2) and Pinterest (E2) */}
+            <div 
+              className="aspect-[4/3] sm:aspect-[16/11] relative w-full overflow-hidden bg-[#F2EFE9] border border-border group cursor-crosshair"
+              onMouseMove={(e) => {
+                const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+                const x = ((e.clientX - left) / width) * 100;
+                const y = ((e.clientY - top) / height) * 100;
+                e.currentTarget.style.setProperty('--x', `${x}%`);
+                e.currentTarget.style.setProperty('--y', `${y}%`);
+              }}
+            >
               <Image
                 src={galleryImages[activeImageIndex].url}
                 alt={`${product.name} - ${galleryImages[activeImageIndex].label}`}
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 60vw"
-                className="object-cover object-center transition-all duration-500"
+                className="object-cover object-center transition-transform duration-200 group-hover:scale-150"
+                style={{ transformOrigin: 'var(--x, 50%) var(--y, 50%)' }}
               />
-              <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1.5 text-[11px] uppercase tracking-wider text-[#1A1A1A] font-semibold border border-border">
+              
+              {/* E2: Pinterest Save Button */}
+              <a
+                href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(`https://pavirasignature.in/products/${product.id}`)}&media=${encodeURIComponent(galleryImages[activeImageIndex].url)}&description=${encodeURIComponent(product.name)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute top-3 right-3 bg-[#E60023] text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:scale-110"
+                title="Save to Pinterest"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                  <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345l-.288 1.148c-.043.167-.142.203-.314.123-1.173-.541-1.906-2.245-1.906-3.619 0-2.946 2.141-5.652 6.177-5.652 3.252 0 5.782 2.316 5.782 5.407 0 3.232-2.037 5.834-4.869 5.834-1.119 0-2.171-.582-2.531-1.269l-.689 2.62c-.249.951-.92 2.138-1.373 2.864 1.054.321 2.176.494 3.333.494 6.62 0 11.988-5.367 11.988-11.987C24.005 5.367 18.637 0 12.017 0z"/>
+                </svg>
+              </a>
+
+              {/* B3: AR/3D Viewer Stub */}
+              <button 
+                className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1.5 text-[11px] uppercase tracking-wider text-[#1A1A1A] font-semibold border border-border hover:bg-white flex items-center gap-2"
+                onClick={() => toast("AR/3D models are being prepared for this item.", { icon: "👁️" })}
+              >
+                View in Room
+              </button>
+
+              <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1.5 text-[11px] uppercase tracking-wider text-[#1A1A1A] font-semibold border border-border pointer-events-none">
                 {galleryImages[activeImageIndex].label}
               </div>
             </div>
@@ -297,6 +332,30 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                   <span>Recommended Wall:</span>
                   <span>8–12 ft wide living/dining wall</span>
                 </div>
+              </div>
+
+              {/* B4: Honest Swatches (Mock/Fallback) */}
+              <div className="pt-2">
+                <p className="text-xs font-semibold uppercase tracking-wider text-[#1A1A1A] mb-3">
+                  Frame Finish
+                </p>
+                <div className="flex gap-3">
+                  <button className="w-8 h-8 rounded-full bg-black ring-2 ring-offset-2 ring-[#0C3A2E]" title="Matte Black" />
+                  <button className="w-8 h-8 rounded-full bg-[#D4AF37] ring-1 ring-border hover:ring-[#0C3A2E] ring-offset-2 transition-all" title="Brushed Gold" />
+                  <button className="w-8 h-8 rounded-full bg-[#8C7A6B] ring-1 ring-border hover:ring-[#0C3A2E] ring-offset-2 transition-all" title="Antique Bronze" />
+                </div>
+                <p className="text-[10px] text-muted-foreground mt-2 font-light">
+                  Need a custom finish? <Link href="/contact" className="underline hover:text-[#1A1A1A]">Contact our design team.</Link>
+                </p>
+              </div>
+
+              {/* D2: White-Glove Delivery Upgrade */}
+              <div className="flex items-start gap-3 p-3 border border-border/60 bg-[#FDFBF7] mt-4">
+                <input type="checkbox" id="white-glove" className="mt-0.5 accent-[#0C3A2E]" />
+                <label htmlFor="white-glove" className="text-xs cursor-pointer select-none">
+                  <span className="font-semibold text-[#1A1A1A] block">Add White-Glove Installation (+₹2,500)</span>
+                  <span className="text-muted-foreground font-light">Professional unwrapping, wall mounting, and debris removal.</span>
+                </label>
               </div>
 
               {/* Actions */}
@@ -500,6 +559,12 @@ export default function ProductDetailClient({ product }: { product: Product }) {
             </Link>
           </div>
         </div>
+
+        {/* E3: Trust & Social Proof / Reviews */}
+        <ProductReviews />
+
+        {/* C3: Complete The Look / Related Products */}
+        <RelatedProducts productId={product._id || product.id || ""} />
       </div>
     </div>
   );
