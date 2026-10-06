@@ -484,7 +484,7 @@ export default function HomeClient() {
                     ))}
                   </div>
                   <p className="text-sm text-[#1A1A1A] font-light leading-relaxed mb-6 italic">
-                    "{rev.quote}"
+                    &ldquo;{rev.quote}&rdquo;
                   </p>
                 </div>
                 <div className="border-t border-border/60 pt-4 mt-auto">

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import Header from "@/components/navigation/Header";
 import Footer from "@/components/navigation/Footer";
 import {
@@ -139,6 +140,7 @@ export default function CheckoutPage() {
       setLiveStockMap(stockMap);
     };
     fetchLiveStock();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart.length]);
 
   const handleSelectAddress = (addr: any) => {
@@ -749,9 +751,11 @@ export default function CheckoutPage() {
                     {cart.map((item) => (
                       <div key={item.product} className="flex items-start gap-3">
                         <div className="w-14 h-14 bg-[#F9F6F0] border border-[#1A1A1A]/10 overflow-hidden flex-shrink-0">
-                          <img
+                          <Image
                             src={item.image || "/placeholder.jpg"}
                             alt={item.name}
+                            width={56}
+                            height={56}
                             className="w-full h-full object-cover"
                           />
                         </div>

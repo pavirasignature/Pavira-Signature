@@ -41,6 +41,7 @@ export default function OrderDetailsPage() {
       return;
     }
     fetchOrderDetails();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, orderId, router]);
 
   const fetchOrderDetails = async () => {

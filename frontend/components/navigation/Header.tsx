@@ -83,6 +83,7 @@ export default function Header() {
         };
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   // Re-check auth immediately whenever login/logout fires the authChanged event
@@ -91,6 +92,7 @@ export default function Header() {
     const handler = () => checkAuth();
     window.addEventListener("authChanged", handler);
     return () => window.removeEventListener("authChanged", handler);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Also re-sync whenever the Zustand store user changes (e.g. after AuthSync writes image from Google)

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import Header from "@/components/navigation/Header";
 import Footer from "@/components/navigation/Footer";
 import { orderService } from "@/lib/services";
@@ -114,9 +115,11 @@ export default function CartPage() {
                 >
                   {/* Product Image */}
                   <div className="w-24 h-24 bg-[#F9F6F0] border border-[#1A1A1A]/10 shrink-0">
-                    <img
+                    <Image
                       src={item.image || "/placeholder.jpg"}
                       alt={item.name}
+                      width={96}
+                      height={96}
                       className="w-full h-full object-cover"
                     />
                   </div>

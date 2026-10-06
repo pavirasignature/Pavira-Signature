@@ -137,6 +137,7 @@ export default function DashboardPage() {
     }
 
     fetchOrders();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, router]);
 
   // Fetch customer orders

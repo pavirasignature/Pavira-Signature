@@ -243,6 +243,7 @@ export default function ProductsClient() {
   /* ─── Fetch products on filter change ─── */
   useEffect(() => {
     fetchProducts();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters.category, filters.minPrice, filters.maxPrice, filters.search, filters.sort]);
 
   const fetchProducts = async () => {

@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { createClient } from "@supabase/supabase-js";
+import Link from "next/link";
 import ProductDetailClient from "./ProductDetailClient";
 import PublicLayout from "@/components/layout/PublicLayout";
 import { getAbsoluteUrl } from "@/lib/config";
@@ -146,12 +147,12 @@ export default async function ProductDetailPage({
             <p className="text-muted-foreground font-light mb-8 text-sm leading-relaxed">
               The piece you are seeking may have been archived or moved into a private collection.
             </p>
-            <a
+            <Link
               href="/products"
               className="inline-block px-8 py-3.5 bg-[#0C3A2E] text-white font-semibold uppercase tracking-widest text-xs transition-colors hover:bg-[#0C3A2E]/90"
             >
               Explore Collection
-            </a>
+            </Link>
           </div>
         </main>
       </PublicLayout>

@@ -49,6 +49,7 @@ function SuccessPageContent() {
     }
 
     verifyPayment();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionId, orderId]);
 
   if (loading) {
