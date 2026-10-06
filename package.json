@@ -12,6 +12,11 @@
     "glob": "^10.3.10",
     "rimraf": "^5.0.5"
   },
+  "allowScripts": {
+    "msgpackr-extract": true,
+    "sharp": true,
+    "unrs-resolver": true
+  },
   "scripts": {
     "clean": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$ErrorActionPreference = 'SilentlyContinue'; $p5 = (Get-NetTCPConnection -LocalPort 5000).OwningProcess; if ($p5) { Stop-Process -Id $p5 -Force }; $p3 = (Get-NetTCPConnection -LocalPort 3000).OwningProcess; if ($p3) { Stop-Process -Id $p3 -Force }; exit 0\"",
     "install-all": "npm install",

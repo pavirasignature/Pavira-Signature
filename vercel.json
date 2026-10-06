@@ -3,6 +3,9 @@
   "framework": "nextjs",
   "installCommand": "npm install --include=dev --legacy-peer-deps",
   "buildCommand": "npm run build -w frontend && npm install --legacy-peer-deps -w backend",
+  "env": {
+    "NEXT_IGNORE_INCORRECT_LOCKFILE": "1"
+  },
   "outputDirectory": "frontend/.next",
   "regions": ["bom1"],
   "cleanUrls": true,
