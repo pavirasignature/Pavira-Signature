@@ -107,8 +107,8 @@ export default function AboutClient() {
 
             <div className="lg:col-span-6 relative aspect-[4/3] w-full overflow-hidden bg-muted border border-border">
               <Image
-                src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1000&q=80"
-                alt="Precision engineering and manufacturing in Ahmedabad workshop"
+                src="/about-craftsmanship.jpg"
+                alt="Master artisan hand-finishing architectural layered wall decor in our studio"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover object-center"
