@@ -85,6 +85,10 @@ export const categoryService = {
     const response = await api.get(`/categories/${id}`);
     return response.data.data || response.data;
   },
+  createCategory: async (data: { name: string; slug: string; description?: string; icon?: string; isActive?: boolean }) => {
+    const response = await api.post("/categories", data);
+    return response.data.data || response.data;
+  },
 };
 
 // Featured/Trending/Bestsellers

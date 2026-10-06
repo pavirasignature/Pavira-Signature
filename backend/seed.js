@@ -56,6 +56,13 @@ const categories = [
     description: "High-grade premium rustproof door grills for cinematic security.",
     icon: "🚪",
     isActive: true
+  },
+  {
+    name: "Islamic Wall Arts",
+    slug: "islamic-wall-arts",
+    description: "Elegant hand-crafted Islamic calligraphy and geometric art pieces to bring spiritual beauty and serenity to your space.",
+    icon: "☪️",
+    isActive: true
   }
 ];
 
