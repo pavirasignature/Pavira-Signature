@@ -17,6 +17,7 @@ import {
   uploadService,
 } from "@/lib/services";
 import { authAPI } from "@/lib/api";
+import { getStoredAuth } from "@/lib/authStorage";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   BarChart3,
@@ -151,25 +152,19 @@ export default function AdminDashboard() {
     const bootstrapAdmin = async () => {
       setIsMounted(true);
 
-      const token =
-        typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
-      const storedUserStr =
-        typeof window !== "undefined" ? sessionStorage.getItem("user") : null;
+      const { token, user: storedUser } =
+        typeof window !== "undefined"
+          ? getStoredAuth()
+          : { token: null, user: null };
 
       if (!token) {
         router.replace("/login");
         return;
       }
 
-      let activeUser = user;
-
-      if (!activeUser && storedUserStr) {
-        try {
-          activeUser = JSON.parse(storedUserStr);
-          setUser(activeUser as any);
-        } catch (e) {
-          activeUser = null;
-        }
+      let activeUser = user || storedUser;
+      if (activeUser && !user) {
+        setUser(activeUser as any);
       }
 
       if (!activeUser) {
@@ -675,15 +670,8 @@ export default function AdminDashboard() {
     }
   };
 
-  let activeUser = user;
-  if (!activeUser && typeof window !== "undefined") {
-    const storedUserStr = sessionStorage.getItem("user");
-    if (storedUserStr) {
-      try {
-        activeUser = JSON.parse(storedUserStr);
-      } catch (e) {}
-    }
-  }
+  const storedAuth = typeof window !== "undefined" ? getStoredAuth() : { token: null, user: null };
+  const activeUser = user || storedAuth.user;
 
   if (!isMounted) return null;
   if (!activeUser || activeUser.role !== "admin") return null;

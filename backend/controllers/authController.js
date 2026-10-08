@@ -154,7 +154,7 @@ exports.register = async (req, res) => {
  */
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, rememberMe } = req.body;
 
     // Validation
     if (!email || !password) {
@@ -216,16 +216,21 @@ exports.login = async (req, res) => {
       .update({ lastLogin: new Date().toISOString() })
       .eq("id", user.id);
 
-    // Generate token
-    const token = generateToken(user.id);
+    const isRemember = Boolean(rememberMe);
 
-    // Set token in cookie
-    res.cookie("token", token, {
+    // Generate token (30 days if rememberMe, 1 day if not)
+    const token = generateToken(user.id, isRemember);
+
+    // Set token in cookie (persistent for 30d if rememberMe, session cookie if not)
+    const cookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    };
+    if (isRemember) {
+      cookieOptions.maxAge = 30 * 24 * 60 * 60 * 1000;
+    }
+    res.cookie("token", token, cookieOptions);
 
     const userData = {
       id: user.id,
@@ -238,7 +243,7 @@ exports.login = async (req, res) => {
       addresses: user.addresses || [],
     };
 
-    return sendSuccess(res, 200, { user: userData, token }, "Login successful");
+    return sendSuccess(res, 200, { user: userData, token, rememberMe: isRemember }, "Login successful");
   } catch (error) {
     console.error("Login error:", error);
     return sendError(res, 500, "Error during login", error.message);
@@ -398,16 +403,21 @@ exports.googleLogin = async (req, res) => {
       .update({ lastLogin: new Date().toISOString() })
       .eq("id", user.id);
 
+    const isRemember = Boolean(req.body.rememberMe);
+
     // Generate token
-    const token = generateToken(user.id);
+    const token = generateToken(user.id, isRemember);
 
     // Set token in cookie
-    res.cookie("token", token, {
+    const cookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    };
+    if (isRemember) {
+      cookieOptions.maxAge = 30 * 24 * 60 * 60 * 1000;
+    }
+    res.cookie("token", token, cookieOptions);
 
     const userData = {
       id: user.id,

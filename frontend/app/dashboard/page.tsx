@@ -33,6 +33,7 @@ import Header from '@/components/navigation/Header';
 import Footer from '@/components/navigation/Footer';
 import { useStore } from '@/store/useStore';
 import { authService, orderService, userService } from '@/lib/services';
+import { getStoredAuth, clearStoredAuth } from '@/lib/authStorage';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -86,13 +87,8 @@ export default function DashboardPage() {
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   // Active User Resolution (Hydration-safe)
-  const storedUserStr = typeof window !== "undefined" ? sessionStorage.getItem("user") : null;
-  let activeUser = user;
-  if (!activeUser && storedUserStr) {
-    try {
-      activeUser = JSON.parse(storedUserStr);
-    } catch (e) {}
-  }
+  const storedAuth = typeof window !== "undefined" ? getStoredAuth() : { token: null, user: null };
+  const activeUser = user || storedAuth.user;
 
   // Prevent body scrolling when any modal is open
   useEffect(() => {
@@ -109,7 +105,7 @@ export default function DashboardPage() {
   // Auth Verification & Initial Loading
   useEffect(() => {
     setIsMounted(true);
-    const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
+    const { token } = typeof window !== "undefined" ? getStoredAuth() : { token: null };
     if (!token) {
       router.push('/login');
       return;
@@ -160,8 +156,7 @@ export default function DashboardPage() {
   // Sign out customer
   const handleLogout = () => {
     logout();
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('user');
+    clearStoredAuth();
     toast.success('Logged out successfully');
     router.push('/');
   };
@@ -337,8 +332,7 @@ export default function DashboardPage() {
       toast.success('Your account has been deleted permanently. We are sorry to see you go!');
       
       logout();
-      sessionStorage.removeItem('token');
-      sessionStorage.removeItem('user');
+      clearStoredAuth();
       setDeleteModalOpen(false);
       router.push('/');
     } catch (error: any) {

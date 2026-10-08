@@ -12,6 +12,7 @@ import {
   authService,
   productService,
 } from "@/lib/services";
+import { getStoredAuth } from "@/lib/authStorage";
 import { useStore } from "@/store/useStore";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -75,7 +76,7 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     const token =
-      typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
+      typeof window !== "undefined" ? getStoredAuth().token : null;
     if (!token) {
       router.push("/login");
       return;
@@ -114,7 +115,7 @@ export default function CheckoutPage() {
     };
 
     const token =
-      typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
+      typeof window !== "undefined" ? getStoredAuth().token : null;
     if (token) {
       fetchUserData();
     }
@@ -178,7 +179,7 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     const token =
-      typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
+      typeof window !== "undefined" ? getStoredAuth().token : null;
     if (!token) {
       toast.error("Please login to continue");
       router.push("/login");

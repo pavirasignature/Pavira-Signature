@@ -7,6 +7,7 @@ import Image from "next/image";
 import Header from "@/components/navigation/Header";
 import Footer from "@/components/navigation/Footer";
 import { orderService } from "@/lib/services";
+import { getStoredAuth } from "@/lib/authStorage";
 import { useStore } from "@/store/useStore";
 import { motion } from "framer-motion";
 import {
@@ -35,7 +36,7 @@ export default function OrderDetailsPage() {
   const orderId = (params?.id as string) || "";
 
   useEffect(() => {
-    const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
+    const token = typeof window !== "undefined" ? getStoredAuth().token : null;
     if (!token) {
       router.push("/login");
       return;
@@ -138,7 +139,7 @@ export default function OrderDetailsPage() {
     const API_URL = (envUrl && (!isBrowser || !envUrl.includes("localhost") || isLocalhost))
       ? envUrl
       : (process.env.NODE_ENV === "production" ? "/api" : "http://localhost:5000/api");
-    const token = sessionStorage.getItem("token");
+    const token = typeof window !== "undefined" ? getStoredAuth().token : null;
     window.open(
       `${API_URL}/orders/${orderId}/invoice?token=${token}`,
       "_blank",

@@ -6,6 +6,7 @@
 "use client";
 
 import axios from "axios";
+import { getStoredAuth, clearStoredAuth } from "@/lib/authStorage";
 
 // Safe API URL resolution
 let API_URL: string;
@@ -26,7 +27,7 @@ const api = axios.create({
 
 // Add request interceptor for token
 api.interceptors.request.use((config: any) => {
-  const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
+  const token = typeof window !== "undefined" ? getStoredAuth().token : null;
   const sessionId = typeof window !== "undefined" ? localStorage.getItem("session_id") : null;
   if (sessionId) {
     config.headers["x-session-id"] = sessionId;
@@ -43,8 +44,7 @@ api.interceptors.response.use(
   (error: any) => {
     if (error.response?.status === 401) {
       if (typeof window !== "undefined") {
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("user");
+        clearStoredAuth();
 
         // Dynamically clear Zustand store to avoid circular dependency
         import("@/store/useStore")

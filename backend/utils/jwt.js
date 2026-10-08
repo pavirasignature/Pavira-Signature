@@ -10,9 +10,9 @@ const JWT_SECRET = process.env.JWT_SECRET || "super_secret_jwt_token_for_pavira_
 /**
  * Generate JWT Token
  */
-const generateToken = (userId) => {
+const generateToken = (userId, rememberMe = false) => {
   return jwt.sign({ id: userId }, JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRY || "7d",
+    expiresIn: rememberMe ? "30d" : (process.env.JWT_EXPIRY || "1d"),
   });
 };
 

@@ -15,6 +15,7 @@ export default function LoginPage() {
   const { setUser, setToken } = useStore();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     email: "",
@@ -51,7 +52,10 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      const response = await authAPI.login(formData);
+      const response = await authAPI.login({
+        ...formData,
+        rememberMe,
+      });
 
       if (response.data.success) {
         const user = response.data.data.user;
@@ -65,8 +69,8 @@ export default function LoginPage() {
           sessionStorage.setItem("showAccessGrantedAlert", "true");
         }
 
-        setToken(token);
-        setUser(user);
+        setToken(token, rememberMe);
+        setUser(user, rememberMe);
 
         toast.success("Login successful!");
 
@@ -251,7 +255,14 @@ export default function LoginPage() {
               <div className="flex items-center justify-between text-sm">
                 <label htmlFor="remember" className="flex items-center gap-2.5 cursor-pointer group">
                   <div className="relative flex items-center justify-center w-4 h-4 border border-[#1A1A1A]/20 group-hover:border-[#0C3A2E] transition-colors bg-white">
-                    <input id="remember" name="remember" type="checkbox" className="opacity-0 absolute inset-0 cursor-pointer peer" />
+                    <input
+                      id="remember"
+                      name="remember"
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="opacity-0 absolute inset-0 cursor-pointer peer"
+                    />
                     <div className="w-2 h-2 bg-[#0C3A2E] scale-0 peer-checked:scale-100 transition-transform" />
                   </div>
                   <span className="text-[#1A1A1A]/50 group-hover:text-[#1A1A1A] transition-colors text-xs">Remember me</span>

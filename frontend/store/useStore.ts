@@ -2,14 +2,15 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { getStoredAuth, saveStoredAuth, clearStoredAuth } from "@/lib/authStorage";
 
 interface StoreState {
   // Auth
   user: any;
   token: string | null;
   lastUserId: string | null;
-  setUser: (user: any) => void;
-  setToken: (token: string | null) => void;
+  setUser: (user: any, rememberMe?: boolean) => void;
+  setToken: (token: string | null, rememberMe?: boolean) => void;
   logout: () => void;
 
   // Cart
@@ -40,32 +41,36 @@ export const useStore = create<StoreState>()(
   persist(
     (set, get) => ({
       // Auth
-      user:
-        typeof window !== "undefined"
-          ? sessionStorage.getItem("user")
-            ? JSON.parse(sessionStorage.getItem("user")!)
-            : null
-          : null,
-      token:
-        typeof window !== "undefined" ? sessionStorage.getItem("token") : null,
+      user: typeof window !== "undefined" ? getStoredAuth().user : null,
+      token: typeof window !== "undefined" ? getStoredAuth().token : null,
       lastUserId: null,
-      setUser: (user) => {
+      setUser: (user, rememberMe) => {
         set({ user, lastUserId: user ? user._id || user.id : null });
         if (typeof window !== "undefined") {
           if (user) {
-            sessionStorage.setItem("user", JSON.stringify(user));
+            const isRemembered =
+              rememberMe !== undefined
+                ? rememberMe
+                : localStorage.getItem("rememberMe") === "true";
+            const currentToken = get().token || getStoredAuth().token || "";
+            saveStoredAuth(currentToken, user, isRemembered);
           } else {
-            sessionStorage.removeItem("user");
+            clearStoredAuth();
           }
         }
       },
-      setToken: (token) => {
+      setToken: (token, rememberMe) => {
         set({ token });
         if (typeof window !== "undefined") {
           if (token) {
-            sessionStorage.setItem("token", token);
+            const isRemembered =
+              rememberMe !== undefined
+                ? rememberMe
+                : localStorage.getItem("rememberMe") === "true";
+            const currentUser = get().user || getStoredAuth().user;
+            saveStoredAuth(token, currentUser, isRemembered);
           } else {
-            sessionStorage.removeItem("token");
+            clearStoredAuth();
           }
           // Notify the Header to re-check auth immediately (no reload needed)
           window.dispatchEvent(new Event("authChanged"));
@@ -84,12 +89,7 @@ export const useStore = create<StoreState>()(
           lastUserId: null,
         });
         if (typeof window !== "undefined") {
-          sessionStorage.removeItem("token");
-          sessionStorage.removeItem("user");
-          sessionStorage.removeItem("loginMethod");
-          // Signal to AuthSync that the user explicitly logged out,
-          // so it must NOT re-sync a stale NextAuth cookie
-          sessionStorage.setItem("loggedOut", "true");
+          clearStoredAuth();
           // Notify the Header to re-check auth immediately
           window.dispatchEvent(new Event("authChanged"));
           // Also clear the persisted Zustand storage so stale cart/wishlist
@@ -251,7 +251,7 @@ export const useStore = create<StoreState>()(
         const token =
           get().token ||
           (typeof window !== "undefined"
-            ? sessionStorage.getItem("token")
+            ? getStoredAuth().token
             : null);
         if (!token) return;
         try {
@@ -293,7 +293,7 @@ export const useStore = create<StoreState>()(
           // If there is no active session token, the persisted cart/wishlist
           // belongs to a previous (now logged-out) user — clear it immediately
           if (typeof window !== "undefined") {
-            const token = sessionStorage.getItem("token");
+            const token = getStoredAuth().token;
             if (!token) {
               state.cart = [];
               state.wishlist = [];

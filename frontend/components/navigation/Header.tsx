@@ -12,6 +12,7 @@ import CartDrawer from "./header/CartDrawer";
 import AccountMenu from "./header/AccountMenu";
 import SearchOverlay from "./header/SearchOverlay";
 import MobileNav from "./header/MobileNav";
+import { getStoredAuth } from "@/lib/authStorage";
 
 export default function Header() {
   const pathname = usePathname();
@@ -106,26 +107,19 @@ export default function Header() {
   }, [storeUser]);
 
   const checkAuth = () => {
-    const token =
-      typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
-    const storedUser =
-      typeof window !== "undefined" ? sessionStorage.getItem("user") : null;
+    const { token, user: storedUserObj } =
+      typeof window !== "undefined"
+        ? getStoredAuth()
+        : { token: null, user: null };
 
     if (token) {
       setIsLoggedIn(true);
-      if (storedUser) {
-        try {
-          const parsed = JSON.parse(storedUser);
-          setUserName(parsed.name || parsed.firstName || "User");
-          setUserRole(parsed.role || "customer");
-          // Prefer store's live user image (updated by AuthSync reactively) over sessionStorage
-          const liveImage = storeUser?.image || storeUser?.photoUrl || "";
-          setUserImage(liveImage || parsed.image || parsed.photoUrl || "");
-        } catch (e) {
-          setUserName("User");
-          setUserRole("customer");
-          setUserImage("");
-        }
+      if (storedUserObj) {
+        setUserName(storedUserObj.name || storedUserObj.firstName || "User");
+        setUserRole(storedUserObj.role || "customer");
+        // Prefer store's live user image (updated by AuthSync reactively) over storedUserObj
+        const liveImage = storeUser?.image || storeUser?.photoUrl || "";
+        setUserImage(liveImage || storedUserObj.image || storedUserObj.photoUrl || "");
       }
     } else {
       setIsLoggedIn(false);
