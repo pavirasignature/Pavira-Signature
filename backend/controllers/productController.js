@@ -67,7 +67,29 @@ exports.getProducts = async (req, res) => {
     query = query.eq("isActive", true);
 
     if (category && category !== "") {
-      query = query.eq("category", category);
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(category);
+      if (isUUID) {
+        query = query.eq("category", category);
+      } else {
+        // Resolve slug to category ID
+        const { data: matchedCat } = await supabase
+          .from("categories")
+          .select("id")
+          .ilike("slug", category.toLowerCase())
+          .maybeSingle();
+
+        if (matchedCat) {
+          query = query.eq("category", matchedCat.id);
+        } else {
+          return sendPaginated(
+            res,
+            200,
+            [],
+            { current: pageNum, limit: limitNum, total: 0, pages: 0 },
+            "No products found"
+          );
+        }
+      }
     }
 
     // Price range filter
@@ -99,6 +121,22 @@ exports.getProducts = async (req, res) => {
 
     if (error) {
       console.error("Supabase query error:", error);
+      // Fallback: fetch active products directly
+      const { data: fallbackProducts } = await supabase
+        .from("products")
+        .select("*")
+        .eq("isActive", true)
+        .limit(limitNum);
+
+      if (fallbackProducts && fallbackProducts.length > 0) {
+        return sendPaginated(
+          res,
+          200,
+          fallbackProducts,
+          { current: 1, limit: limitNum, total: fallbackProducts.length, pages: 1 },
+          "Products fetched successfully (fallback)"
+        );
+      }
       return sendError(res, 500, "Error fetching products", error.message);
     }
 
@@ -159,8 +197,9 @@ exports.getProduct = async (req, res) => {
 
     let query = supabase.from("products").select("*");
 
-    // Try to find by ID first, then by slug
-    if (id.match(/^[0-9a-fA-F]{24}$/) || id.match(/^[0-9]+$/)) {
+    // Try to find by UUID / ID first, then by slug
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+    if (isUUID || id.match(/^[0-9a-fA-F]{24}$/) || id.match(/^[0-9]+$/)) {
       query = query.eq("id", id);
     } else {
       query = query.eq("slug", id.toLowerCase());

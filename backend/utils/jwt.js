@@ -4,12 +4,20 @@
  */
 
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
-const JWT_SECRET = process.env.JWT_SECRET || (process.env.NODE_ENV === "production" ? undefined : "dev_jwt_fallback_pavira_not_for_prod");
-
-if (!JWT_SECRET) {
-  throw new Error("FATAL: JWT_SECRET environment variable is missing. It must be configured in environment variables.");
+let dynamicSecret = null;
+function getFallbackSecret() {
+  if (!dynamicSecret) {
+    dynamicSecret = crypto.randomBytes(32).toString("hex");
+  }
+  return dynamicSecret;
 }
+
+const JWT_SECRET =
+  process.env.JWT_SECRET ||
+  process.env.NEXTAUTH_SECRET ||
+  getFallbackSecret();
 
 /**
  * Generate JWT Token

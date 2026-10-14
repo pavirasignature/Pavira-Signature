@@ -5,6 +5,11 @@ import app from "../../../backend/server";
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     return new Promise<void>((resolve, reject) => {
+      // Ensure req.url starts with /api so Express routes always match
+      if (req.url && !req.url.startsWith("/api")) {
+        req.url = `/api${req.url.startsWith("/") ? "" : "/"}${req.url}`;
+      }
+
       // Express handler expects (req, res, next)
       app(req, res, (err: any) => {
         if (err) {

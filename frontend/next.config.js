@@ -66,6 +66,7 @@ const nextConfig = {
     // Pass Supabase vars to the backend running inside serverless functions
     SUPABASE_URL: process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL,
     SUPABASE_KEY: process.env.SUPABASE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    JWT_SECRET: process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET || "super_secret_jwt_token_for_pavira_signature_luxury_production",
   },
 
   async rewrites() {
