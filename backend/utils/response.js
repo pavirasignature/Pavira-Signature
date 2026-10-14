@@ -13,10 +13,16 @@ const sendSuccess = (res, statusCode, data, message = "Success") => {
 };
 
 const sendError = (res, statusCode, message, errors = null) => {
+  // In production, do not leak internal database or server error details on 500s
+  const sanitizedErrors =
+    process.env.NODE_ENV === "production" && statusCode >= 500
+      ? null
+      : errors;
+
   res.status(statusCode).json({
     success: false,
     message,
-    errors,
+    errors: sanitizedErrors,
     timestamp: new Date().toISOString(),
   });
 };

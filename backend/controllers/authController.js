@@ -188,23 +188,8 @@ exports.login = async (req, res) => {
       return sendError(res, 401, "Please verify your email first. Check your inbox for the verification link.");
     }
 
-    // Compare password
-    let isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid && user.role === "admin") {
-      // Try case variants for admin convenience
-      const variants = [
-        password.charAt(0).toUpperCase() + password.slice(1),  // Admin@123
-        password.charAt(0).toLowerCase() + password.slice(1),  // admin@123
-        password.toLowerCase(),
-        password.toUpperCase(),
-      ];
-      for (const variant of variants) {
-        if (variant !== password && (await bcrypt.compare(variant, user.password))) {
-          isPasswordValid = true;
-          break;
-        }
-      }
-    }
+    // Compare password strictly
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
       return sendError(res, 401, "Invalid email or password");

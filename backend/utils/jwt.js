@@ -5,7 +5,11 @@
 
 const jwt = require("jsonwebtoken");
 
-const JWT_SECRET = process.env.JWT_SECRET || "super_secret_jwt_token_for_pavira_signature_luxury_production";
+const JWT_SECRET = process.env.JWT_SECRET || (process.env.NODE_ENV === "production" ? undefined : "dev_jwt_fallback_pavira_not_for_prod");
+
+if (!JWT_SECRET) {
+  throw new Error("FATAL: JWT_SECRET environment variable is missing. It must be configured in environment variables.");
+}
 
 /**
  * Generate JWT Token

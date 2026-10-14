@@ -24,8 +24,8 @@ exports.createOrder = async (req, res) => {
     const { items, shippingAddress, paymentMethod, couponCode, idempotencyKey } = req.body;
 
     // Validation
-    if (!items || items.length === 0) {
-      return sendError(res, 400, "Cart items are required");
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return sendError(res, 400, "Cart items are required and must be an array");
     }
 
     if (!shippingAddress) {
@@ -45,19 +45,40 @@ exports.createOrder = async (req, res) => {
       }
     }
 
+    // First, validate item formats and quantities before any DB queries
+    for (const item of items) {
+      if (!item || !item.product) {
+        return sendError(res, 400, "All items must specify a valid product ID");
+      }
+
+      const qty = parseInt(item.quantity, 10);
+      if (isNaN(qty) || !Number.isInteger(Number(item.quantity)) || qty <= 0) {
+        return sendError(
+          res,
+          400,
+          `Invalid quantity for item ${item.product}. Quantity must be a positive integer.`
+        );
+      }
+
+      if (qty > 100) {
+        return sendError(res, 400, "Quantity exceeds maximum limit of 100 units per item");
+      }
+    }
+
     // Calculate subtotal and validate stock
     let subtotal = 0;
     const orderItems = [];
     
     // Bulk fetch all products to eliminate N+1 queries
-    const productIds = items.map(item => item.product);
+    const productIds = items.map(item => item.product).filter(Boolean);
+
     const { data: products, error: productError } = await supabase
       .from("products")
       .select("*")
       .in("id", productIds);
       
     if (productError) {
-      return sendError(res, 500, "Database error verifying products", productError.message);
+      return sendError(res, 400, "Invalid product IDs or products not found");
     }
     
     // Create a dictionary map for O(1) lookups
@@ -73,23 +94,32 @@ exports.createOrder = async (req, res) => {
         return sendError(res, 404, `Product not found: ${item.product}`);
       }
 
+      const qty = parseInt(item.quantity, 10);
+      if (isNaN(qty) || !Number.isInteger(Number(item.quantity)) || qty <= 0) {
+        return sendError(res, 400, `Invalid quantity for product ${product.name || item.product}. Quantity must be a positive integer.`);
+      }
+
+      if (qty > 100) {
+        return sendError(res, 400, `Quantity for ${product.name} exceeds maximum limit of 100 units.`);
+      }
+
       if (product.stock === 0) {
-        return sendError(res, 400, "please check our website after few time till then pls stay connected to us");
+        return sendError(res, 400, `Product ${product.name} is currently out of stock`);
       }
 
-      if (product.stock < item.quantity) {
-        return sendError(res, 400, `Insufficient stock for ${product.name}`);
+      if (product.stock < qty) {
+        return sendError(res, 400, `Insufficient stock for ${product.name}. Available: ${product.stock}, requested: ${qty}`);
       }
 
-      const itemTotal = product.price * item.quantity;
+      const itemTotal = Number(product.price) * qty;
       subtotal += itemTotal;
 
       orderItems.push({
         product: product.id,
         name: product.name,
         image: product.images?.[0]?.url || product.image || "/placeholder.jpg",
-        quantity: item.quantity,
-        price: product.price,
+        quantity: qty,
+        price: Number(product.price),
         discount: item.discount || 0,
       });
     }
@@ -153,7 +183,8 @@ exports.createOrder = async (req, res) => {
       }
     }
 
-    const totalPrice = subtotal + taxPrice + shippingPrice - discountPrice;
+    const rawTotal = subtotal + taxPrice + shippingPrice - discountPrice;
+    const totalPrice = Math.max(0, Math.round(rawTotal * 100) / 100);
 
     // Create order
     const order = await Order.create({
@@ -161,10 +192,10 @@ exports.createOrder = async (req, res) => {
       items: orderItems,
       shippingAddress,
       paymentMethod,
-      itemsPrice: subtotal,
-      shippingPrice,
-      taxPrice,
-      discountPrice,
+      itemsPrice: Math.round(subtotal * 100) / 100,
+      shippingPrice: Math.round(shippingPrice * 100) / 100,
+      taxPrice: Math.round(taxPrice * 100) / 100,
+      discountPrice: Math.round(discountPrice * 100) / 100,
       totalPrice,
       paymentInfo: {
         paymentStatus: "pending",
@@ -173,8 +204,8 @@ exports.createOrder = async (req, res) => {
       orderStatus: "pending",
     });
 
-    // Update product stock using atomic RPC lock
-    for (const item of items) {
+    // Update product stock using atomic RPC lock or direct decrement fallback
+    for (const item of orderItems) {
       try {
         const { error } = await supabase.rpc("decrement_product_stock", {
           p_id: item.product,
@@ -182,7 +213,19 @@ exports.createOrder = async (req, res) => {
         });
         
         if (error) {
-          console.error(`Failed to lock/decrement stock for ${item.product}:`, error);
+          // Direct fallback if RPC is not present
+          const { data: currentProduct } = await supabase
+            .from("products")
+            .select("stock")
+            .eq("id", item.product)
+            .single();
+
+          if (currentProduct && currentProduct.stock !== undefined) {
+            await supabase
+              .from("products")
+              .update({ stock: Math.max(0, currentProduct.stock - item.quantity) })
+              .eq("id", item.product);
+          }
         }
       } catch (stockErr) {
         console.error("Stock update error:", stockErr);
@@ -491,7 +534,8 @@ exports.cancelOrder = async (req, res) => {
       return sendError(res, 404, "Order not found");
     }
 
-    if (order.user !== req.userId && req.user.role !== "admin") {
+    const orderUserId = typeof order.user === "object" ? order.user?.id || order.user?._id : order.user;
+    if (String(orderUserId) !== String(req.userId) && req.user.role !== "admin") {
       return sendError(res, 403, "Not authorized to cancel this order");
     }
 
@@ -604,10 +648,11 @@ exports.addToCart = async (req, res, next) => {
       });
     }
 
-    if (quantity < 1) {
+    const parsedQty = parseInt(quantity, 10);
+    if (!parsedQty || !Number.isInteger(Number(quantity)) || parsedQty < 1 || parsedQty > 100) {
       return res.status(400).json({
         success: false,
-        message: "Quantity must be at least 1",
+        message: "Quantity must be a positive integer between 1 and 100",
       });
     }
 
@@ -728,10 +773,11 @@ exports.updateCartItem = async (req, res, next) => {
     const { productId } = req.params;
     const { quantity } = req.body;
 
-    if (!quantity || quantity < 1) {
+    const parsedQty = parseInt(quantity, 10);
+    if (!parsedQty || !Number.isInteger(Number(quantity)) || parsedQty < 1 || parsedQty > 100) {
       return res.status(400).json({
         success: false,
-        message: "Quantity must be at least 1",
+        message: "Quantity must be a positive integer between 1 and 100",
       });
     }
 

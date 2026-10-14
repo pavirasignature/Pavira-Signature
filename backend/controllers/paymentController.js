@@ -11,13 +11,11 @@ const { supabase } = require("../utils/supabase");
 
 const razorpayKeyId =
   process.env.RAZORPAY_KEY_ID || 
-  process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 
-  "rzp_test_TSgNjvLn7x0WEt";
+  process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
 
 const razorpaySecretKey =
   process.env.RAZORPAY_KEY_SECRET || 
-  process.env.RAZORPAY_SECRET_KEY || 
-  "r7YgwWq6z7sZzvSKKI2JByu2";
+  process.env.RAZORPAY_SECRET_KEY;
 
 const hasRazorpayKeys = !!(razorpayKeyId && razorpaySecretKey);
 
@@ -270,6 +268,10 @@ exports.createRazorpayOrder = async (req, res) => {
     const orderUserId = typeof order.user === "object" ? order.user?.id : order.user;
     if (String(orderUserId) !== String(req.userId) && req.user?.role !== "admin") {
       return sendError(res, 403, "Not authorized to pay for this order");
+    }
+
+    if (order.isPaid || order.paymentInfo?.paymentStatus === "completed") {
+      return sendError(res, 400, "This order has already been paid");
     }
 
     const amountInPaise = Math.round(Number(order.totalPrice || 0) * 100);
@@ -579,6 +581,14 @@ exports.confirmCODPayment = async (req, res) => {
 
     if (order.user !== req.userId) {
       return sendError(res, 403, "Not authorized to confirm this order");
+    }
+
+    if (order.isPaid) {
+      return sendError(res, 400, "Order is already paid");
+    }
+
+    if (order.orderStatus === "confirmed") {
+      return sendSuccess(res, 200, order, "COD order already confirmed");
     }
 
     const updatedOrder = await Order.findByIdAndUpdate(orderId, {

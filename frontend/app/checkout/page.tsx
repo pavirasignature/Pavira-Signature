@@ -273,8 +273,13 @@ export default function CheckoutPage() {
 
         const rzpKey =
           razorpayData.keyId ||
-          process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ||
-          "rzp_test_TSgNjvLn7x0WEt";
+          process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+
+        if (!rzpKey) {
+          toast.error("Payment gateway is currently not configured. Please choose Cash on Delivery or contact support.");
+          setLoading(false);
+          return;
+        }
 
         const options = {
           key: rzpKey,
