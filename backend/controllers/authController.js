@@ -8,6 +8,7 @@ const { generateToken, verifyToken } = require("../utils/jwt");
 const { sendError, sendSuccess } = require("../utils/response");
 const { sendWelcomeEmail, sendVerificationEmail, sendPasswordResetEmail } = require("../utils/email");
 const { supabase } = require("../utils/supabase");
+const { generateSessionId } = require("../utils/session");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 
@@ -57,6 +58,9 @@ exports.register = async (req, res) => {
     // Generate email verification token (32-byte hex)
     const verificationToken = crypto.randomBytes(32).toString("hex");
 
+    // Allot a unique session ID to the new account
+    const sessionId = generateSessionId();
+
     const baseUserPayload = {
       firstName,
       lastName: lastName || "",
@@ -67,6 +71,7 @@ exports.register = async (req, res) => {
       role: "customer",
       isBlocked: false,
       isActive: true,
+      sessionId,
     };
 
     // Preferred path: create unverified user with verification token
@@ -201,6 +206,13 @@ exports.login = async (req, res) => {
       .update({ lastLogin: new Date().toISOString() })
       .eq("id", user.id);
 
+    // Allot a fresh session ID for this login
+    const sessionId = generateSessionId();
+    await supabase
+      .from("users")
+      .update({ sessionId })
+      .eq("id", user.id);
+
     const isRemember = Boolean(rememberMe);
 
     // Generate token (30 days if rememberMe, 1 day if not)
@@ -225,6 +237,7 @@ exports.login = async (req, res) => {
       email: user.email,
       phone: user.phone,
       role: user.role,
+      sessionId,
       addresses: user.addresses || [],
     };
 
@@ -362,6 +375,7 @@ exports.googleLogin = async (req, res) => {
             isBlocked: false,
             isVerified: true, // Google users are auto-verified
             isActive: true,
+            sessionId: generateSessionId(),
           }])
           .select()
           .single();
@@ -388,6 +402,13 @@ exports.googleLogin = async (req, res) => {
       .update({ lastLogin: new Date().toISOString() })
       .eq("id", user.id);
 
+    // Allot a fresh session ID for this login
+    const sessionId = generateSessionId();
+    await supabase
+      .from("users")
+      .update({ sessionId })
+      .eq("id", user.id);
+
     const isRemember = Boolean(req.body.rememberMe);
 
     // Generate token
@@ -412,6 +433,7 @@ exports.googleLogin = async (req, res) => {
       email: user.email,
       phone: user.phone || "",
       role: user.role,
+      sessionId,
       addresses: user.addresses || [],
     };
 
@@ -444,6 +466,13 @@ exports.getMe = async (req, res) => {
       return sendError(res, 404, "User not found");
     }
 
+    // Backfill a session ID for legacy accounts that predate the sessionId column
+    let sessionId = user.sessionId;
+    if (!sessionId) {
+      sessionId = generateSessionId();
+      await supabase.from("users").update({ sessionId }).eq("id", user.id);
+    }
+
     const userData = {
       id: user.id,
       firstName: user.firstName,
@@ -452,6 +481,7 @@ exports.getMe = async (req, res) => {
       email: user.email,
       phone: user.phone,
       role: user.role,
+      sessionId,
       isVerified: user.isVerified,
       addresses: user.addresses || [],
     };
@@ -703,6 +733,10 @@ exports.resetPassword = async (req, res) => {
  */
 exports.logout = async (req, res) => {
   try {
+    // Clear the active session ID so the next login allots a fresh one
+    if (req.userId) {
+      await supabase.from("users").update({ sessionId: null }).eq("id", req.userId);
+    }
     res.clearCookie("token");
     return sendSuccess(res, 200, null, "Logged out successfully");
   } catch (error) {

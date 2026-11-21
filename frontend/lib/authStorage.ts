@@ -38,6 +38,14 @@ export function isRememberMeActive(): boolean {
   return localStorage.getItem("rememberMe") === "true";
 }
 
+/**
+ * Returns the session ID (UUID) allotted to the user by the backend after login.
+ */
+export function getStoredSessionId(): string | null {
+  if (!isBrowser) return null;
+  return localStorage.getItem("sessionId") || sessionStorage.getItem("sessionId") || null;
+}
+
 export function getStoredAuth(): { token: string | null; user: any | null } {
   if (!isBrowser) return { token: null, user: null };
 
@@ -92,11 +100,13 @@ export function saveStoredAuth(token: string, user: any, rememberMe: boolean = f
   if (!isBrowser) return;
 
   const userStr = JSON.stringify(user);
+  const sessionId = user?.sessionId || user?.session_id || null;
 
   if (rememberMe) {
     localStorage.setItem("rememberMe", "true");
     localStorage.setItem("token", token);
     localStorage.setItem("user", userStr);
+    if (sessionId) localStorage.setItem("sessionId", sessionId);
     sessionStorage.setItem("rememberMe", "true");
     // Persistent cookie for 30 days
     setCookie(SESSION_COOKIE_NAME, "1", 30 * 24 * 60 * 60);
@@ -105,6 +115,7 @@ export function saveStoredAuth(token: string, user: any, rememberMe: boolean = f
     localStorage.removeItem("rememberMe");
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("sessionId");
     sessionStorage.setItem("rememberMe", "false");
     // Pure session cookie: NO max-age -> browser purges when closed
     setCookie(SESSION_COOKIE_NAME, "1");
@@ -112,6 +123,7 @@ export function saveStoredAuth(token: string, user: any, rememberMe: boolean = f
 
   sessionStorage.setItem("token", token);
   sessionStorage.setItem("user", userStr);
+  if (sessionId) sessionStorage.setItem("sessionId", sessionId);
   sessionStorage.removeItem("loggedOut");
 }
 
@@ -122,9 +134,11 @@ export function clearStoredAuth() {
   localStorage.removeItem("rememberMe");
   localStorage.removeItem("token");
   localStorage.removeItem("user");
+  localStorage.removeItem("sessionId");
   sessionStorage.removeItem("rememberMe");
   sessionStorage.removeItem("token");
   sessionStorage.removeItem("user");
+  sessionStorage.removeItem("sessionId");
   sessionStorage.removeItem("loginMethod");
   sessionStorage.setItem("loggedOut", "true");
 }

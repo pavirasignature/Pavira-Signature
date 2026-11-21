@@ -2,15 +2,17 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { getStoredAuth, saveStoredAuth, clearStoredAuth } from "@/lib/authStorage";
+import { getStoredAuth, getStoredSessionId, saveStoredAuth, clearStoredAuth } from "@/lib/authStorage";
 
 interface StoreState {
   // Auth
   user: any;
   token: string | null;
+  sessionId: string | null;
   lastUserId: string | null;
   setUser: (user: any, rememberMe?: boolean) => void;
   setToken: (token: string | null, rememberMe?: boolean) => void;
+  setSessionId: (sessionId: string | null) => void;
   logout: () => void;
 
   // Cart
@@ -43,9 +45,17 @@ export const useStore = create<StoreState>()(
       // Auth
       user: typeof window !== "undefined" ? getStoredAuth().user : null,
       token: typeof window !== "undefined" ? getStoredAuth().token : null,
+      sessionId:
+        typeof window !== "undefined"
+          ? getStoredAuth().user?.sessionId || getStoredSessionId()
+          : null,
       lastUserId: null,
       setUser: (user, rememberMe) => {
-        set({ user, lastUserId: user ? user._id || user.id : null });
+        set({
+          user,
+          sessionId: user?.sessionId || user?.session_id || null,
+          lastUserId: user ? user._id || user.id : null,
+        });
         if (typeof window !== "undefined") {
           if (user) {
             const isRemembered =
@@ -80,10 +90,27 @@ export const useStore = create<StoreState>()(
           get().fetchWishlist();
         }
       },
+      setSessionId: (sessionId) => {
+        set({ sessionId });
+        if (typeof window !== "undefined") {
+          if (sessionId) {
+            const currentUser = get().user || getStoredAuth().user;
+            const mergedUser = currentUser ? { ...currentUser, sessionId } : { sessionId };
+            const isRemembered =
+              localStorage.getItem("rememberMe") === "true";
+            saveStoredAuth(
+              get().token || getStoredAuth().token || "",
+              mergedUser,
+              isRemembered,
+            );
+          }
+        }
+      },
       logout: () => {
         set({
           user: null,
           token: null,
+          sessionId: null,
           cart: [],
           wishlist: [],
           lastUserId: null,

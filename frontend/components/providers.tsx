@@ -56,6 +56,7 @@ function AuthSync() {
       googleId: sessionUser.googleId || null,
       role: sessionUser.role || "customer",
       phone: sessionUser.phone || "",
+      sessionId: sessionUser.sessionId || (session as any).sessionId || null,
       addresses: sessionUser.addresses || [],
     };
 

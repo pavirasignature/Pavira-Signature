@@ -1,6 +1,7 @@
 const { supabase, makeChainable } = require("../utils/supabase");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
+const { generateSessionId } = require("../utils/session");
 
 class User {
   constructor(data) {
@@ -50,6 +51,7 @@ class User {
       email: payload.email.toLowerCase().trim(),
       password: payload.password,
       googleId: payload.googleId || null,
+      sessionId: payload.sessionId || generateSessionId(),
       phone: payload.phone || "",
       role: payload.role || "customer",
       isBlocked: payload.isBlocked !== undefined ? payload.isBlocked : false,
@@ -104,6 +106,7 @@ class User {
       email: this.email,
       password: this.password,
       googleId: this.googleId,
+      sessionId: this.sessionId,
       phone: this.phone,
       role: this.role,
       isBlocked: this.isBlocked,

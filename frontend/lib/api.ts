@@ -6,7 +6,7 @@
 "use client";
 
 import axios from "axios";
-import { getStoredAuth, clearStoredAuth } from "@/lib/authStorage";
+import { getStoredAuth, getStoredSessionId, clearStoredAuth } from "@/lib/authStorage";
 
 // Safe API URL resolution
 let API_URL: string;
@@ -31,6 +31,11 @@ api.interceptors.request.use((config: any) => {
   const sessionId = typeof window !== "undefined" ? localStorage.getItem("session_id") : null;
   if (sessionId) {
     config.headers["x-session-id"] = sessionId;
+  }
+  // Attach the authenticated user's session ID (allotted at login)
+  const authSessionId = typeof window !== "undefined" ? getStoredSessionId() : null;
+  if (authSessionId) {
+    config.headers["x-auth-session-id"] = authSessionId;
   }
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;

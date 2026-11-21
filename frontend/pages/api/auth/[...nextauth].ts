@@ -6,6 +6,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 let _app: any = null;
 let _supabase: any = null;
 let _generateToken: any = null;
+let _generateSessionId: any = null;
 
 function getExpressApp() {
   if (!_app) {
@@ -41,6 +42,18 @@ function getGenerateToken() {
     }
   }
   return _generateToken;
+}
+
+function getGenerateSessionId() {
+  if (!_generateSessionId) {
+    try {
+      // @ts-ignore
+      _generateSessionId = require("../../../../backend/utils/session").generateSessionId;
+    } catch (e) {
+      console.error("[NextAuth] Failed to load session util:", e);
+    }
+  }
+  return _generateSessionId;
 }
 
 // ─── Build NextAuth options ────────────────────────────────────────────────────
@@ -149,6 +162,28 @@ function buildNextAuthOptions(): NextAuthOptions {
               }
 
               if (dbUser) {
+                // Allot a fresh session ID for this login
+                const generateSessionId = getGenerateSessionId();
+                const freshSessionId = generateSessionId
+                  ? generateSessionId()
+                  : null;
+                if (freshSessionId) {
+                  try {
+                    const supabaseClient = getSupabase();
+                    if (supabaseClient) {
+                      await supabaseClient
+                        .from("users")
+                        .update({ sessionId: freshSessionId })
+                        .eq("id", dbUser.id);
+                    }
+                  } catch (sessionError) {
+                    console.error(
+                      "[NextAuth] Failed to persist session ID:",
+                      sessionError
+                    );
+                  }
+                }
+
                 token.backendToken = generateToken(dbUser.id);
                 token.backendUser = {
                   id: dbUser.id,
@@ -162,6 +197,7 @@ function buildNextAuthOptions(): NextAuthOptions {
                   role: dbUser.role || "customer",
                   googleId: dbUser.googleId,
                   isVerified: true,
+                  sessionId: freshSessionId || dbUser.sessionId || null,
                 };
               } else {
                 const fallbackId = googleId || `google_${Date.now()}`;
@@ -222,6 +258,10 @@ function buildNextAuthOptions(): NextAuthOptions {
               backendUser?.name || (token as any).name || session.user?.name,
           } as typeof session.user;
           (session as any).accessToken = (token as any).backendToken;
+          (session as any).sessionId =
+            (token as any).backendUser?.sessionId ||
+            (token as any).sessionId ||
+            null;
           (session as any).authError = (token as any).backendSyncError;
         }
         return session;
