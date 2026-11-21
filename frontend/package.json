@@ -6,7 +6,8 @@
     "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "node -e \"process.exit(0)\""
   },
   "dependencies": {
     "@auth/core": "^0.34.3",

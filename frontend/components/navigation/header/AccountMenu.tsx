@@ -11,10 +11,11 @@ interface AccountMenuProps {
   userName: string;
   userRole: string;
   userImage?: string;
+  sessionId?: string | null;
   handleLogout: () => void;
 }
 
-export default function AccountMenu({ isLoggedIn, userName, userRole, userImage, handleLogout }: AccountMenuProps) {
+export default function AccountMenu({ isLoggedIn, userName, userRole, userImage, sessionId, handleLogout }: AccountMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [imgError, setImgError] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -105,7 +106,7 @@ export default function AccountMenu({ isLoggedIn, userName, userRole, userImage,
             
             <div className="py-2">
               <Link
-                href={userRole === "admin" ? "/admin" : "/dashboard"}
+                href={userRole === "admin" ? `/admin${sessionId ? `?session=${sessionId}` : ''}` : `/dashboard${sessionId ? `?session=${sessionId}` : ''}`}
                 onClick={() => setIsOpen(false)}
                 className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-accent hover:bg-muted/50 transition-colors"
               >
@@ -113,10 +114,21 @@ export default function AccountMenu({ isLoggedIn, userName, userRole, userImage,
                 <span>{userRole === "admin" ? "Admin Panel" : "My Profile"}</span>
               </Link>
 
+              {sessionId && (
+                <Link
+                  href={`/session/${sessionId}`}
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 px-4 py-2 text-xs text-accent hover:bg-muted/50 transition-colors border-y border-border/40 bg-accent/5"
+                >
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                  <span className="font-mono truncate">Session: {sessionId.slice(0, 8)}...</span>
+                </Link>
+              )}
+
               {/* Admin also gets access to their own profile dashboard */}
               {userRole === "admin" && (
                 <Link
-                  href="/dashboard"
+                  href={`/dashboard${sessionId ? `?session=${sessionId}` : ''}`}
                   onClick={() => setIsOpen(false)}
                   className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-accent hover:bg-muted/50 transition-colors"
                 >
@@ -127,7 +139,7 @@ export default function AccountMenu({ isLoggedIn, userName, userRole, userImage,
 
               {userRole !== "admin" && (
                 <Link
-                  href="/dashboard/orders"
+                  href={`/dashboard/orders${sessionId ? `?session=${sessionId}` : ''}`}
                   onClick={() => setIsOpen(false)}
                   className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:text-accent hover:bg-muted/50 transition-colors"
                 >

@@ -72,14 +72,17 @@ export default function LoginPage() {
         setToken(token, rememberMe);
         setUser(user, rememberMe);
 
+        const sessionId = user.sessionId || (typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : "");
+
         toast.success("Login successful!");
 
-        // Case-insensitive role check for defensive hardening
-        if (user.role?.toLowerCase() === "admin") {
-          router.replace("/admin");
-        } else {
-          router.replace("/");
-        }
+        const redirectParam = searchParams?.get("redirect");
+        const defaultPath = user.role?.toLowerCase() === "admin" ? "/admin" : "/";
+        const basePath = redirectParam || defaultPath;
+        const separator = basePath.includes("?") ? "&" : "?";
+        const finalUrl = sessionId ? `${basePath}${separator}session=${sessionId}` : basePath;
+
+        router.replace(finalUrl);
       }
     } catch (err: any) {
       const errMsg = err.response?.data?.message || "Login failed";

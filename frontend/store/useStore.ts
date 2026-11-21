@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { getStoredAuth, getStoredSessionId, saveStoredAuth, clearStoredAuth } from "@/lib/authStorage";
+import { removeSessionFromUrl } from "@/lib/sessionUrl";
 
 interface StoreState {
   // Auth
@@ -117,6 +118,7 @@ export const useStore = create<StoreState>()(
         });
         if (typeof window !== "undefined") {
           clearStoredAuth();
+          removeSessionFromUrl();
           // Notify the Header to re-check auth immediately
           window.dispatchEvent(new Event("authChanged"));
           // Also clear the persisted Zustand storage so stale cart/wishlist

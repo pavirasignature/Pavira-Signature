@@ -1,9 +1,11 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { SessionProvider, useSession } from "next-auth/react";
 import { useStore } from "@/store/useStore";
+import SessionUrlSync from "./SessionUrlSync";
+import { syncSessionToUrl } from "@/lib/sessionUrl";
 
 const ToastContainer = dynamic(
   () => import("./Toast").then((m) => ({ default: m.ToastContainer })),
@@ -12,7 +14,7 @@ const ToastContainer = dynamic(
 
 function AuthSync() {
   const { data: session, status } = useSession();
-  const { setUser, setToken } = useStore();
+  const { setUser, setToken, setSessionId } = useStore();
 
   useEffect(() => {
     if (status !== "authenticated" || !session?.user) {
@@ -46,6 +48,7 @@ function AuthSync() {
     }
 
     const sessionUser = session.user as any;
+    const resolvedSessionId = sessionUser.sessionId || (session as any).sessionId || null;
     const user = {
       id: sessionUser.id || sessionUser._id || null,
       email: session.user.email || "",
@@ -56,7 +59,7 @@ function AuthSync() {
       googleId: sessionUser.googleId || null,
       role: sessionUser.role || "customer",
       phone: sessionUser.phone || "",
-      sessionId: sessionUser.sessionId || (session as any).sessionId || null,
+      sessionId: resolvedSessionId,
       addresses: sessionUser.addresses || [],
     };
 
@@ -68,10 +71,17 @@ function AuthSync() {
         sessionStorage.setItem("showAccessGrantedAlert", "true");
       }
       sessionStorage.setItem("loginMethod", "google");
+
+      if (resolvedSessionId) {
+        syncSessionToUrl(resolvedSessionId);
+      }
     }
     setToken(backendToken);
     setUser(user);
-  }, [session, status, setToken, setUser]);
+    if (resolvedSessionId) {
+      setSessionId(resolvedSessionId);
+    }
+  }, [session, status, setToken, setUser, setSessionId]);
 
   return null;
 }
@@ -80,6 +90,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
       <AuthSync />
+      <Suspense fallback={null}>
+        <SessionUrlSync />
+      </Suspense>
       {children}
       <ToastContainer />
     </SessionProvider>

@@ -30,6 +30,7 @@ export default function Header() {
   const wishlist = useStore((state: any) => state.wishlist);
   const logout = useStore((state: any) => state.logout);
   const storeUser = useStore((state: any) => state.user);
+  const storeSessionId = useStore((state: any) => state.sessionId);
 
   const cartCount = cart.reduce(
     (sum: number, item: any) => sum + (item.quantity || 0),
@@ -244,6 +245,7 @@ export default function Header() {
               userName={userName}
               userRole={userRole}
               userImage={userImage}
+              sessionId={storeSessionId || storeUser?.sessionId}
               handleLogout={handleLogout}
             />
           </div>

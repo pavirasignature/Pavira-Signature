@@ -43,6 +43,16 @@ async function runTests() {
   assert(!(await bcrypt.compare("WrongPassword", hash)), "Bcrypt correctly rejects incorrect password");
   assert(!(await bcrypt.compare(testPassword.toLowerCase(), hash)), "Password matching is strictly case-sensitive");
 
+  // --- TEST 1B: Session ID Allotment Verification ---
+  console.log("\n--- TEST GROUP 1B: Unique Session ID Allotment ---");
+  const { generateSessionId } = require("../utils/session");
+  const sid1 = generateSessionId();
+  const sid2 = generateSessionId();
+  const uuidV4Regex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  assert(uuidV4Regex.test(sid1), "Session ID matches standard UUID v4 format");
+  assert(uuidV4Regex.test(sid2), "Subsequent Session ID matches standard UUID v4 format");
+  assert(sid1 !== sid2, "Each generated session ID is strictly unique (no collisions)");
+
   // --- TEST 2: Secrets in Code Static Audit ---
   console.log("\n--- TEST GROUP 2: Secrets in Source Code Audit ---");
   const fs = require("fs");
